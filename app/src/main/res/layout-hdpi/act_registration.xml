@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_tile"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:padding="15dp"
+    android:id="@+id/rootview"
+
+
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerInside"
+        android:src="@drawable/app_logo"
+        android:layout_marginTop="45dp"
+        android:id="@+id/applogo"
+
+        />
+
+
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:layout_below="@id/applogo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:inputType="textPersonName|textCapSentences"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textColor="@color/Text_Login"
+        android:layout_marginTop="20dp"
+        android:text="Name"
+        android:alpha=".6"
+        android:maxLines="1"
+        android:layout_weight="1"/>
+
+    <EditText
+        android:id="@+id/uname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:inputType="textPersonName|textCapSentences"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:paddingTop="5dp"
+        android:textColor="@color/white"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:background="@android:color/transparent"
+        android:textColorHint="#ffffff"
+        android:freezesText="true"
+        android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/white"
+                android:alpha=".2">
+
+            </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/txt_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:inputType="textPersonName|textCapSentences"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:alpha=".6"
+        android:maxLines="1"
+        android:textColor="@color/Text_Login"
+        android:text="@string/reg_emailid"
+        android:imeOptions="actionNext"
+        android:layout_weight="1"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/uemail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:background="@android:color/transparent"
+        android:ems="15"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:paddingTop="5dp"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:textColorHint="#ffffff"
+        android:textColor="@color/white"
+        android:imeOptions="actionNext"
+        android:layout_weight="1"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/white"
+                android:alpha=".2">
+
+            </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15sp"
+        android:baselineAligned="true"
+        android:layout_weight="2"
+        android:clickable="false">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:clickable="false">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:gravity="center"
+            android:text="@string/country"
+
+            android:alpha=".6"
+            android:focusable="false"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/Text_Login" />
+
+        <AutoCompleteTextView
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/autotv_country"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:maxLines="1"
+            android:inputType="text"
+            android:imeOptions="actionNext"
+            android:freezesText="true"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:background="@android:color/transparent"
+            />
+
+        <Spinner
+            android:id="@+id/ucountry"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:focusable="true"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:visibility="visible"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:clickable="false">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:gravity="center"
+            android:text="@string/language"
+            android:focusable="false"
+            android:alpha=".6"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/Text_Login" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autotv_lang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="2dp"
+            android:textAlignment="center"
+            android:maxLines="1"
+            android:freezesText="true"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textColor="@color/white"
+            />
+
+        <Spinner
+            android:id="@+id/ulang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:focusable="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="2dp"
+            android:gravity="center_horizontal"
+            android:spinnerMode="dialog"
+            android:visibility="gone"
+            android:background="@android:color/transparent"
+            />
+    </LinearLayout>
+        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/white"
+                android:alpha=".2">
+
+            </LinearLayout>
+    <TextView
+        android:id="@+id/txt_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:inputType="textPersonName|textCapSentences"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:alpha=".6"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/Text_Login"
+        android:text="@string/reg_mobile_number"
+        android:layout_weight="1"/>
+
+
+    <EditText
+        android:id="@+id/umob_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:inputType="phone"
+        android:maxLength="15"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/transparent"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:layout_gravity="left"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:paddingTop="5dp"
+        android:textColor="@color/white"
+        android:textColorHint="#ffffff"
+        android:imeOptions="actionGo"
+        android:freezesText="true"
+        />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/white"
+                android:alpha=".2">
+
+            </LinearLayout>
+    <Button
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_round_corner"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/term_of_service"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/text_terms_of_service"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:alpha=".6"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"></FrameLayout>
+        </LinearLayout>
+        
+
+
+ </ScrollView>
+</RelativeLayout>

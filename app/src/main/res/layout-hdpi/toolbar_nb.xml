@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/primary">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:padding="5dp"
+            android:layout_margin="1dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_likes_counter"/>
+
+        <TextView
+            android:layout_gravity="right|center_vertical"
+
+            android:text="00"
+            android:textSize="10sp"
+            android:gravity="center_horizontal"
+            android:layout_width="36dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/nb_textView_tb_counter"
+            android:textColor="@color/white"
+
+            />
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nb_tv_tb_title"
+        android:text="@string/app_name"
+        android:textStyle="normal"
+        android:textSize="0sp"
+        android:textColor="@color/white"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:padding="15dp"
+        android:src="@drawable/app_logo"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_drawer"
+        android:id="@+id/nb_ic_tb"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

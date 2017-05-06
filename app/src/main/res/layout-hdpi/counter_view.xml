@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary">
+    <FrameLayout
+        android:id="@+id/fl_couter_holder"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:addStatesFromChildren="true"
+        android:hapticFeedbackEnabled="true"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerInside"
+            android:padding="3dp"
+
+            android:layout_margin="1dp"
+            android:layout_marginRight="5dp"
+            android:id="@+id/counter_tb_badge"
+            android:src="@drawable/intro_heart"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_gravity="right|bottom"
+
+            android:text="00"
+            android:textSize="14sp"
+            android:padding="2sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:maxLines="1"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_tb_counter"
+            android:textColor="@color/white"
+            android:visibility="gone"
+
+
+
+            />
+
+        <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/tb_db_badge"
+            android:layout_width="42dp"
+            android:layout_height="30dp"
+            app:nbTextSize="12sp"
+            android:layout_toRightOf="@id/icon"
+            android:layout_alignTop="@id/icon"
+            app:nbBackground="@drawable/bg_notification_badge"
+            app:nbMaxTextLength="4"
+            android:padding="3sp"
+            android:layout_gravity="right|bottom" />
+
+
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_tb_title"
+        android:text="@string/app_name"
+        android:textSize="0sp"
+        android:textStyle="normal"
+        android:textColor="@color/white"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:padding="15dp"
+        android:src="@drawable/app_logo"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_drawer"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/navigation_ic_tb"/>
+
+
+</RelativeLayout>

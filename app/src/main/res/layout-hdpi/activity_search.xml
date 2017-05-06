@@ -1,0 +1,131 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rv_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/BG_dark"
+    android:weightSum="20"
+        >
+    <include layout="@layout/toolbar_normal"
+        android:id="@+id/tb"/>
+    <FrameLayout
+
+        android:layout_below="@id/tb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:id="@+id/fl_trending_seach"
+        android:background="@color/primary">
+
+        <me.crosswall.lib.coverflow.core.PagerContainer
+            android:id="@+id/pager_container_search"
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+           android:background="@color/primary"
+            >
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager_search"
+            android:layout_width="175dp"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:layout_gravity="left|start"
+            android:layout_marginRight="5dp"
+            />
+        </me.crosswall.lib.coverflow.core.PagerContainer>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/orange"
+            android:id="@+id/pb_search_act"/>
+    </FrameLayout>
+
+
+    <ImageView
+    android:id="@+id/iv_no_data"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:visibility="gone"/>
+
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/rl_searchpanel"
+            android:layout_below="@+id/fl_trending_seach"
+          android:background="@android:color/transparent"
+      >
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp"
+            android:background="@drawable/curved_edges_white_full"
+
+            android:id="@+id/sv_heading">
+
+            <TextView
+                android:text="Search result"
+                android:layout_below="@+id/searcvViewSA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_search"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_horizontal"
+                android:textSize="14sp"
+
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/curved_edges_white_full"
+                android:layout_alignParentTop="true"/>
+
+            <android.support.v7.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/searcvViewSA"
+                android:gravity="center_horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                style="@android:style/TextAppearance.Holo.SearchResult.Title"
+
+                android:layout_marginTop="0dp">
+
+            </android.support.v7.widget.SearchView>
+        </RelativeLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/sv_heading"
+        android:id="@+id/RvRcvVideo"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+            <ImageView
+                android:id="@+id/iv_nothing_to_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_marginTop="10dp"
+                android:alpha=".3"
+                android:layout_alignTop="@+id/RvRcvVideo"
+                android:src="@drawable/intro_heart"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:layout_above="@+id/iv_nothing_to_show"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:id="@+id/tv_nothing_to_show"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

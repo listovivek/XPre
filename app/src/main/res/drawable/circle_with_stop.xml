@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+<item>
+    <shape android:shape="oval" >
+        <gradient
+            android:angle="270"
+            android:endColor="#FE6C27"
+            android:startColor="#FE6C27" />
+    </shape>
+</item>
+<item>
+    <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+        android:src="@drawable/ic_stop"
+        android:gravity="center" />
+</item>
+</layer-list>

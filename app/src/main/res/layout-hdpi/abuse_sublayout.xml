@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="400dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@drawable/abuse_shape"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true">
+
+
+        <TextView
+            android:id="@+id/abuse_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:text="Report Abuse"
+            android:textSize="20sp" />
+
+
+        <Button
+            android:id="@+id/abuse_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="55dp"
+            android:background="@drawable/btn_round_red"
+            android:text="Post"
+            android:textColor="@color/white"
+            android:layout_marginEnd="55dp"
+            android:textAllCaps="false"
+            android:layout_alignBaseline="@+id/abuse_discard"
+            android:layout_alignBottom="@+id/abuse_discard"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:id="@+id/abuse_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:hint="Report Abuse"
+            android:textColor="@color/black"
+            android:paddingLeft="5dp"
+            android:textColorHint="@color/black"
+            android:background="@drawable/abuse_editext_curve"
+            android:layout_marginLeft="55dp"
+            android:layout_marginBottom="17dp"
+            android:layout_above="@+id/abuse_send"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:id="@+id/abuse_discard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_round_purple"
+            android:text="discard"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_marginBottom="28dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/abuse_edittext"
+            android:layout_alignStart="@+id/abuse_edittext"
+            android:layout_marginLeft="26dp"
+            android:layout_marginStart="26dp" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/nb_bg">
+
+    <include layout="@layout/toolbar_nb"/>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:layout_weight="5">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="25dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:civ_border_width="2dp"
+        android:layout_centerInParent="true"
+        app:civ_border_color="@android:color/transparent"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/nb_user_pic"
+
+        />
+</RelativeLayout>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="User Name"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_user_name"
+        android:maxLines="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_weight="2"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"></FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="My Uploads >"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_myuploads"
+        android:layout_marginBottom="@dimen/nb_tv_margin"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_weight="3"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Contacts >"
+        android:layout_marginBottom="@dimen/nb_tv_margin"
+        android:layout_weight="3"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_contacts"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Private Xpressions >"
+        android:layout_weight="3"
+        android:layout_marginBottom="@dimen/nb_tv_margin"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_support"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Help >"
+        android:layout_marginBottom="@dimen/nb_tv_margin"
+        android:layout_weight="3"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_help"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="About >"
+        android:layout_marginBottom="@dimen/nb_tv_margin"
+        android:layout_weight="3"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/nb_about"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"></FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="3"
+        android:gravity="bottom"
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_exit"
+            android:id="@+id/btn_exit_nb"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"/>
+        <ImageButton
+            android:layout_width="0dp"
+            android:id="@+id/btn_settings_nb"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_settings_nb"
+            android:scaleType="fitCenter"
+            android:background="@android:color/transparent"/>
+    </LinearLayout>
+
+</LinearLayout>

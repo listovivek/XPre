@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/white_transparent"
+    android:layout_height="match_parent">
+    <include layout="@layout/toolbar_normal"
+        android:id="@+id/tb"
+        />
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vv_pvt_replay"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_play"
+        android:background="@android:color/transparent"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/primary"
+        android:weightSum="2"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vv_pvt_text_accept"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_accept_or"
+            android:text="Accept"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/blue_"
+            android:alpha=".3">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vv_pvt_text_reject"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_reject"
+            android:text="Reject"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/blue_"
+            android:alpha=".3">
+
+        </LinearLayout>
+<!--
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vv_pvt_tv_acceptnreply"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_accept"
+            android:text="Accept  and Reply"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:gravity="center"/>-->
+        <LinearLayout
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/blue_"
+            android:alpha=".3">
+
+        </LinearLayout>
+
+      <!--  <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vv_pvt_tv_rejectnreply"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_reject"
+            android:text="Reject and Reply"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:gravity="center"/>-->
+    </LinearLayout>
+</RelativeLayout>

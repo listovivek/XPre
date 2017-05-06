@@ -1,0 +1,116 @@
+<resources>
+    <string name="app_name">ixprez</string>
+    <string name="name">Name</string>
+    <string name="emailid">Email</string>
+    <string name="country">Country</string>
+    <string name="language">Language</string>
+    <string name="mob_no">Mobile Number</string>
+    <string name="save">Save</string>
+    <string name="join_xpress">Join xPress</string>
+    <string name="verification">Verification Code</string>
+    <string name="verify_desc">Please enter the verification code that you received to your registered email below</string>
+    <string name="enter_otp">Code</string>
+    <string name="resend_code"><u>Resend Code</u></string>
+    <string name="change_email">Change Email</string>
+    <string name="Language">Language</string>
+
+    <!--changed by vivek-->
+
+    <string name="done">Done</string>
+    <string name="not_yet_code">Code not yet received ?</string>
+    <string name="shoot_share_as">Share as</string>
+    <string name="private_or_both">Private</string>
+    <string name="express_your_feeling">Express your feelings with</string>
+    <string name="mate_emailid">Mate Email ID</string>
+    <string name="Have_a_name">Caption Your Feeling</string>
+    <string name="feelings">Title</string>
+
+    <string name="reg_name">Name</string>
+    <string name="reg_emailid">Email Address</string>
+    <string name="reg_mobile_number">Mobile Number</string>
+    <string name="navigation_drawer_openz">Open navigation drawer</string>
+    <string name="navigation_drawer_closez">Close navigation drawer</string>
+    <string name="audio_alert">audio</string>
+    <string name="video_alert">Video</string>
+    <string name="Entertag">  What’s your mood  ? </string>
+
+    <!--- -->
+
+    <string name="help"> <b>Private : </b> From Me to You. \n \n <b>Public :</b>  From Me to the World. \n \n <b>Both :</b>  From Me to You and the World. </string>
+
+    <string name="about">  iXprez is a registered trademark of  Company Name. Rest to be filled in by legal team</string>
+
+
+    <string name="support">  Please visit iXprez Website Name for more details.</string>
+
+
+
+
+
+
+
+    <string-array name="country_list">
+        <item>India</item>
+        <item>America</item>
+        <item>Canada</item>
+        <item>Australia</item>
+    </string-array>
+    <string-array name="countrycodelist">
+        <item>IN</item>
+        <item>USA</item>
+        <item>CAD</item>
+        <item>AUS</item>
+    </string-array>
+    <string-array name="countryphonecode">
+        <item>+91</item>
+        <item>+1</item>
+        <item>+1</item>
+        <item>+61</item>
+    </string-array>
+    <string-array name="lang_list">
+        <item>Tamil</item>
+        <item>Hindi</item>
+        <item>English</item>
+        <item>Telugu</item>
+        <item>English-US</item>
+    </string-array>
+
+    <string-array name="share_type">
+        <item>Private</item>
+        <item>Public</item>
+        <item>Both</item>
+    </string-array>
+
+    <string name="audio">Audio</string>
+    <string name="send_audio">Send Audio</string>
+    <string name="send_video">Send Video</string>
+    <string name="voice">Voice</string>
+    <string name="video">Video</string>
+    <string name="start_recording">Start Recording</string>
+    <string name="dashboard">DashBoard</string>
+    <string name="av_email_hint">"Express your feelings with"</string>
+    <string name="av_name_hint">Video Name</string>
+    <string name="share_as">Share as ? </string>
+    <string name="av_tags">Enter Tags</string>
+    <string name="timerVal">00:40</string>
+    <string name="senddiscard_msg">You finished.\nRecording!</string>
+    <string name="discard">Retry</string>
+    <string name="send">Xpress!</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="later">Later</string>
+    <string name="block">Block</string>
+    <string name="reply_video">Reply with Video</string>
+    <string name="reply_audio">Reply with Audio</string>
+    <string name="cancel">Cancel</string>
+    <string name="private_lists">Private Lists</string>
+    <string name="public_lists">Public Lists</string>
+    <string name="crash_toast_text">Bug detected. Please send the mail to kural.ms@quadrupleindia.com</string>
+
+    <string name="terms_and_condition">By joining xPress, you are agree to our </string>
+    <string name="term_of_service">Terms of Service</string>
+    <string name="t_and_privacy">and</string>
+    <string name="privacy_policy">Privacy Policy</string>
+
+    <string name="defaultpassword"> <a href="http://www.cleverfinger.com.au/user-guide/">User Guide</a></string>
+</resources>

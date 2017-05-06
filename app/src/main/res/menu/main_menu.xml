@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/dashboard_publiclist"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_public"
+        android:title="Public Posts"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/dashboard_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_my_uploads"
+        android:title="My Uploads"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_settings"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Settings"
+        app:showAsAction="never" />
+</menu>

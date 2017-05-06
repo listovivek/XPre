@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="8dp"
+    android:orientation="vertical"
+    android:background="@drawable/btn_round_purple"
+   >
+
+    <Button
+        android:layout_weight="1"
+        android:id="@+id/rv_opt_accept"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_accept_reject"
+        android:text="@string/accept"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@color/white" />
+
+    <Button
+        android:layout_weight="1"
+        android:id="@+id/rv_opt_reject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_accept_reject"
+        android:text="@string/reject"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@color/white" />
+
+    <Button
+        android:layout_weight="1"
+        android:id="@+id/rv_opt_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_accept_reject"
+        android:text="@string/block"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@color/grey200" />
+
+    <Button
+        android:layout_weight="1"
+        android:id="@+id/rv_opt_later"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_corner_accept_reject"
+        android:text="@string/later"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+</LinearLayout><!-- android:background="?attr/selectableItemBackground"-->

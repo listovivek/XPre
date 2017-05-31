@@ -98,7 +98,7 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
         holder.rv_swipeLayout.addDrag(SwipeLayout.DragEdge.Right,
                 holder.rv_swipeLayout.findViewById(R.id.bottom_wrapper));
 
-        if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Private")){
+        if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Private")|| notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){
             holder.swipe_Layout.setVisibility(View.VISIBLE);
             holder.swipe_follower.setVisibility(View.GONE);
         }/*else if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){

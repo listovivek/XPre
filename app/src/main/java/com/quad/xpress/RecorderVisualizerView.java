@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecorderVisualizerView extends View {
-    private static final int LINE_WIDTH = 4; // width of visualizer lines
+    private static final int LINE_WIDTH = 6; // width of visualizer lines
     private static final int LINE_SCALE = 10; // scales visualizer lines
     private List<Float> amplitudes; // amplitudes for line lengths
     private int width; // width of this View

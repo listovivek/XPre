@@ -638,7 +638,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
                         } else if (arg0.getCode().equals("202")) {
                             String a1;
-                            a1 ="No video found with the name ";
+                            a1 ="Nothing found with the name ";
                             ToastCustom toastCustom = new ToastCustom(Search_activity_list.this);
                             SpannableString ss = new SpannableString(a1 +Search_query+", \n Why don’t you Xpress one with that name yourself!");
 
@@ -693,7 +693,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),iii.getEmotionCount()
-                    ,iii.getIsuerfollowing(),iii.getFieldstatus());
+                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user());
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();

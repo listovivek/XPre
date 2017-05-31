@@ -114,8 +114,8 @@ public class TagsAdapter_list_view extends RecyclerView.Adapter<TagsAdapter_list
 
         sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-
-        RestClient.get(context).Liked(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Like_Req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Emotion,Status, file_id),
+        String EmotionSplit[] = Emotion.split("   ");
+        RestClient.get(context).Liked(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Like_Req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),EmotionSplit[1].trim(),Status, file_id),
                 new Callback<Like_Resp>() {
                     @Override
                     public void success(final Like_Resp arg0, Response arg1) {

@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.quad.xpress.Utills.StatiConstants;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -46,11 +45,11 @@ public class IntroActivity extends AppCompatActivity {
 
         btn_done = (ImageButton) findViewById(R.id.intro_btn_done);
         btn_Proceed = (Button) findViewById(R.id.intro_btn_done_final);
-        images = new int[]{R.drawable.intro_heart, R.drawable.intro_video, R.drawable.intro_audio};
-        text1 = new String[]{"HOLA!\nWELCOME", "HOLA!\nWELCOME", "HOLA!\nWELCOME"};
-        text2 = new String[]{"Connect With Your Friends.","Share Your Video & Sound Bytes With",
+        images = new int[]{R.drawable.abuse_shape,R.drawable.intro_heart, R.drawable.intro_video, R.drawable.intro_audio};
+        text1 = new String[]{"\n\n", "HOLA!\nWELCOME", "HOLA!\nWELCOME","HOLA!\nWELCOME"};
+        text2 = new String[]{"\n","Connect With Your Friends.","Share Your Video & Sound Bytes With",
                 "Give a Shout Out to Your Loved Ones."};
-        text3 = new String[]{"Or Foes.","the World.","Literally."};
+        text3 = new String[]{"Library of Human Expressions","Or Foes.","the World.","Literally."};
 
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -123,7 +122,7 @@ public class IntroActivity extends AppCompatActivity {
         if(StatiConstants.newSignIn) {
 
 
-            Toast.makeText(IntroActivity.this, "cc t", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(IntroActivity.this, "cc t", Toast.LENGTH_SHORT).show();
         }
 
 

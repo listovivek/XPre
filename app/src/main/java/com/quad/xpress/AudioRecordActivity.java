@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -49,16 +50,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.quad.xpress.Contacts.Contact;
+import com.quad.xpress.Contacts.ContactMainActivity;
 import com.quad.xpress.Contacts.DatabaseHandler;
 import com.quad.xpress.OOC.ToastCustom;
+import com.quad.xpress.Utills.StatiConstants;
 import com.quad.xpress.Utills.helpers.FieldsValidator;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.Utills.localNotification.LocalNotify;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
-import com.quad.xpress.Utills.localNotification.LocalNotify;
 import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -70,6 +74,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import pl.bclogic.pulsator4droid.library.PulsatorLayout;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -84,13 +89,12 @@ public class AudioRecordActivity extends Activity {
 
     Dialog SendDiscardDialog, AVDialog;
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private Uri fileUri;
+    private Uri fileUri, tmpUri;
     String ToSaveURI;
     public static final int MEDIA_TYPE_IMAGE = 33;
     ImageButton StartRecord;
     Boolean isAudioRecording;
     AudioRecordCountDown ARTimer;
-
     NetConnectionDetector CD;
     MediaRecorder mAudioRecorder;
     int ShareAsPos = 0;
@@ -108,7 +112,7 @@ public class AudioRecordActivity extends Activity {
     public Animation animBlink;
     public TextView AudioTimerValue,tv_PvtCount, text_hold_back, text_xp_it;
     public SeekBar AudioSeekBar;
-    private RecorderVisualizerView visualizerView;
+    private RecorderVisualizerView visualizerView, visualizerView_avdiaoluge;
     LocalNotify localNotify;
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 91;
     private static final int AUDIO_PERMISSION_REQUEST_CANCEL = 93;
@@ -118,14 +122,17 @@ public class AudioRecordActivity extends Activity {
     LinearLayout TagsTIL;
     String ToEmail = "";
     String AVTitle = "";
-    String Tags = "";
+    String Tagsa = "";
     TextView tv_AD_title;
+    File audiofile;
+    CircleImageView Civ_audio;
     AutoCompleteTextView av_email;
     public static String FileNameWithMimeType;
     int LOCAL_NOTIFY_STATIC_ID = 20;
     private Handler handler = new Handler();
     public static final int REPEAT_INTERVAL = 40;
     Context _context;
+    PulsatorLayout pulsator,pulsator_pic;
     Activity _activity;
     String Permission4, permission5;
     DatabaseHandler dBhandler;
@@ -144,8 +151,11 @@ public class AudioRecordActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        AVDialog.cancel();
+
+
         finish();
+
+
     }
 
     @Override
@@ -158,11 +168,19 @@ public class AudioRecordActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_audio);
-
-        PulsatorLayout pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
-        pulsator.start();
         _context = AudioRecordActivity.this;
         _activity= AudioRecordActivity.this;
+
+
+        pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
+        pulsator_pic = (PulsatorLayout) findViewById(R.id.pulsator_around_pic);
+        Civ_audio = (CircleImageView) findViewById(R.id.circleImageView_profile_img_audio_recorder);
+
+
+        Glide.with(_context).load(StatiConstants.user_profilepic_url).dontAnimate().placeholder(R.drawable.ic_user_icon)
+                .fitCenter().into(Civ_audio);
+
+
 
         toastCustom = new ToastCustom(this);
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -193,8 +211,24 @@ public class AudioRecordActivity extends Activity {
         pulsator_dialouge.start();
         ImageButton btn_AVD_back = (ImageButton) AVDialog.findViewById(R.id.tb_normal_back);
 
-        ImageButton btn_help = (ImageButton) AVDialog.findViewById(R.id.btn_avd_help);
 
+
+
+
+
+
+
+
+        ImageButton btn_help = (ImageButton) AVDialog.findViewById(R.id.btn_avd_help);
+        ImageButton btnContacts = (ImageButton) AVDialog.findViewById(R.id.btn_contacts);
+        btnContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AudioRecordActivity.this, ContactMainActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
         btn_help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,11 +294,13 @@ public class AudioRecordActivity extends Activity {
                                              SdDiscard.setVisibility(View.INVISIBLE);
                                              SdSend.setVisibility(View.INVISIBLE);
                                              visualizerView.clear();
+                                             visualizerView.invalidate();
                                              StartRecord.setBackgroundResource(R.drawable.circle_with_mic);
 
                                              AVDialog.show();
                                              DeleteUploadedFile(fileUri);
-                                             //finish();
+
+
                                          }
                                      }
         );
@@ -359,6 +395,8 @@ public class AudioRecordActivity extends Activity {
         ShareAsType = (Spinner) AVDialog.findViewById(R.id.av_share_type);
         TagsTIL = (LinearLayout) AVDialog.findViewById(R.id.av_tags_til);
         MATTags = (MultiAutoCompleteTextView) AVDialog.findViewById(R.id.av_tags);
+        String Tags[] = StatiConstants.TagList.split(",");
+        AVTagsListAdapter = new ArrayAdapter(this, R.layout.spinner_autofill_av_dialouge, Tags);
         MATTags.setAdapter(AVTagsListAdapter);
         MATTags.setThreshold(1);
         MATTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -366,9 +404,14 @@ public class AudioRecordActivity extends Activity {
 
         final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
-        AutoSuggestAdapter adapter = new AutoSuggestAdapter(this,
-                R.layout.spinner_autofill_av_dialouge, getNameEmailDetails());
-        av_email.setAdapter(adapter);
+        AutoSuggestAdapter adapter = null;
+        try {
+            adapter = new AutoSuggestAdapter(this,
+                    R.layout.spinner_autofill_av_dialouge, getNameEmailDetails());
+            av_email.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         av_email.setOnKeyListener(new View.OnKeyListener() {
 
@@ -412,10 +455,11 @@ public class AudioRecordActivity extends Activity {
         ArrayAdapter<CharSequence> adapter_Type = ArrayAdapter.createFromResource(this,
                 R.array.share_type, R.layout.spinner_custom_settings);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter_Type.setDropDownViewResource(R.layout.spinner_custom);
+
         ShareAsType.setAdapter(adapter_Type);
         ShareAsType.setOnItemSelectedListener(new ShareTypeListener());
-        av_name.setHint(" Feelings !");
+        av_name.setHint(" Feelings!");
 
         //btn_start_recording.setText("Proceed");
 
@@ -437,10 +481,11 @@ public class AudioRecordActivity extends Activity {
             @Override
             public void onClick(View view) {
 
+
                 SdDiscard.setVisibility(View.INVISIBLE);
                 SdSend.setVisibility(View.INVISIBLE);
                 StartRecord.setEnabled(true);
-                AudioTimerValue.setText("00:40");
+                AudioTimerValue.setText("00:40" );
                 //ARTimer = new AudioRecordCountDown(40000, 1000);
 
                 if (av_email.getVisibility() == view.VISIBLE) {
@@ -466,7 +511,7 @@ public class AudioRecordActivity extends Activity {
                 tv_AD_title.setText(av_name.getText().toString());
                 String AvTitleSpaceRemover = AVTitle.replace(" ", "-");
                 FileNameWithMimeType = AvTitleSpaceRemover + fileMimeType;
-                Tags = TagResizer(MATTags.getText().toString());
+                Tagsa = TagResizer(MATTags.getText().toString());
                 ShareAsText = ShareAsType.getSelectedItem().toString();
                 if (AVDialog.isShowing()) {
                     callWeb(ToEmail);
@@ -476,6 +521,10 @@ public class AudioRecordActivity extends Activity {
                     MATTags.setText("");*/
 
                     AVDialog.dismiss();
+
+                    //animate n stuff
+                    pulsator.start();
+
                     text_xp_it.setVisibility(View.VISIBLE);
                     text_hold_back.setVisibility(View.VISIBLE);
                     AudioTimerValue.setVisibility(View.VISIBLE);
@@ -715,8 +764,10 @@ public class AudioRecordActivity extends Activity {
                 if (!isAudioRecording) {
                     //StartRecord.setBackgroundDrawable(null);
                     StartAudioRecording(AudioFileUri);
+                    pulsator_pic.start();
                 } else {
                     StopAudioRecording();
+                    pulsator_pic.stop();
                 }
 
             }
@@ -764,8 +815,12 @@ public class AudioRecordActivity extends Activity {
             ARTimer.cancel();
         // Change isRecording flag to false
         isAudioRecording = true;
+        if(AudioTimerValue.getText().equals("00:40")){
+            AudioTimerValue.setText("Out of time.");
+            pulsator_pic.stop();
+        }else
+        {  AudioTimerValue.setText("Done.");}
 
-        AudioTimerValue.setText("Stop");
         AudioTimerValue.clearAnimation();
         SdDiscard.setVisibility(View.VISIBLE);
         SdSend.setVisibility(View.VISIBLE);
@@ -800,7 +855,7 @@ public class AudioRecordActivity extends Activity {
 
         @Override
         public void onFinish() {
-            AudioTimerValue.setText("40");
+            AudioTimerValue.setText("00:40");
             StopAudioRecording();
         }
 
@@ -812,7 +867,7 @@ public class AudioRecordActivity extends Activity {
             // String hms = String.format("%02d", hmsvalue);
             int hms = (int) hmsvalue - 0;
             //AudioSeekBar.setProgress(hms);
-            AudioTimerValue.setText(String.valueOf(hms));
+            AudioTimerValue.setText(String.valueOf("00:"+hms));
             if (hms == 5) {
                 AudioTimerValue.startAnimation(animBlink);
             }
@@ -835,7 +890,7 @@ public class AudioRecordActivity extends Activity {
 
         Log.v("", sptoken+spEmail+spCountry+splanguaege);
 
-        RestClient.get(getApplicationContext()).UploadAudio(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), AudioTypedFile, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), ToEmail, AVTitle, Tags, ShareAsText,
+        RestClient.get(getApplicationContext()).UploadAudio(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), AudioTypedFile, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), ToEmail, AVTitle, Tagsa, ShareAsText,
                 sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"), sharedpreferences.getString(SharedPrefUtils.SpLanguage, Locale.getDefault().getDisplayLanguage()), new Callback<SVideoResp>() {
                     @Override
                     public void success(SVideoResp sVideoResp, Response response) {
@@ -849,7 +904,7 @@ public class AudioRecordActivity extends Activity {
                             ss.setSpan(new RelativeSizeSpan(1.2f), 0, AVTitle.length(), 0);
                             ss.setSpan(new ForegroundColorSpan(Color.GREEN), ss.length()-ToEmail.length(), ss.length(), 0);
                             ss.setSpan(new RelativeSizeSpan(1.2f), ss.length()-ToEmail.length(), ss.length(), 0);
-                            toastCustom.ShowToast("Ixprez",ss,2);
+                         //   toastCustom.ShowToast("Ixprez",ss,2);
 
                             File dir = new File(Environment.getExternalStorageDirectory() + "/" + AppName + "/");
                             if (dir.isDirectory())
@@ -871,11 +926,11 @@ public class AudioRecordActivity extends Activity {
                         else if (sVideoResp.getCode().equals("701")) {
                             //Toast.makeText(getApplicationContext(), "User has blocked you !", Toast.LENGTH_LONG).show();
 
-                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID,  "You have been Blocked by user",_activity);
+                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID,  "You have been Blocked by user",_activity,AudioUri);
                             DeleteUploadedFile(AudioUri);
 
                         }else {
-                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Upload failed. " + sVideoResp.getCode(),_activity);
+                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Upload failed. " + sVideoResp.getCode(),_activity,AudioUri);
 
 
 
@@ -890,7 +945,7 @@ public class AudioRecordActivity extends Activity {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Failed to Xpress, try again" + error.toString(),_activity);
+                        localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Failed to Xpress, try again" + error.toString(),_activity,AudioUri);
 
 
                        // DeleteUploadedFile(AudioUri);

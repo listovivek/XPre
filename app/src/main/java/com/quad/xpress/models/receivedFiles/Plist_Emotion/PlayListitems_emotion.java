@@ -6,16 +6,15 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by Venkatesh on 21-05-16.
- */
+
 public class PlayListitems_emotion {
 
     private String filename;
     private String title;
     private String created_date;
-    String from_email;
+    String from_email,from_user;
     String TBPath;
+    String to_email;
     private String filemimeType;
     private String fileuploadPath;
     private String fileuploadFilename;
@@ -35,9 +34,10 @@ public class PlayListitems_emotion {
     public PlayListitems_emotion(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                                  String fileuploadPath, String fileuploadFilename, String fileID,String tags,
                                  String likesCount, String viewsCount, String isUserLiked,String emotion,String emotion_count,
-                                    String isUserFollowing, String Privacy) {
+                                    String isUserFollowing, String Privacy ,String to_email,String from_user) {
         this.filename = filename;
         this.title = title;
+        this.to_email =to_email;
         this.created_date = created_date;
         this.from_email = from_email;
         this.TBPath = TBPath;
@@ -46,6 +46,7 @@ public class PlayListitems_emotion {
         this.fileuploadFilename = fileuploadFilename;
         this.fileID = fileID;
         this.tags = tags;
+        this.from_user=from_user;
         this.likesCount = likesCount;
         this.viewsCount = viewsCount;
         this.isUserLiked= isUserLiked;
@@ -54,6 +55,22 @@ public class PlayListitems_emotion {
         this.isUserFollowing= isUserFollowing;
         this.Privacy = Privacy;
 
+    }
+
+    public String getFrom_user() {
+        return from_user;
+    }
+
+    public void setFrom_user(String from_user) {
+        this.from_user = from_user;
+    }
+
+    public String getTo_email() {
+        return to_email;
+    }
+
+    public void setTo_email(String to_email) {
+        this.to_email = to_email;
     }
 
     public String getPrivacy() {

@@ -6,16 +6,9 @@ package com.quad.xpress.Utills.pushnotification;
 
 import android.app.Application;
 
-import com.quad.xpress.R;
 import com.tsengvn.typekit.Typekit;
 
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
 
-@ReportsCrashes(formUri = "", // will not be used
-        mailTo = "kural.ms@quadrupleindia.com", // my email here
-        mode = ReportingInteractionMode.TOAST,
-        resToastText = R.string.crash_toast_text)
 
 public class MyApplication extends Application {
 

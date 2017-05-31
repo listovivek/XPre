@@ -16,8 +16,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +32,8 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +41,6 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -59,12 +60,10 @@ import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.Utills.EndlessRecyclerOnScrollListener;
 import com.quad.xpress.Utills.StatiConstants;
 import com.quad.xpress.Utills.ViewPagerCustom;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
-import com.quad.xpress.Utills.localNotification.LocalNotify;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.acceptRejectCount.AcceptRejectCount;
@@ -101,9 +100,8 @@ import retrofit.client.Response;
 
 public class DashBoard extends AppCompatActivity implements adapter_dashboard.OnRecyclerListener {
 
+
     Context context;
-    String DEBUG_TAG = "Xpress";
-    public static final int CONTACT_PICKER_RESULT = 1;
     Dialog AVDialog,GuideDialouge;
     Dialog SendDiscardDialog;
     AutoCompleteTextView av_email;
@@ -113,27 +111,13 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
     ProgressBar pb;
     Boolean exit = false;
     Boolean is_vp_Touched = false;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-    public static final int MEDIA_TYPE_IMAGE = 33;
-    private static final int VIDEO_CAPTURE_REQUEST_CODE = 202;
-    private static final int VIDEO_CAPTURE_REQUEST_OFFLINE = 221;
-    private static final int AUDIO_PERMISSION_REQUEST_CODE = 91;
-    private static final int VIDEO_PERMISSION_REQUEST_CODE = 92;
-    private static final int CONTACT_PERMISSION_REQUEST_CODE = 93;
-    private static final int CONTACT_READ_REQUEST_CODE = 23;
+    private static final int PERMISSION_REQUEST_CODE = 1;
     int rl_ht;
-    int LOCAL_NOTIFY_STATIC_ID = 20;
+
     public static String FileNameWithMimeType;
     RecyclerView Rv_lists;
-    LoadingDialog LD;
 
 
-    TextInputLayout TagsTIL;
-    ArrayList<String> emlRecs = new ArrayList<String>();
-    String[] AVTagsList = {"Confusion ", "Surprise", "Shame", "Focus", "Exhaustion", "Angry", "Seduction", "Fear", "Sad", "Happy",
-            "Bore", "Smile", "Love"};
-
-    ArrayAdapter AVTagsListAdapter;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
@@ -142,22 +126,17 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
     String AppName;
     Activity _activity;
-
     ImageButton dash_receive;
     ImageButton DashPublicPlaylist;
     String RefreshTokenMethodName = "";
-    boolean GoingToRecordVideo = true;
+
     ImageButton AudioFab;
     ImageButton VideoFab;
     public Animation animBlink;
-
     TextView tv_nb_MyUploads,tv_nb_userName,tv_nb_contacts,tv_nb_help,tv_nb_support,tv_nb_about;
     ImageButton btn_nb_exit,btn_nb_settings;
-    ImageButton StartRecord;
-  //  public SeekBar AudioSeekBar;
-    Boolean isAudioRecording;
      SlidingMenu Smenu;
-    //List
+
 
     String EndOfRecords = "0";
     int Index = 0;
@@ -174,12 +153,14 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
     static int previousposition;
     NetConnectionDetector CD;
     Toast NoInternet = null;
-    LocalNotify localNotify;
+
     NetConnectionDetector NDC;
     RelativeLayout rl_btm;
-    ViewPager viewPager;
+    ViewPager viewPager_dash_lists;
     String count="",PreviousNotificOUNT;
     TabLayout tabLayout;
+
+    CoordinatorLayout cl;
 
    /* Intent slider_intent;*/
     int noofsize = 5;
@@ -222,6 +203,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
     int TotalCount;
     NotificationBadge TopBadge,tv_PvtCount,tv_notifi_count;;
+    private boolean NoPermisson  = true;
 
 
     @Override
@@ -235,22 +217,79 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         btn_tb_navigation = (ImageButton) findViewById(R.id.navigation_ic_tb);
         Rv_lists = (RecyclerView) findViewById(R.id.rv_dash);
         tv_counter = (TextView) findViewById(R.id.textView_tb_counter);
-
+        cl = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         TopBadge = (NotificationBadge) findViewById(R.id.tb_db_badge);
         fl_counter = (FrameLayout) findViewById(R.id.fl_couter_holder);
         fl_counter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ToastCustom toastCustom = new ToastCustom(DashBoard.this);
+             //   ToastCustom toastCustom = new ToastCustom(DashBoard.this);
                 String tc = TotalCount+"";
-                SpannableString ss = new SpannableString(tc+" xpressions and counting ...");
+                final SpannableString ss = new SpannableString(tc+" Xpressions and counting ...");
 
                 ss.setSpan(new ForegroundColorSpan(Color.RED), 0, tc.length(), 0);
-                ss.setSpan(new RelativeSizeSpan(1.5f), 0, tc.length(), 0);
-                toastCustom.ShowToast("Ixprez",ss,1);
+                ss.setSpan(new RelativeSizeSpan(0f), 0, tc.length(), 0);
+
+               // toastCustom.ShowToast("Ixprez",ss,1);
+
+
+
+                LayoutInflater inflater=_activity.getLayoutInflater();
+                View customToastroot =inflater.inflate(R.layout.toast_counts, null);
+                Toast customtoastx=new Toast(context);
+                customtoastx.setView(customToastroot);
+                TextView textTitle = (TextView) customToastroot.findViewById(R.id.tv_toast_title);
+                textTitle.setText("Ixprez");
+                final TextView text = (TextView) customToastroot.findViewById(R.id.tv_toast_msg);
+
+                final NotificationBadge nb_toast = (NotificationBadge) customToastroot.findViewById(R.id.toast_db_badge);
+                nb_toast.setText(""+TotalCount);
+                nb_toast.setTextColor(Color.WHITE);
+             //   text.setVisibility(View.INVISIBLE);
+                text.setText(ss);
+
+
+                final Handler handler = new Handler();
+                final Runnable Update = new Runnable() {
+                    public void run() {
+
+                        nb_toast.setText(""+TotalCount);
+                        text.setText(ss);
+                        text.setVisibility(View.VISIBLE);
+
+                    }
+                };
+
+                Timer   timer = new Timer(); // This will create a new Thread
+                timer .schedule(new TimerTask() { // task to be scheduled
+
+                    @Override
+                    public void run() {
+                        handler.post(Update);
+                    }
+                }, 1000, 1000);
+
+
+
+
+
+
+                        //top
+               customtoastx.setGravity(Gravity.FILL,0,0);
+               customtoastx.setDuration(Toast.LENGTH_LONG);
+               customtoastx.show();
+
+
+
+
+
+
+
             }
         });
+
+
 
       /*  ArrayList<String> ixem =new ArrayList<>();
         ArrayList<String> ixusername =  new ArrayList<>();
@@ -336,13 +375,18 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
             }
         });
-      //  mtd_load_list();
+
+        try {
+            mtd_contacts_reader();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         Smenu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {
             @Override
             public void onOpened() {
-                btn_tb_navigation.setVisibility(View.GONE);
+                btn_tb_navigation.setVisibility(View.INVISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     toolbar.setElevation(0);
                 }
@@ -435,18 +479,35 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             @Override
             public void onClick(View v) {
               //  Toast.makeText(context, "Help", Toast.LENGTH_SHORT).show();
-                Intent ItemParent = new Intent(DashBoard.this,Act_HelpSupportAbout.class);
+               /* Intent ItemParent = new Intent(DashBoard.this,Act_HelpSupportAbout.class);
                 ItemParent.putExtra("ItemParent","help");
-                startActivity(ItemParent);
+                startActivity(ItemParent);*/
+
+                String shareBody = "Hi, iam using this Xpressive app, Ixprez to send my emotions.";
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ixprez");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+
+
             }
         });
         tv_nb_contacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent in_contact = new Intent(DashBoard.this,ContactMainActivity.class);
-                startActivity(in_contact);
+                if(!NoPermisson) {
 
+                    Intent in_contact = new Intent(DashBoard.this, ContactMainActivity.class);
+                    startActivity(in_contact);
+
+                }else {
+
+                    CheckAndRequestPermission();
+
+
+                }
             }
         });
 
@@ -474,7 +535,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
         myPager = (ViewPagerCustom) findViewById(R.id.reviewpager);
 
-
+        myPager.setScrollDuration(1500);
         //Web sv for featured vids
          mtd_getFeatured();
 
@@ -495,6 +556,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             public boolean onTouch(View view, MotionEvent motionEvent) {
 
                 is_vp_Touched = true;
+                myPager.setScrollDuration(300);
 
                 return false;
 
@@ -508,11 +570,13 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                     currentPage = 0;
                 }
                 if(!is_vp_Touched){
-
+                    myPager.setScrollDuration(1500);
                 myPager.setCurrentItem(currentPage++, true);
 
                     try {
                         mtd_counter();
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -541,11 +605,11 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         // Verifying guide
         Boolean guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
        // mtd_getProfilePic();
-       // guide = false;
+        guide = false;
         if(!guide) {
-         //   mtd_guide();
-            //mtd_guide_view_pager();
+            mtd_guide_view_pager();
         }
+
 
         btn_nb_exit= (ImageButton) findViewById(R.id.btn_exit_nb);
         btn_nb_settings= (ImageButton) findViewById(R.id.btn_settings_nb);
@@ -610,17 +674,17 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         StaticConfig.IsPublicActivity = true;
         pb = (ProgressBar) findViewById(R.id.progressBar_dash);
         NDC = new NetConnectionDetector();
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager_dash_lists = (ViewPager) findViewById(R.id.viewPager_dash);
         //// TODO: 11/18/2016
 
 
-        setupViewPager(viewPager);
+        setupViewPager(viewPager_dash_lists);
 
 
         tabLayout.post(new Runnable() {
             @Override
             public void run() {
-                tabLayout.setupWithViewPager(viewPager);
+                tabLayout.setupWithViewPager(viewPager_dash_lists);
             }
         });
 
@@ -630,7 +694,6 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         btn_btm_notifi = (ImageButton) findViewById(R.id.btn_dash_post_vid);
         tv_PvtCount = (NotificationBadge) findViewById(R.id.tv_pvt_count);
         tv_notifi_count = (NotificationBadge) findViewById(R.id.tv_notif_count);
-        LD = new LoadingDialog(DashBoard.this);
 
         AudioFab = (ImageButton) findViewById(R.id.audioFab);
         VideoFab = (ImageButton) findViewById(R.id.videoFab);
@@ -653,8 +716,6 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
 
 
-
-        AVTagsListAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, AVTagsList);
 
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
@@ -748,75 +809,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         animBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
 
-/*
-        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                context);
-        localNotify = new LocalNotify(context, mBuilder,_activity);*/
-
-
-
-      //  recyclerView.addOnScrollListener(new CustomScrollListener());
-
-
-      //read contacts from internal contacts directory
-
-        Contact.getInstance().contact_namelist.clear();
-        Contact.getInstance().email_list.clear();
-        Contact.getInstance().contact_urilist.clear();
-
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
-
-        ContentResolver cr = this.getContentResolver();
-        String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.PHOTO_ID,
-                ContactsContract.CommonDataKinds.Email.DATA,
-                ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-        String order = "CASE WHEN "
-                + ContactsContract.Contacts.DISPLAY_NAME
-                + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                + ContactsContract.Contacts.DISPLAY_NAME
-                + ", "
-                + ContactsContract.CommonDataKinds.Email.DATA
-                + " COLLATE NOCASE";
-        String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-        cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-                filter, null, order);
-
-        mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                DISPLAY_NAME_PRIMARY);
-        mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-        for (int t = 0; t < cur.getCount(); t++) {
-            cur.moveToPosition(t);
-            String contactName = cur.getString(mNameColIdx);
-            long contactId = cur.getLong(mIdColIdx);
-            String email = cur.getString(cur.getColumnIndex
-                    (ContactsContract.CommonDataKinds.Email.DATA));
-            String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                    contactId).toString();
-
-            Contact.getInstance().contact_namelist.add(contactName);
-            Contact.getInstance().contact_urilist.add(contact_uri);
-            Contact.getInstance().email_list.add(email);
-
-            ArrayList<String> e = Contact.getInstance().email_list;
-            ArrayList<String> n = Contact.getInstance().contact_namelist;
-
-            Log.d("email contactttss", e.toString());
-
-            Log.d("email contactttss", n.toString());
-
-           /* Contact.getInstance().contactusername = contact_namelist;
-            Contact.getInstance().contactuseremail = email_list;
-            Contact.getInstance().contact_user_pic = contact_urilist;*/
-            //      Log.d("email", email);
-        }
-
-           // callwebForContacts();
     }
+
+
 
     private void callwebForContacts() {
 
@@ -970,7 +965,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
         pb = (ProgressBar) findViewById(R.id.progressBar_dash);
         pb.setVisibility(View.VISIBLE);
-        Rv_lists = (RecyclerView) findViewById(R.id.rv_dash);
+
 
         layoutManager = new LinearLayoutManager(this);
         Rv_lists.setLayoutManager(layoutManager);
@@ -980,6 +975,10 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         Index = 0;
         getData();
         Index++;
+
+        // show hide floating btn
+
+
 
         Rv_lists.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) layoutManager) {
             @Override
@@ -1036,8 +1035,10 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         pb = (ProgressBar) findViewById(R.id.progressBar_dash);
         pb.setVisibility(View.VISIBLE);
         String emotion = "Like";
-
+      //  Toast.makeText(context, ""+Index, Toast.LENGTH_SHORT).show();
         if(Api_Popular){
+
+
             RestClient.get(context).MyPublicLists_Popular(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
@@ -1156,7 +1157,8 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),iii.getEmotionCount()
-                    ,iii.getIsuerfollowing(),iii.getFieldstatus());
+                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user());
+
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();
@@ -1205,10 +1207,37 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                            } else {
 
                                TotalCount = Integer.parseInt(totalxpressions);
+                               int tc = TotalCount;
+                               int tc_point = 0;
+
                                //  tv_counter.setVisibility(View.VISIBLE);
                                // tv_counter.setText(counterResp.getData().getTotalNumberofrecords());
                                TopBadge.setMaxTextLength(5);
-                               TopBadge.setNumber(TotalCount);
+
+                               if(tc >=1000 && tc < 10000){
+
+                                   tc =Integer.parseInt(Integer.toString(tc).substring(0, 1));
+
+
+
+                                   TopBadge.setText(""+tc+" K");
+
+                               }else if(tc >=10000 && tc < 100000){
+
+                                   tc =Integer.parseInt(Integer.toString(tc).substring(0, 2));
+                                   TopBadge.setText(""+tc+" K");
+                               }
+                               else if(tc >= 100000 && tc < 10000000){
+
+                                   tc =Integer.parseInt(Integer.toString(tc).substring(0, 3));
+
+                                   TopBadge.setText(""+tc+" K");
+                               }
+                              else  {
+                                   TopBadge.setText(""+tc);
+                               }
+
+
                                //  TopBadge.setText(counterResp.getData().getTotalNumberofrecords());
 
 
@@ -1271,120 +1300,24 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
     }
 
-   /* private void mtd_guide_view_pager() {
-        final Dialog dialog = new Dialog(DashBoard.this, R.style.DialogTheme);
-        //setting custom layout to dialog
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        dialog.setContentView(R.layout.guide_vp);
-        final ViewPager image_pager = (ViewPager) dialog.findViewById(R.id.imageView_guide);
-        Button btn_next = (Button) dialog.findViewById(R.id.button_guide);
-        final Button btn_skip = (Button) dialog.findViewById(R.id.button_guide_skip);
-        final ArrayList<String>title = new ArrayList<>();
-        final ArrayList<String>description = new ArrayList<>();
-        final ArrayList<String>img_url = new ArrayList<>();
-        final ArrayList<String>type = new ArrayList<>();
-        final TextView pagenumber1 = (TextView)dialog.findViewById(R.id.pagenumber1);
-        final TextView pagenumber2 = (TextView)dialog.findViewById(R.id.pagenumber2);
-        final TextView  pagenumber3 = (TextView)dialog.findViewById(R.id.pagenumber3);
+    private void mtd_guide_view_pager() {
+       final Dialog GuideDialog = new Dialog(DashBoard.this,R.style.guideDiaoluge);
 
-        final Adapter_guide_vp adapter_guide = new Adapter_guide_vp(DashBoard.this,noofsizeguide,title,description,img_url,type);
-        RestClient.get(context).GetGuide(new ReqGuide("f"),
-                new Callback<guide_status>() {
-                    @Override
-                    public void success(guide_status guide_status, Response response) {
-                        if(guide_status.getStatus().equalsIgnoreCase("OK")){
-
-                            for (int i=0 ; i < guide_status.getData().length;i++){
-                                title.add(guide_status.getData()[i].getPro_name());
-                                description.add(guide_status.getData()[i].getPro_descrption());
-                                img_url.add(guide_status.getData()[i].getPro_image());
-                                type.add(guide_status.getData()[i].getType());
-
-                            }
-                           // Toast.makeText(context,img_url.toString(),Toast.LENGTH_SHORT).show();
-                            image_pager.setAdapter(adapter_guide);
-                            image_pager.setCurrentItem(0);
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        dialog.cancel();
-                    }
-                });
-      //  Toast.makeText(context,""+image_pager.getCurrentItem(),Toast.LENGTH_LONG).show();
-        image_pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            if(position==2){
-                btn_skip.setText("  Done  ");
-            }else{
-                btn_skip.setText("  Skip  ");
-            }
-            //pager count
-                if(position==0){
-                    pagenumber1.setBackgroundResource(R.color.white);
-                    pagenumber3.setBackgroundResource(R.color.grey);
-                    pagenumber2.setBackgroundResource(R.color.grey);
-
-                }else if(position==1){
-                    pagenumber2.setBackgroundResource(R.color.white);
-                    pagenumber1.setBackgroundResource(R.color.grey);
-                    pagenumber3.setBackgroundResource(R.color.grey);
+       GuideDialog.setContentView(R.layout.guide_dashboard_new);
+       GuideDialog.show();
+        RelativeLayout rl_guide = (RelativeLayout) GuideDialog.findViewById(R.id.rl_guide);
+            rl_guide.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GuideDialog.dismiss();
                 }
-                else if(position==2){
-                    pagenumber3.setBackgroundResource(R.color.white);
-                    pagenumber2.setBackgroundResource(R.color.grey);
-                    pagenumber1.setBackgroundResource(R.color.grey);
-                }
-            }
+            });
+       editor.putBoolean(SharedPrefUtils.SpGuideDiplayed,true);
+       editor.commit();
 
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
 
 
-            }
-        });
-        btn_skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editor.putBoolean(SharedPrefUtils.SpGuideDiplayed,true );
-                editor.commit();
-                dialog.cancel();
-            }
-        });
-
-        dialog.show();
-
-    }*/
-
-  /*  @Override
-    protected void onStart() {
-        super.onStart();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (!checkPermission(PermissionStrings.RECORD_AUDIO) && !checkPermission(PermissionStrings.CAMERA)) {
-                ActivityCompat.requestPermissions(DashBoard.this, new
-                        String[]{PermissionStrings.RECORD_AUDIO}, AUDIO_PERMISSION_REQUEST_CODE);
-                return;
-            }
-        }
-    }*/
 
     @Override
     protected void onPause() {
@@ -1487,7 +1420,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
-                        Toast.makeText(getApplicationContext(), "Subscribed to Users Post.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Followed successfully.", Toast.LENGTH_SHORT).show();
 
                         mtd_counter();
                         mtd_load_list();
@@ -1510,7 +1443,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
-                        Toast.makeText(getApplicationContext(), "Unsubscribed from Users Post.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Unfollowed successfully.", Toast.LENGTH_SHORT).show();
 
                         mtd_counter();
                         mtd_load_list();
@@ -1591,6 +1524,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
             adapterRcv.notifyDataSetChanged();
         }
+        is_vp_Touched = false ;
 
         try {
             mtd_counter();
@@ -1600,16 +1534,70 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             e.printStackTrace();
         }
 
-        callwebForContacts();
 
-        is_vp_Touched = false ;
-      //  mtd_load_list();
 
-    //    mtd_getProfilePic();
     }
 
+private void mtd_contacts_reader(){
+
+    Contact.getInstance().contact_namelist.clear();
+    Contact.getInstance().email_list.clear();
+    Contact.getInstance().contact_urilist.clear();
+
+    Contact.getInstance().ixpressemail.clear();
+    Contact.getInstance().ixpressname.clear();
+    Contact.getInstance().ixpress_user_pic.clear();
+
+    ContentResolver cr = this.getContentResolver();
+    String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts.PHOTO_ID,
+            ContactsContract.CommonDataKinds.Email.DATA,
+            ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
+    String order = "CASE WHEN "
+            + ContactsContract.Contacts.DISPLAY_NAME
+            + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+            + ContactsContract.Contacts.DISPLAY_NAME
+            + ", "
+            + ContactsContract.CommonDataKinds.Email.DATA
+            + " COLLATE NOCASE";
+    String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
+    cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
+            filter, null, order);
+
+    mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
+            DISPLAY_NAME_PRIMARY);
+    mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
+
+    for (int t = 0; t < cur.getCount(); t++) {
+        cur.moveToPosition(t);
+        String contactName = cur.getString(mNameColIdx);
+        long contactId = cur.getLong(mIdColIdx);
+        String email = cur.getString(cur.getColumnIndex
+                (ContactsContract.CommonDataKinds.Email.DATA));
+        String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                contactId).toString();
+
+        Contact.getInstance().contact_namelist.add(contactName);
+        Contact.getInstance().contact_urilist.add(contact_uri);
+        Contact.getInstance().email_list.add(email);
+
+        ArrayList<String> e = Contact.getInstance().email_list;
+        ArrayList<String> n = Contact.getInstance().contact_namelist;
+
+
+           /* Contact.getInstance().contactusername = contact_namelist;
+            Contact.getInstance().contactuseremail = email_list;
+            Contact.getInstance().contact_user_pic = contact_urilist;*/
+        //      Log.d("email", email);
+    }
+    callwebForContacts();
+}
+
+
+
     private void mtd_pvtCount() {
-        //Toast.makeText(context,"e "+sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Toast.LENGTH_LONG).show();
+
         RestClient.get(this).GetPvateCount(new ReqPvateCount(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")), new Callback<AcceptRejectCount>() {
             @Override
             public void success(AcceptRejectCount acceptRejectCount, Response response) {
@@ -1633,57 +1621,6 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
 
 
-
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case AUDIO_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    ActivityCompat.requestPermissions(_activity, new String[]{PermissionStrings.CAMERA}, VIDEO_PERMISSION_REQUEST_CODE);
-
-                } else {
-                    ActivityCompat.requestPermissions(_activity, new String[]{PermissionStrings.RECORD_AUDIO}, AUDIO_PERMISSION_REQUEST_CODE);
-                    Toast.makeText(context, "Kindly, give audio permission to record your voice", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case VIDEO_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(_activity, new String[]{PermissionStrings.READ_CONTACTS}, CONTACT_READ_REQUEST_CODE);
-                    if (GoingToRecordVideo = true) {
-                        //AVDetailsDialog(GoingToRecordVideo, ".mp4");
-                        return;
-                    }
-
-                } else {
-                    ActivityCompat.requestPermissions(_activity, new String[]{PermissionStrings.CAMERA}, VIDEO_PERMISSION_REQUEST_CODE);
-                    Toast.makeText(context, "Kindly, give camera permission to shoot your visuals", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case CONTACT_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                    contactPickerIntent.setType(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE);
-                    startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
-                } else {
-                    Toast.makeText(context, "Kindly, give contacts permission to show your friends EMAILs", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case CONTACT_READ_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    Toast.makeText(context, "Kindly, give contacts permission to autofill your friends EMAILs", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-
     private void mtd_resize() {
         ViewTreeObserver observer = rl_btm.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -1694,7 +1631,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 rl_ht =  rl_btm.getHeight();
                 rl_btm.getViewTreeObserver().removeGlobalOnLayoutListener(
                         this);
-                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) viewPager.getLayoutParams();
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) viewPager_dash_lists.getLayoutParams();
                 lp.bottomMargin += rl_ht;
 
                 ViewGroup.MarginLayoutParams lp2 = (ViewGroup.MarginLayoutParams) swipeRefreshLayout.getLayoutParams();
@@ -1728,5 +1665,49 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.GET_ACCOUNTS}, 93);
+
+                    NoPermisson =false;
+                    mtd_contacts_reader();
+
+                } else {
+
+                    NoPermisson = true;
+                    Toast.makeText(_activity, "This Permission is Required for the application to perform all basic functions, Kindly accept. For more information kindly vist our website.", Toast.LENGTH_LONG).show();
+
+
+                }
+
+                break;
+        }
     }
+
+    public void CheckAndRequestPermission() {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) { // Marshmallow+
+            /*if (checkPermission(Permission4)) {
+               // Intent2Activity();
+                return;
+            }*/
+            requestPermission(PermissionStrings.GET_ACCOUNTS);
+
+
+        } else {
+            // Intent2Activity();
+        }
+    }
+
+    private void requestPermission(String Permission) {
+        ActivityCompat.requestPermissions(_activity, new String[]{Permission}, PERMISSION_REQUEST_CODE);
+    }
+
+
+
+}
 

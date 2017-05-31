@@ -191,5 +191,9 @@ public interface RxApi {
     @POST("/commandService/spam")
     void  ReportSpam(@Body spam_req body, Callback<spamresp> callback);
 
+    @POST("/commandService/del_status")
+    void  DeletePrivate(@Header("authtoken")String authToken, @Body DeleteReq body, Callback<Like_Resp> callback);
+
+
 
     }

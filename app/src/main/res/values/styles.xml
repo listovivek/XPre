@@ -6,6 +6,9 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+
+
+
     <style name="SettingActvityRight" parent="@android:style/TextAppearance">
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/white</item>
@@ -59,7 +62,15 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="guideDiaoluge" parent="android:Theme.Dialog">
 
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">

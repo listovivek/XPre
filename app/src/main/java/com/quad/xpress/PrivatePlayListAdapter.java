@@ -205,7 +205,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
 
 
         if (!list.getTags().equals("")) {
-            holder.RvTags.setVisibility(TextView.VISIBLE);
+            holder.RvTags.setVisibility(View.INVISIBLE);
             holder.RvTags.setText(list.getTags());
         }
         try {

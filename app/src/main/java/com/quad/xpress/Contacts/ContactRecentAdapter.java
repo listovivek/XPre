@@ -161,7 +161,7 @@ public class ContactRecentAdapter extends RecyclerView.Adapter<ContactRecentAdap
                 .error(R.mipmap.ic_user_icon)
                 .into(holder.mImage);
 */
-       holder.mImageButton.setBackgroundResource(android.R.drawable.ic_dialog_email);
+       holder.mImageButton.setBackgroundResource(R.drawable.ic_heart_white_liked);
     }
 
     @Override

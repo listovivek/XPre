@@ -630,7 +630,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
 
 
                 } else {
-                    PrivateFileFeedback(file_id, type, "1");
+
 
 
                     final Dialog proceedDiscardDialog = new Dialog(Actvity_videoPlayback_Private.this,
@@ -660,6 +660,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
                             Reply_alert();
 
 
+
                         }
                     });
                     btn_discard.setOnClickListener(new View.OnClickListener() {
@@ -668,6 +669,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
 
 
                             proceedDiscardDialog.dismiss();
+                            PrivateFileFeedback(file_id, type, "1");
                         }
                     });
 
@@ -787,13 +789,16 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
             i.putExtra("tempEmail", fromemail);
             SendDiscardDialog.dismiss();
             startActivity(i);
+            PrivateFileFeedback(file_id, type, "1");
             finish();
+
 
         } else if (video_Button == view) {
             Intent i = new Intent(getApplicationContext(), CameraRecordActivity.class);
             i.putExtra("tempEmail", fromemail);
             SendDiscardDialog.dismiss();
             startActivity(i);
+            PrivateFileFeedback(file_id, type, "1");
             finish();
         }
     }

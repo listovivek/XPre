@@ -1,7 +1,6 @@
 package com.quad.xpress.Myuploads;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
@@ -17,24 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.R;
-import com.quad.xpress.models.clickResponce.Like_Req;
-import com.quad.xpress.models.clickResponce.Like_Resp;
-import com.quad.xpress.models.clickResponce.Viewed_Req;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
-import com.quad.xpress.models.tagList.Tag_cloud_activity_new;
-import com.quad.xpress.webservice.RestClient;
 
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyViewHolder> {
 
@@ -47,7 +35,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
     String video_type;
     String Status = "";
     private View.OnClickListener Reply_click;
-    Boolean isPanelVisible = false;
+    Boolean isPanelVisible = false,isPrivate ;
     LinearLayout Rl_parent;
 
 
@@ -183,20 +171,29 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
         if(list.getPrivacy().equalsIgnoreCase("private")){
 
             holder.tv_info_privilege.setText("Private");
-            holder.Tv_delete.setVisibility(View.GONE);
-            holder.tv_info_likes.setVisibility(View.GONE);
+            holder.Tv_delete.setVisibility(View.VISIBLE);
+
+            holder.tv_info_likes_lable.setVisibility(View.VISIBLE);
+            holder.tv_info_likes_lable.setText("To");
+
+            holder.tv_info_likes.setVisibility(View.VISIBLE);
+            holder.tv_info_likes.setText(list.getTo_email());
+
             holder.tv_info_views.setVisibility(View.GONE);
-            holder.tv_info_likes_lable.setVisibility(View.GONE);
             holder.tv_info_views_lable.setVisibility(View.GONE);
 
 
         }else {
             holder.tv_info_privilege.setText("Public");
+            holder.tv_info_likes.setText(list.getLikesCount());
+            holder.tv_info_views.setText(list.getViewsCount());
+            int likes_count  =  Integer.parseInt(list.getLikesCount());
+            holder.Rvlikes.setText(likes_count+" Likes");
+
         }
 
 
-        holder.tv_info_likes.setText(list.getLikesCount());
-        holder.tv_info_views.setText(list.getViewsCount());
+
         holder.tv_info_first.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,57 +204,20 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
         //create up down view
         if ((position % 2)==0){
             final float scale = _context.getResources().getDisplayMetrics().density;
-            int Dp2pixels = (int) (220 * scale + 0.5f);
+            int Dp2pixels = (int) (240 * scale + 0.5f);
             Rl_parent.getLayoutParams().height = Dp2pixels;
         }
         else{
             final float scale = _context.getResources().getDisplayMetrics().density;
-            int Dp2pixels = (int) (245 * scale + 0.5f);
+            int Dp2pixels = (int) (265 * scale + 0.5f);
             Rl_parent.getLayoutParams().height = Dp2pixels;  // replace 100 with your dimensions
         }
 
 
 
 
-        if(list.getIsUserLiked().matches("1")){
-            holder.Rvlikes.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_like_filled_liked, 0, 0, 0);
-        }else {
-
-        }
-        for(int i =0; i < tag_store.length;i++){
-
-            if(tag_store[i].equalsIgnoreCase("null")){
-             tag_store[i]= tag_store[i].replace(tag_store[i],"Reply");
-
-            }
-            else {
-
-            }
-
-        }
-       // Toast.makeText(_context,"tag_store"+tag_store[1],Toast.LENGTH_LONG).show();
-
-        Reply_click  = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String Vtype = list.getFileMimeType();
-                if(Vtype.equalsIgnoreCase("video/mp4")){
-                    video_type = "video";
-                }else {
-                    video_type = "audio";
-                }
-                file_id_=list.getFileID();
-                Intent Tag_act = new Intent(_context, Tag_cloud_activity_new.class);
-                Tag_act.putExtra("pos",holder.position);
-                Tag_act.putExtra("file_id",file_id_);
-                Tag_act.putExtra("file_type",video_type);
-                v.getContext().startActivity(Tag_act);
-            }
-        };
 
 
-        int likes_count  =  Integer.parseInt(list.getLikesCount());
-         holder.Rvlikes.setText(likes_count+" Likes");
 
 
 
@@ -324,7 +284,12 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
 
 
                 // interface listner
-                recyclerListener.DeleteVideo(file_id_,video_type);
+                if(list.getPrivacy().equalsIgnoreCase("private")){
+                    isPrivate = true;
+                }else {
+                    isPrivate =false;
+                }
+                recyclerListener.DeleteVideo(file_id_,video_type,isPrivate);
 
 
             }
@@ -349,68 +314,11 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
                     video_type = "audio";
                 }
 
-                mtd_views_count();
+
                // Toast.makeText(_context, "Vid--"+video_type, Toast.LENGTH_LONG).show();
 
             }
         });
-        holder.RvMoreTag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-             /*   String Vtype = list.getFileMimeType();
-                if(Vtype.equalsIgnoreCase("video/mp4")){
-                    video_type = "video";
-                }else {
-                    video_type = "audio";
-                }
-                file_id_=list.getFileID();
-
-
-                // interface listner
-                recyclerListener.DeleteVideo(file_id_,video_type);
-*/
-
-
-            }
-        });
-        holder.Rvlikes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // Toast.makeText(_context, "+1", Toast.LENGTH_LONG).show();
-                file_id_=list.getFileID();
-                int likes_count  =  Integer.parseInt(list.getLikesCount());
-                //int drawableResourceId = _context.getResources().getIdentifier("nameOfDrawable", "drawable", _context.getPackageName());
-               // Toast.makeText(_context,""+drawableResourceId,Toast.LENGTH_LONG).show();
-
-
-                if (list.getIsUserLiked().equals("1")  ){
-                    holder.Rvlikes.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_like_filled, 0, 0, 0);
-                    likes_count--;
-                    list.setIsUserLiked("0");
-                    list.setLikesCount((""+likes_count));
-                    holder.Rvlikes.setText(likes_count+" Likes");
-                    Status = "0";
-                    mtd_like_count();
-
-
-
-                }else  {
-                    holder.Rvlikes.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_like_filled_liked, 0, 0, 0);
-                    Status = "1";
-                    likes_count++;
-                    list.setIsUserLiked("1");
-                    list.setLikesCount((""+likes_count));
-                    holder.Rvlikes.setText(likes_count+" Likes");
-                    mtd_like_count();
-
-                }
-
-
-
-            }
-        });
 
 
 
@@ -419,96 +327,9 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
 
 
 
-    private void mtd_like_count() {
 
-        sharedpreferences = _context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
 
-        String Emotion="like";
 
-        RestClient.get(_context).Liked(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Like_Req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Emotion,Status,file_id_),
-                new Callback<Like_Resp>() {
-                    @Override
-                    public void success(final Like_Resp arg0, Response arg1) {
-
-                        if (arg0.getCode().equals("200")) {
-
-                            String Post_status = arg0.getStatus();
-                            Log.d("Mes-Like",Post_status);
-                           if(Post_status.equals("")){
-                              // Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
-                           }else {
-                              // Toast.makeText(_context, "Failed ", Toast.LENGTH_LONG).show();
-                           }
-                           // LD.DismissTheDialog();
-                            //  Populate();
-                        } else if (arg0.getCode().equals("601")) {
-                            Toast.makeText(_context, "Please, try again", Toast.LENGTH_LONG).show();
-                            //  RefreshToken();
-                        } else if (arg0.getCode().equals("202")) {
-                            Toast.makeText(_context, "No Records ", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            Toast.makeText(_context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
-
-                        }
-                        //Populate();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                       // LD.DismissTheDialog();
-
-                        Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-    }
-
-    private void mtd_views_count() {
-        sharedpreferences = _context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        String viewed = "1";
-
-        //"id":"57318bd6db923d57643edd59","viewed":"1","video_type":"video"}
-        RestClient.get(_context).Viewd(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Viewed_Req(file_id_,viewed,video_type),
-                new Callback<Like_Resp>() {
-                    @Override
-                    public void success(final Like_Resp arg0, Response arg1) {
-                        // LD.DismissTheDialog();
-                        if (arg0.getCode().equals("200")) {
-
-                            String Post_status = arg0.getStatus();
-                            Log.d("Mes-views",Post_status);
-                            if(Post_status.equals("")){
-                               // Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
-                            }else {
-                               // Toast.makeText(_context, "Failed ", Toast.LENGTH_LONG).show();
-                            }
-                            // LD.DismissTheDialog();
-                            //  Populate();
-                        } else if (arg0.getCode().equals("601")) {
-                            Toast.makeText(_context, "Please, try again", Toast.LENGTH_LONG).show();
-                            //  RefreshToken();
-                        } else if (arg0.getCode().equals("202")) {
-                            Toast.makeText(_context, "No Records ", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            Toast.makeText(_context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
-
-                        }
-                        //Populate();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        // LD.DismissTheDialog();
-
-                        Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-    }
 
     @Override
     public int getItemCount() {
@@ -518,7 +339,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
     public interface OnRecyclerListener {
         void onItemClicked(int position);
 
-        void DeleteVideo(String id, String type);
+        void DeleteVideo(String id, String type, Boolean isPrivate);
 
 
         void MenuOnItem(int position);

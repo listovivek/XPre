@@ -2,6 +2,7 @@ package com.quad.xpress;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -42,6 +44,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
@@ -59,11 +62,11 @@ import com.quad.xpress.Utills.helpers.FieldsValidator;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.Utills.localNotification.LocalNotify;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
-import com.quad.xpress.Utills.localNotification.LocalNotify;
 import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.models.videocapture.MediaHelper;
 import com.quad.xpress.models.videocapture.MyCameraProperty;
@@ -94,6 +97,7 @@ import static com.quad.xpress.DashBoard.FileNameWithMimeType;
 public class CameraRecordActivity extends Activity implements View.OnClickListener{
 
 
+
     ArrayList<String> EmailTemp = new ArrayList<>();
 
     CounterClass timer;
@@ -114,13 +118,12 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     ImageButton recordBtn;
     TextView tv_spinner_mode;
     Button SdDiscard, SdSend;
-
+    HorizontalScrollView Hs_filter;
     String AppName;
     String DEBUG_TAG = "Xpress";
     private Uri fileUri;
     ArrayAdapter AVTagsListAdapter;
-    String[] AVTagsList = {"Confusion ", "Surprise", "Shame", "Focus", "Exhaustion", "Angry", "Seduction", "Fear", "Sad", "Happy",
-            "Bore", "Smile", "Love"};
+    private String mCurrentConfig;
     int ShareAsPos = 0;
     ArrayList<String> emlRecs = new ArrayList<String>();
     Dialog AVDialog;
@@ -138,13 +141,11 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public static final int CONTACT_PICKER_RESULT = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     public static final int MEDIA_TYPE_IMAGE = 33;
-    private static final int VIDEO_CAPTURE_REQUEST_CODE = 202;
-    private static final int VIDEO_CAPTURE_REQUEST_OFFLINE = 221;
     private static final int VIDEO_PERMISSION_REQUEST_CANCEL = 93;
     private static final int VIDEO_PERMISSION_REQUEST_CODE = 91;
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 92;
-    private static final int AUDIO_PERMISSION_REQUEST_CANCEL = 93;
-    private static final int CONTACT_READ_REQUEST_CODE = 23;
+    private static final int GET_ACCOUNTS = 11;
+
     String ToSaveURI;
     int LOCAL_NOTIFY_STATIC_ID = 20;
     LocalNotify localNotify;
@@ -163,7 +164,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
     private TextView timerValue;
     Button switchBtn;
-    String Permission4, permission5, permission6;
+    String Permission4, permission5, permission6, Permission2;
 
 
 
@@ -196,20 +197,23 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         return FileNamePath;
     }
 
-    private void VideoUploadToServer(final Uri videoUri) {
+    public void VideoUploadToServer(final Uri videoUri) {
         //  LD.ShowTheDialog("Please Wait", "Sending..", false);
 
         LOCAL_NOTIFY_STATIC_ID = LOCAL_NOTIFY_STATIC_ID + 2;
-        localNotify.ShowFileUploadNotification(AVTitle + ", xpressing in progress...", LOCAL_NOTIFY_STATIC_ID);
-        TypedFile VideoTypedFile = new TypedFile("video/mp4", new File(String.valueOf(videoUri)));
+        localNotify.ShowFileUploadNotification(AVTitle + " ", LOCAL_NOTIFY_STATIC_ID);
+        final TypedFile VideoTypedFile = new TypedFile("video/mp4", new File(String.valueOf(videoUri)));
         //    TypedFile ThumbnailTypedFile = new TypedFile("video/mp4", new File(String.valueOf(videoUri)));
-        final String ShareType = ShareAsText;
-        TypedFile ThumbnailTypedFile = new TypedFile("image/png", new File(getThumbNailUri(videoUri)));
+
+        final TypedFile ThumbnailTypedFile = new TypedFile("image/png", new File(getThumbNailUri(videoUri)));
         //  Log.v("ThumbNail Uri", " " + getThumbNailUri(context, videoUri));
         String sptoken = sharedpreferences.getString(SharedPrefUtils.SpToken, "");
         String spCOuntry = sharedpreferences.getString(SharedPrefUtils.SpCountry, "");
         String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
         Log.v("preference", sptoken + spCOuntry + spLauguge);
+
+        StatiConstants.TfV = VideoTypedFile;
+        StatiConstants.TfT = ThumbnailTypedFile;
 
         RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), VideoTypedFile, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), ToEmail, AVTitle, Tags, ShareAsText,
                 sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"), sharedpreferences.getString(SharedPrefUtils.SpLanguage, Locale.getDefault().getDisplayLanguage()), ThumbnailTypedFile, new Callback<SVideoResp>() {
@@ -217,7 +221,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                     public void success(SVideoResp sVideoResp, Response response) {
                         if (sVideoResp.getCode().equals("200")) {
 
-                            localNotify.FinishedUploadNotification(LOCAL_NOTIFY_STATIC_ID, AVTitle + ", xpressed successfully");
+                            localNotify.FinishedUploadNotification(LOCAL_NOTIFY_STATIC_ID, AVTitle + " successful.");
 
                             SpannableString ss = new SpannableString(AVTitle+ " xpressed to "+ ToEmail);
 
@@ -225,7 +229,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                             ss.setSpan(new RelativeSizeSpan(1.2f), 0, AVTitle.length(), 0);
                             ss.setSpan(new ForegroundColorSpan(Color.GREEN), ss.length()-ToEmail.length(), ss.length(), 0);
                             ss.setSpan(new RelativeSizeSpan(1.2f), ss.length()-ToEmail.length(), ss.length(), 0);
-                            toastCustom.ShowToast("Ixprez",ss,2);
+                          //  toastCustom.ShowToast("Ixprez",ss,2);
                           //  Toast.makeText(getApplicationContext(), "Xpressed ", Toast.LENGTH_LONG).show();
 
                             File dir = new File(Environment.getExternalStorageDirectory() + "/" + AppName + "/");
@@ -246,22 +250,22 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                         }
                         else if (sVideoResp.getCode().equals("701")) {
                            // Toast.makeText(getApplicationContext(), "User has blocked you !", Toast.LENGTH_LONG).show();
-                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID,  "You have been Blocked by user",_activity);
+                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID,  "You have been Blocked by user",_activity, videoUri);
+                            DeleteUploadedFile(videoUri);
 
                         }
                         else {
-
-                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Upload failed. " + sVideoResp.getCode(),_activity);
-                        }
-                        if (ShareType.equals("Private")) {
+                            localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Upload failed. " + sVideoResp.getCode(),_activity,videoUri);
                             DeleteUploadedFile(videoUri);
+
                         }
+
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
-                        localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Slow Internet Connection, Push failed, TryAgain",_activity);
-                        DeleteUploadedFile(videoUri);
+                        localNotify.UploadNotificationFailedRetry(LOCAL_NOTIFY_STATIC_ID, "Slow Internet Connection, Push failed.",_activity,VideoTypedFile,ToEmail,ShareAsText,ThumbnailTypedFile);
+                       // DeleteUploadedFile(videoUri);
                     }
                 });
     }
@@ -294,6 +298,26 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
+    public static class MyButtons extends Button {
+
+        public String filterConfig;
+
+        public MyButtons(Context context, String config) {
+            super(context);
+            filterConfig = config;
+        }
+    }
+
+    private View.OnClickListener mFilterSwitchListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            MyButtons btn = (MyButtons)v;
+
+            mCameraView.setFilterWithConfig(btn.filterConfig);
+            mCurrentConfig = btn.filterConfig;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,6 +325,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         setContentView(R.layout.new_video_capture);
         toolBar = (RelativeLayout) findViewById(R.id.tb_top);
+        Hs_filter = (HorizontalScrollView) findViewById(R.id.scroll_filter);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -315,17 +340,74 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
 
         _activity = this;
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                getApplicationContext());
+        localNotify = new LocalNotify(getApplicationContext(), mBuilder,_activity);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.menuLinearLayout);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(2, 2, 2, 2);
+
+        String effectConfigsLocal[] = {
+
+                StatiConstants.effectConfigs[8],
+                StatiConstants.effectConfigs[10],
+                StatiConstants.effectConfigs[11],
+                StatiConstants.effectConfigs[12],
+                StatiConstants.effectConfigs[18],
+                StatiConstants.effectConfigs[19],
+                StatiConstants.effectConfigs[24],
+                StatiConstants.effectConfigs[25],
+                StatiConstants.effectConfigs[26],
+                StatiConstants.effectConfigs[31],
+                StatiConstants.effectConfigs[39],
+                StatiConstants.effectConfigs[59],
+                StatiConstants.effectConfigs[62],
+                StatiConstants.effectConfigs[99],
+
+        };
+
+
+
+
+        for(int i = 0; i != effectConfigsLocal.length; ++i) {
+
+            MyButtons button = new MyButtons(this, effectConfigsLocal[i]);
+            button.setAllCaps(false);
+            button.setTextColor(Color.BLACK);
+            button.setTypeface(null, Typeface.ITALIC);
+            button.setBackgroundResource(R.drawable.btn_roundededges_videorecorder);
+            button.setAlpha((float) .5);
+
+            button.setLayoutParams(params);
+
+            button.setText("Filter " + i);
+            button.setOnClickListener(mFilterSwitchListener);
+            layout.addView(button);
+        }
+
+
+
         Permission4 = PermissionStrings.WRITE_EXTERNAL_STORAGE;
         permission5 = PermissionStrings.CAMERA;
         permission6 = PermissionStrings.RECORD_AUDIO;
+        Permission2 = PermissionStrings.GET_ACCOUNTS;
 
         AppName = getResources().getString(R.string.app_name);
         linearLayoutbtm = (LinearLayout) findViewById(R.id.act_video_capture_btn_linerar);
         linearLayoutbtm.setVisibility(View.INVISIBLE);
+
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
+        String Tags[] = StatiConstants.TagList.split(",");
 
-        AVTagsListAdapter = new ArrayAdapter(this, R.layout.spinner_autofill_av_dialouge, AVTagsList);
+       /* for (int i = 0; i <AVTagsList.length ; i++) {
+            int insertposition = Tags.length+i;
+            Tags[insertposition] = AVTagsList[i];
+        }*/
+        AVTagsListAdapter = new ArrayAdapter(this, R.layout.spinner_autofill_av_dialouge, Tags);
         AVDialog = new Dialog(CameraRecordActivity.this, R.style.AVdialouge);
 
         AVDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -439,12 +521,23 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         SdSend.setOnClickListener(new View.OnClickListener() {
                                       @Override
                                       public void onClick(View view) {
+                                          Uri RecordedFileUri = null;
 
-                                          Uri RecordedFileUri = Uri.parse(Environment.getExternalStorageDirectory() + "/" + AppName + "/" +
-                                                  FileNameWithMimeType);
-                                          Log.v("", "RecordedFileUri " + RecordedFileUri);
-                                          VideoUploadToServer(RecordedFileUri);
-                                          finish();
+                                          if (CD.isConnected(getApplicationContext())) {
+                                               RecordedFileUri = Uri.parse(Environment.getExternalStorageDirectory() + "/" + AppName + "/" +
+                                                      FileNameWithMimeType);
+                                              Log.v("", "RecordedFileUri " + RecordedFileUri);
+                                              VideoUploadToServer(RecordedFileUri);
+                                              finish();
+
+                                          }else{
+
+                                              localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Slow Internet Connection, Push failed, TryAgain",_activity,RecordedFileUri);
+                                              Toast.makeText(_activity, "You are offline", Toast.LENGTH_SHORT).show();
+                                              finish();
+                                          }
+
+
                                       }
                                   }
         );
@@ -462,13 +555,10 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
 
-        tv_AVD_title.setText("Xpress");
+        tv_AVD_title.setText("Capture your feelings...");
 
 
         CD = new NetConnectionDetector();
-        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                getApplicationContext());
-        localNotify = new LocalNotify(getApplicationContext(), mBuilder,_activity);
 
 
         if (CD.isConnected(getApplicationContext())) {
@@ -638,6 +728,24 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
+
+            case GET_ACCOUNTS:
+
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.GET_ACCOUNTS}, 93);
+
+
+
+                }
+              else{
+
+               this.finish();
+
+                }
+
+                break;
+
             case VIDEO_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.CAMERA},
@@ -675,7 +783,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
     public void CheckAndRequestPermission() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) { // Marshmallow+
-            if (checkPermission(Permission4) && checkPermission(permission5) && checkPermission(permission6)) {
+            if (checkPermission(Permission2) && checkPermission(Permission4) && checkPermission(permission5) && checkPermission(permission6)) {
                 // Intent2Activity();
                 return;
             }
@@ -721,9 +829,13 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         Button btn_cancel_recording = (Button) AVDialog.findViewById(R.id.button_cancel_recording);
         final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
-        AutoSuggestAdapter adapter = new AutoSuggestAdapter(this,
-                R.layout.spinner_autofill_av_dialouge, getNameEmailDetails());
-        av_email.setAdapter(adapter);
+        try {
+            AutoSuggestAdapter adapter = new AutoSuggestAdapter(this,
+                    R.layout.spinner_autofill_av_dialouge, getNameEmailDetails());
+            av_email.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         av_email.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -791,9 +903,10 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
                 linearLayoutbtm.setVisibility(View.VISIBLE);
                 Linear_cameracapture.setVisibility(View.VISIBLE);
+                Hs_filter.setVisibility(View.VISIBLE);
                 recordBtn.setBackgroundResource(R.drawable.circle_with_cemara);
                 timer = new CounterClass(40000, 1000);
-                timerValue.setText("40:00");
+                timerValue.setText("00:40");
 
                 linear_discard.setVisibility(View.GONE);
 
@@ -1201,6 +1314,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                                       //ShowSendOrDiscardDialog();
                                       linear_discard.setVisibility(View.VISIBLE);
                                       Linear_cameracapture.setVisibility(View.GONE);
+                                      Hs_filter.setVisibility(View.GONE);
                                   }
                               });
 
@@ -1236,6 +1350,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         CameraInstance.getInstance().stopCamera();
         Log.i(LOG_TAG, "activity onPause...");
         mCameraView.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CameraInstance.getInstance().stopCamera();
+        Log.i(LOG_TAG, "activity onPause...");
+        mCameraView.endRecording();
     }
 
     @Override
@@ -1404,7 +1526,99 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         return emlRecs;
     }
+  public static class NotificationRetry extends BroadcastReceiver{
 
+      @Override
+      public void onReceive(final Context context, Intent intent) {
+
+          Toast.makeText(context, "dd", Toast.LENGTH_SHORT).show();
+
+          if(StatiConstants.mapVideoTyped != null || StatiConstants.mapThumbnailTyped != null) {
+
+
+              SharedPreferences sharedpreferences;
+              SharedPreferences.Editor editor;
+              sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+
+
+
+        String sptoken = sharedpreferences.getString(SharedPrefUtils.SpToken, "");
+        String spCOuntry = sharedpreferences.getString(SharedPrefUtils.SpCountry, "");
+        String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
+
+        Log.v("Offline upload log", sptoken + spCOuntry + spLauguge);
+
+/*
+   RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
+   VideoTypedFile,
+   sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
+   ToEmail,
+   AVTitle,
+    Tags,
+     ShareAsText,
+
+                sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
+                 sharedpreferences.getString(SharedPrefUtils.SpLanguage,
+                  Locale.getDefault().getDisplayLanguage()),
+                   ThumbnailTypedFile,
+                    new Callback<SVideoResp>() {, @Part("country") String country, @Part("language") String language, @Part("thumbnail") TypedFile thumbnail,
+                      Callback<SVideoResp> callback);
+*/
+
+
+
+              RestClient.get(context).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
+                StatiConstants.TfV,
+                sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
+                StatiConstants.mapTo.get(1),
+                StatiConstants.mapTitile.get(1),
+                "Retry,Upload",
+                StatiConstants.mapType.get(1),
+                sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
+                sharedpreferences.getString(SharedPrefUtils.SpLanguage,
+                        Locale.getDefault().getDisplayLanguage()),
+                StatiConstants.TfT,
+
+                new Callback<SVideoResp>() {
+                    @Override
+                    public void success(SVideoResp sVideoResp, Response response) {
+                        if (sVideoResp.getCode().equals("200")) {
+
+                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+
+
+                        } else if (sVideoResp.getCode().equals("601")) {
+
+                            Toast.makeText(context, "601", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else if (sVideoResp.getCode().equals("701")) {
+                            Toast.makeText(context, "User has blocked you !", Toast.LENGTH_LONG).show();
+
+
+                        }
+                        else {
+                            Toast.makeText(context, "else", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(context, "fail", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
+
+
+
+          }else {
+              Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show();
+          }
+      }
+  }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

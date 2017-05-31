@@ -20,14 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
-import com.quad.xpress.models.clickResponce.Like_Req;
-import com.quad.xpress.models.clickResponce.Like_Resp;
-import com.quad.xpress.models.clickResponce.Viewed_Req;
 import com.quad.xpress.Utills.helpers.ErrorReporting;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
-import com.quad.xpress.models.tagList.Tag_cloud_activity_new;
+import com.quad.xpress.models.clickResponce.Like_Req;
+import com.quad.xpress.models.clickResponce.Like_Resp;
+import com.quad.xpress.models.clickResponce.Viewed_Req;
 import com.quad.xpress.webservice.RestClient;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
     ErrorReporting errorReporting;
     String video_type;
     String Status = "";
-    private View.OnClickListener Reply_click;
+    String TBPath;
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -62,7 +62,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         public ImageButton button = null;
         public PopupWindow popupWindow = null;
         private OnRecyclerListener recyclerListener = null;
-        private TextView Tv_tag1,Tv_tag2,Tv_tag3,Tv_tag4;
+
         public ProgressBar pbar;
         TextView  Tv_comment_1, Tv_comment_2, Tv_comment_3, Tv_comment_4,tv_follow,tv_emotion_count;
 
@@ -87,10 +87,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             pbar = (ProgressBar) itemView.findViewById(R.id.progressBar_publiclsit);
             popupWindow = new PopupWindow(context);
             ll_follow_user = (LinearLayout) itemView.findViewById(R.id.ll_followuser);
-            Tv_tag1 = (TextView)itemView.findViewById(R.id.textView_tag_1);
-            Tv_tag2 = (TextView)itemView.findViewById(R.id.textView_tag_2);
-            Tv_tag3 = (TextView)itemView.findViewById(R.id.textView_tag_3);
-            Tv_tag4 = (TextView)itemView.findViewById(R.id.textView_tag_4);
+
 
             Tv_comment_1 = (TextView)itemView.findViewById(R.id.textView_comment_1);
             Tv_comment_2 = (TextView)itemView.findViewById(R.id.textView_comment_2);
@@ -194,7 +191,21 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         holder.tv_emotion_count.setText(list.getEmotion_count()+ " Rx");
 
 
-        if (list.getIsUserFollowing().equalsIgnoreCase("1")){
+        holder.tv_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent IAct = new Intent(_context, Act_user_data.class);
+                IAct.putExtra("ProfilePic",TBPath);
+                IAct.putExtra("username",list.from_user);
+                IAct.putExtra("fromemail",list.from_email);
+                IAct.putExtra("isfollowing",list.getIsUserFollowing());
+                v.getContext().startActivity(IAct);
+
+
+            }
+        });
+
+       /* if (list.getIsUserFollowing().equalsIgnoreCase("1")){
 
             holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfollow,0,0,0);
             holder.tv_follow.setOnClickListener(new View.OnClickListener() {
@@ -238,26 +249,9 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
 
         }
+*/
 
 
-
-        Reply_click  = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String Vtype = list.getFileMimeType();
-                if(Vtype.equalsIgnoreCase("video/mp4")){
-                    video_type = "video";
-                }else {
-                    video_type = "audio";
-                }
-                file_id_=list.getFileID();
-                Intent Tag_act = new Intent(_context, Tag_cloud_activity_new.class);
-                Tag_act.putExtra("pos",holder.position);
-                Tag_act.putExtra("file_id",file_id_);
-                Tag_act.putExtra("file_type",video_type);
-                v.getContext().startActivity(Tag_act);
-            }
-        };
 
 
         int likes_count  =  Integer.parseInt(list.getLikesCount());
@@ -273,7 +267,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         try {
             if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath().contains("icons/microphone.png")){
 
-                String TBPath;
+
 
                 if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
@@ -291,7 +285,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 holder.audio_icon.setVisibility(View.GONE);
 
             }else if (list.getFileMimeType().equalsIgnoreCase("video/mp4") && list.getTBPath()!=null) {
-                    String TBPath;
+
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
                     } else {
@@ -307,7 +301,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             else if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath()!=null){
 
 
-                    String TBPath;
+
 
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
@@ -433,6 +427,30 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             }
         });
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.pbar.setVisibility(View.INVISIBLE);
+
+                recyclerListener.onItemClicked(holder.position);
+
+                int views_count;
+                views_count=Integer.parseInt(list.getViewsCount());
+                views_count++;
+
+                holder.RvMoreTag.setText(views_count+" Views");
+                file_id_=list.getFileID();
+                String Vtype = list.getFileMimeType();
+                if(Vtype.equalsIgnoreCase("video/mp4")){
+                    video_type = "video";
+                }else {
+                    video_type = "audio";
+                }
+
+                mtd_views_count();
+            }
+        });
+
       /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -519,7 +537,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     @Override
                     public void failure(RetrofitError error) {
                        // LD.DismissTheDialog();
-                        errorReporting.SendMail("Xpress Error-Liked", error.toString());
+
                         Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
                     }
                 });

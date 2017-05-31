@@ -308,10 +308,10 @@ public class SettingsActivity extends AppCompatActivity implements
         sw_reminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 editor.putBoolean(SharedPrefUtils.SpSettingRemainder, isChecked);
-                Log.v("Setting Switch", "sw_reminder " + isChecked);
+              //  Log.v("Setting Switch", "sw_reminder " + isChecked);
                 if(isChecked){remainder = ""+1;}
                 else {remainder= ""+0;}
-                editor.commit();
+              //  editor.commit();
 
             }
         });
@@ -320,10 +320,10 @@ public class SettingsActivity extends AppCompatActivity implements
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 editor.putBoolean(SharedPrefUtils.SpSettingNotification, isChecked);
-                Log.v("Setting Switch", "sw_notification " + isChecked);
+              //  Log.v("Setting Switch", "sw_notification " + isChecked);
                 if(isChecked){notification = ""+1;}
                 else {notification= ""+0;}
-                editor.commit();
+              //  editor.commit();
                         }
 
         });

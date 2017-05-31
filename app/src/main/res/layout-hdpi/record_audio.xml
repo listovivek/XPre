@@ -40,28 +40,85 @@
         android:layout_height="wrap_content" />
 
 
-    <TextView
-        android:id="@+id/txttime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_below="@+id/textxp_it"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="25dp"
-        android:text="00:40"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/white"
-        android:textSize="26sp"
-        android:textStyle="normal" />
 
 
-
-    <com.quad.xpress.RecorderVisualizerView
-        android:id="@+id/visualizer"
-        android:layout_below="@+id/txttime"
+    <FrameLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-         />
+        android:layout_height="330dp"
+        android:id="@+id/fl_container"
+        android:layout_below="@+id/textxp_it">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <pl.bclogic.pulsator4droid.library.PulsatorLayout
+        android:id="@+id/pulsator_around_pic"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:pulse_count="15"
+        app:pulse_duration="900"
+        app:pulse_repeat="0"
+        android:gravity="center_horizontal"
+        app:pulse_color="@color/white"
+        app:pulse_startFromScratch="false"
+        android:padding="7dp"
+        android:layout_gravity="center_horizontal|top"
+        app:pulse_interpolator="Linear"
+        android:layout_marginBottom="-20dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/circleImageView_profile_img_audio_recorder"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:civ_border_width="2dp"
+            android:src="@drawable/ic_user_icon"
+            app:civ_border_color="@android:color/transparent"
+            android:layout_centerInParent="true"
+
+
+            />
+    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+        <TextView
+            android:id="@+id/txttime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_below="@+id/textxp_it"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="15dp"
+            android:text="00:40"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:layout_gravity="center"
+            android:textStyle="normal" />
+</LinearLayout>
+
+        <com.quad.xpress.RecorderVisualizerView
+            android:id="@+id/visualizer"
+            android:layout_below="@+id/txttime"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal|bottom"
+            />
+        <com.quad.xpress.RecorderVisualizerView
+            android:id="@+id/visualizer_avdialouge"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/txttime"
+            android:alpha="1"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_height="200dp"
+            />
+
+
+    </FrameLayout>
+
+
 
 
     <!--<RelativeLayout
@@ -181,7 +238,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="28dp"
-                android:background="@drawable/btn_round_red"
+                android:background="@drawable/btn_round_orange"
                 android:text="@string/send"
                 android:textColor="@color/white"
                 android:visibility="invisible"

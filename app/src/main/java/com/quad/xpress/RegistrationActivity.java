@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
@@ -84,8 +83,6 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText et_umob_no;
     Button Bsave;
     ArrayAdapter mailAdapter;
-    String CountryCode;
-    String qLangNo = "";
     String Device_id;
     String Permission4;
     Boolean NoPermisson = true;
@@ -113,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
     ArrayList<String> Sorted_Pnlist = new ArrayList<String>();
     ArrayList<String> country_list_short = new ArrayList<String>();
     ArrayList<String> phone_code = new ArrayList<String>();
-
+    ArrayList<String> languadgeList = new ArrayList<>();
     ArrayList<String> localcountries=new ArrayList<String>();
 
     Activity _activity;
@@ -177,7 +174,7 @@ public class RegistrationActivity extends AppCompatActivity {
             //  Toast.makeText(SplashActivity.this, "PStore", Toast.LENGTH_SHORT).show();
         }else {
            // Toast.makeText(RegistrationActivity.this, "This Package is downloaded out side of Playstore Kindly download App from Playstore to get Secure Application.", Toast.LENGTH_SHORT).show();
-            Out_of_Store_alert();
+           // Out_of_Store_alert();
         }
 
 
@@ -387,10 +384,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         languages=(String[]) localcountries.toArray(new String[localcountries.size()]);
         languages[0] = Locale.getDefault().getDisplayName();
-
+/*
         ArrayAdapter<String> adapter_lanugage = new ArrayAdapter<String>(this,R.layout.spinner_custom, languages);
-        spinner_ulang.setAdapter(adapter_lanugage);
-
+        spinner_ulang.setAdapter(adapter_lanugage);*/
+        Collections.addAll(languadgeList, languages);
         ArrayAdapter atv_lang_adapter = new ArrayAdapter<String>(RegistrationActivity.this, android.R.layout.simple_list_item_1, languages);
         atv_languadge.setAdapter(atv_lang_adapter);
         atv_languadge.setThreshold(1);
@@ -442,6 +439,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 FieldsTextWatcher();
                 if (checkValidation()) {
                     //GCMToken = "xcx";
+                      if( !Sorted_Clist.contains(atv_country.getText().toString().trim()) ){
+                        atv_country.setError("Please select from list");
+                    }else if(!languadgeList.contains(atv_languadge.getText().toString().trim())){
+                        atv_languadge.setError("Please select from list");
+                    }
+
                     if (GCMToken == null) {
 
                         registerGCM();
@@ -450,28 +453,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
                     }else{
 
+                        PhoneNumberWithCode = et_umob_no.getText().toString();
 
-                       // Toast.makeText(_activity, "validation passed", Toast.LENGTH_SHORT).show();
+                        StartRegistration();
 
-                        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
 
-                           // Toast.makeText(_activity, "bulid version abouve Lp", Toast.LENGTH_SHORT).show();
-
-                             if(!NoPermisson){
-
-                            PhoneNumberWithCode = et_umob_no.getText().toString();
-
-                            StartRegistration();
-
-                                   }else {
-                                                    CheckAndRequestPermission();
-                                 }
-                        }
-                        else {
-                          //  Toast.makeText(_activity, "bulid version Lp and Below", Toast.LENGTH_SHORT).show();
-
-                            StartRegistration();
-                        }
 
 
 
@@ -679,25 +665,10 @@ public class RegistrationActivity extends AppCompatActivity {
         return ret;
     }
 
-    private boolean checkPermission(String permission) {
-
-        int result = ContextCompat.checkSelfPermission(context, permission);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-
-            return true;
-        } else {
-
-            return false;
-        }
-    }
-
 
 
     public void getUserEmails() {
         AccountManager manager = AccountManager.get(this);
-
-
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -769,12 +740,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }else {
             et_uname.requestFocus();
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            if (!checkPermission(PermissionStrings.GET_ACCOUNTS)) {
 
-                return;
-            }
-        }
         if (StatiConstants.newSignIn){
             finish();
         }
@@ -811,7 +777,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     //CheckAndRequestPermission();
                     NoPermisson = true;
                     Toast.makeText(_activity, "This Permission is Required for the application to perform all basic functions, Kindly accept. For more information kindly vist our website.", Toast.LENGTH_LONG).show();
-                    finish();
+                   // finish();
 
                 }
                 break;

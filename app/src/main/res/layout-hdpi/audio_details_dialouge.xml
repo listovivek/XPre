@@ -18,7 +18,20 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="45dp">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
+    <com.quad.xpress.RecorderVisualizerView
+        android:id="@+id/visualizer_avdialouge"
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:alpha=".3"
+        android:visibility="invisible"
+        android:layout_height="400dp"
+        />
+</FrameLayout>
 
 
 
@@ -154,7 +167,7 @@
                         android:background="@android:color/transparent"
                         android:layout_gravity="center"
                         android:textColorHint="@color/orange"
-                        android:inputType="text"
+                        android:inputType="textCapWords"
                         android:imeOptions="actionNext"
                         android:textColor="@color/orange"
                         android:freezesText="true"
@@ -242,25 +255,28 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:layout_marginRight="5dp"
+
                 android:layout_centerVertical="true"
                 android:id="@+id/btn_contacts"
                 android:background="@android:color/transparent"
                 android:alpha=".4"
                 android:clickable="true"
-                android:layout_margin="15dp"
+                android:layout_margin="5dp"
                 android:layout_gravity="right|center_vertical"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/ic_contact"
-                android:padding="5dp"
+                android:padding="10dp"
                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_gravity="bottom"
+
                 android:background="@color/Bg_divider"
                 android:orientation="vertical"
-                android:layout_below="@+id/fl_emcn"/>
+
+                android:layout_below="@+id/btn_contacts"/>
 
 
         </RelativeLayout>
@@ -303,7 +319,7 @@
                     android:background="@android:color/transparent"
                     android:textColor="@color/Button_green"
                     android:textColorHint="@color/Button_green"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:maxLength="25"
                     android:textStyle="italic"
                     android:freezesText="true"

@@ -189,7 +189,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
 
                 }
 
-                holder.mImageButton.setBackgroundResource(R.drawable.ixpress_user);
+                holder.mImageButton.setBackgroundResource(R.drawable.ic_heart_white);
                 Log.d("Pic URL", ""+mFilterPic.get(position));
 
             }else{

@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimaryDark">#734df2</color>
     <color name="primary">#734df2</color>
-    <color name="RedAccent">#734df2</color>
+    <color name="RedAccent">#FE6C27</color>
     <color name="Text_Login">#ffffff</color>
     <color name="white">#ffffff</color>
     <color name="grey">#696969</color>
@@ -27,7 +27,7 @@
      <color name="Button_green">#00ffff</color>
     <color name="red">#E52B50</color>
     <color name="SwitchOrange">#FE6C27</color>
-    <color name="toast_bg">#CC000000</color>
+    <color name="toast_bg">#A6000000</color>
     <color name="orange">#FE6C27</color>
     <color name="translucent_txt_black">#B3000000</color>
     <color name="primary_transparent">#80734df2</color>
@@ -38,3 +38,4 @@
     <color name="colorPrimary_transparent">#b3734df2</color>
 
 </resources>
+

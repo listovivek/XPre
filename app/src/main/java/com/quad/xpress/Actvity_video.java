@@ -278,7 +278,7 @@ public class Actvity_video extends AppCompatActivity{
         });
 
 
-        tv_views.setText(views);
+        tv_views.setText(" "+views);
         tv_likes.setText(" "+likes);
         tv_date.setText(ul_date);
         btn_tb_back.setOnClickListener(new View.OnClickListener() {
@@ -550,7 +550,7 @@ public class Actvity_video extends AppCompatActivity{
 
                         post_abuse();
                         abuse_edt.clearComposingText();
-                        Toast.makeText(getApplicationContext(),"Thank you for your response, We are looking into your concern.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Thank you for your response. We are looking into your concern.",Toast.LENGTH_SHORT).show();
                     }
                 }
 

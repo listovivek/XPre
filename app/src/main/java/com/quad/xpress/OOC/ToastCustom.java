@@ -23,7 +23,8 @@ public class ToastCustom  {
     public ToastCustom(Activity _activity){
         this._activity = _activity;
     }
-
+    float margin_horizantal = 250;
+    float margin_vertiac = 50;
 
     public void ShowToast(String title,SpannableString message, int gravity){
 
@@ -41,19 +42,22 @@ public class ToastCustom  {
         switch (gravity){
             case 1:
                 //top
-                customtoast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP,0, 0);
+                customtoast.setGravity( Gravity.TOP,0, -150);
+                //customtoast.setMargin(margin_horizantal,margin_vertiac);
                 customtoast.setDuration(Toast.LENGTH_LONG);
 
             break;
             case 2:
             // center
-                customtoast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL,0, 0);
+                customtoast.setGravity( Gravity.CENTER_VERTICAL,250,150);
+                //customtoast.setMargin(margin_horizantal,margin_vertiac);
                 customtoast.setDuration(Toast.LENGTH_LONG);
 
                 break;
             default:
                 //bottom
-                customtoast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,0, 0);
+                customtoast.setGravity( Gravity.BOTTOM,630,40 );
+
                 customtoast.setDuration(Toast.LENGTH_LONG);
 
                 break;

@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 
 public class ViewPagerCustom  extends ViewPager {
         private FixedSpeedScroller mScroller = null;
+    private int mDuration = 1500;
 
         public ViewPagerCustom(Context context) {
             super(context);
@@ -47,11 +48,12 @@ public class ViewPagerCustom  extends ViewPager {
          */
         public void setScrollDuration(int duration) {
             mScroller.setScrollDuration(duration);
+            mDuration = duration;
         }
 
         private class FixedSpeedScroller extends Scroller {
 
-            private int mDuration = 1500;
+
 
             public FixedSpeedScroller(Context context) {
                 super(context);

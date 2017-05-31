@@ -90,7 +90,18 @@
             android:name=".CameraRecordActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <receiver android:name=".CameraRecordActivity$NotificationRetry">
+                <intent-filter>
+                    <action android:name="Retry"/>
+                    <action android:name="Ignore"/>
+
+                </intent-filter>
+            </receiver>
+
+        </activity>
+
+
 
         <activity
             android:name=".AudioRecordActivity"
@@ -160,6 +171,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".Act_user_data"
+            android:label="User Public Uploads"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".models.tagList.Tag_list_activity_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -191,6 +207,9 @@
             </intent-filter>
         </receiver>
 
+
+
+
         <service
             android:name=".Utills.pushnotification.MyGcmPushReceiver"
             android:exported="false">
@@ -207,7 +226,14 @@
             </intent-filter>
         </service>
         <!-- END Added for GCM -->
+        <!-- local notification-->
+        <receiver android:name=".CameraRecordActivity$NotificationRetry">
+            <intent-filter>
+                <action android:name="Retry"/>
+                <action android:name="Ignore"/>
 
+            </intent-filter>
+        </receiver>
 
     </application>
 

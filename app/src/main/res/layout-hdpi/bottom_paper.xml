@@ -19,22 +19,15 @@
         autolabel:icon_cross="@drawable/ic_search_btm"
         autolabel:label_background_res="@drawable/abuse_editext_curve"
         autolabel:label_padding="3dp"
+        android:visibility="gone"
         autolabel:label_clickable="true"/>
+<android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/Rv_tags">
 
-  <!--  <com.dpizarro.autolabel.library.AutoLabelUI
-        android:id="@+id/vv_tag_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        autolabel:max_labels="10"
-        autolabel:show_cross="true"
-        android:layout_alignParentTop="true"
-        autolabel:text_color="@android:color/white"
-        autolabel:text_size="@dimen/label_title_size"
-        autolabel:icon_cross="@drawable/ic_search_btm"
-        autolabel:label_background_res="@color/default_background_label"
-        autolabel:label_padding="10dp"
-        autolabel:label_clickable="true"/>
-    -->
+</android.support.v7.widget.RecyclerView>
+
 
 <RelativeLayout
     android:layout_width="match_parent"

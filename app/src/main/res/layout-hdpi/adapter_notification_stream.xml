@@ -230,12 +230,11 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/rl_parent"
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
-            android:scaleX="-1"
+            android:scaleX="-1.2"
+            android:scaleY="-1.2"
             android:src="@drawable/ic_reviel"/>
 
     </RelativeLayout>

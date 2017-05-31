@@ -425,7 +425,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
         final Dialog proceedDiscardDialog = new Dialog(PrivatePlayListActivity.this,
                 R.style.Theme_Transparent);
-        SpannableString ss = new SpannableString(playlistItems.getFromEmail()+"\n"+" wanted to Xpress this to you badly. Are you sure you want to reject it?");
+        SpannableString ss = new SpannableString(playlistItems.getFromEmail()+"\n"+" wanted to Xpress this to you immediately. Are you sure you want to reject it?");
 
         ss.setSpan(new ForegroundColorSpan(Color.GREEN), 0, playlistItems.getFromEmail().length(), 0);
         ss.setSpan(new RelativeSizeSpan(1.5f), 0, playlistItems.getFromEmail().length(), 0);
@@ -490,7 +490,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
 
         btn_confirm = (Button) proceedDiscardDialog.findViewById(R.id.pvt_alert_proceed);
-        btn_confirm.setText("Reject & Block");
+        btn_confirm.setText("Block");
         btn_discard = (Button) proceedDiscardDialog.findViewById(R.id.pvt_alert_dismiss);
         proceedDiscardDialog.show();
 
@@ -501,6 +501,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                 proceedDiscardDialog.dismiss();
 
                 Intent intent = new Intent(Intent.ACTION_INSERT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 
                 intent.putExtra(ContactsContract.Intents.Insert.NAME, playlistItems.getUsername());
@@ -827,6 +828,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                                 //  recyclerView.setAdapter(new ContactsAdapter(cur, null));
 
                             } else {
+
                               /*  Toast.makeText(DashBoard.this, "Hmm,.. " +
                                         "Something went wrong...", Toast.LENGTH_SHORT).show();*/
                             }

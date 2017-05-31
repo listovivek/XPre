@@ -386,7 +386,7 @@ public class DashboardFragment_recent extends Fragment implements adapter_dashbo
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),
-                    iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus());
+                    iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user());
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();

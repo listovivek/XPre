@@ -17,21 +17,21 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quad.xpress.Myuploads.DeleteReq;
 import com.quad.xpress.Myuploads.MyUploadsAdapter;
-import com.quad.xpress.models.authToken.AuthTokenReq;
-import com.quad.xpress.models.authToken.AuthTokenResp;
-import com.quad.xpress.models.clickResponce.Like_Resp;
-import com.quad.xpress.Utills.helpers.ErrorReporting;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.SaveResponseForOffline;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.models.authToken.AuthTokenReq;
+import com.quad.xpress.models.authToken.AuthTokenResp;
+import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
@@ -49,14 +49,15 @@ import retrofit.client.Response;
 public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnRecyclerListener {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    LoadingDialog LD;
+
     LinearLayout rv_ll;
     String RefreshTokenMethodName = "";
     ProgressDialog pDialog;
     Context context;
     Activity _activity;
     String AppName;
-    ErrorReporting errorReporting;
+    ProgressBar pb;
+    ImageView iv_empty;
     int Index = 0;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
@@ -67,6 +68,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
     String EndOfRecords = "0";
     StaggeredGridLayoutManager  staggeredGridLayoutManager;
     TabLayout tabLayout;
+
     Boolean Api_private_uploads = false;
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -76,7 +78,8 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.received_videos);
-
+        pb = (ProgressBar) findViewById(R.id.progressBar_private);
+        iv_empty = (ImageView) findViewById(R.id.iv_nothing_to_show);
         recyclerView = (RecyclerView) findViewById(R.id.RvRcvVideo);
         context = getApplicationContext();
         AppName = getResources().getString(R.string.app_name);
@@ -95,7 +98,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         NCD = new NetConnectionDetector();
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        LD = new LoadingDialog(MyUploads.this);
+
         rv_ll = (LinearLayout) findViewById(R.id.rv_ll);
        /* recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(false);
@@ -173,7 +176,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
 
     public void getData() {
-        LD.ShowTheDialog("Please Wait", "Loading..", true);
+       pb.setVisibility(View.VISIBLE);
         String emotion="Like";
 
         playlist.clear();
@@ -183,9 +186,9 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
-                            LD.DismissTheDialog();
+                            pb.setVisibility(View.GONE);
                             if (arg0.getCode().equals("200")) {
-                                // Toast.makeText(context, "Data().length" + arg0.getData().length, Toast.LENGTH_LONG).show();
+                                // Toast.makeText(context, "" + arg0.getData().getRecords()[0].getTo_email(), Toast.LENGTH_LONG).show();
                                 ParsePublicFiles(arg0);
                                 if (Index == 0) {
                                     SaveResponseForOffline srfo = new SaveResponseForOffline(context);
@@ -208,9 +211,10 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
                         @Override
                         public void failure(RetrofitError error) {
-                            LD.DismissTheDialog();
-                            errorReporting.SendMail("Xpress Error-publicplaylist-getData", error.toString());
-                            Toast.makeText(context, "Error Raised", Toast.LENGTH_LONG).show();
+                            pb.setVisibility(View.GONE);
+                            iv_empty.setVisibility(View.VISIBLE);
+
+                            Toast.makeText(context, "Unable to connect.", Toast.LENGTH_LONG).show();
                         }
                     });
         }else {
@@ -219,7 +223,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
-                            LD.DismissTheDialog();
+                            pb.setVisibility(View.GONE);
                             if (arg0.getCode().equals("200")) {
                                 // Toast.makeText(context, "Data().length" + arg0.getData().length, Toast.LENGTH_LONG).show();
                                 ParsePublicFiles(arg0);
@@ -244,9 +248,10 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
                         @Override
                         public void failure(RetrofitError error) {
-                            LD.DismissTheDialog();
-                            errorReporting.SendMail("Xpress Error-publicplaylist-getData", error.toString());
-                            Toast.makeText(context, "Error Raised", Toast.LENGTH_LONG).show();
+                            pb.setVisibility(View.GONE);
+                            iv_empty.setVisibility(View.VISIBLE);
+
+                            Toast.makeText(context, "Unable to connect.", Toast.LENGTH_LONG).show();
                         }
                     });
         }
@@ -268,7 +273,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),
-                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus());
+                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user());
             playlist.add(playlistItems);
             sb.setLength(0);
         }
@@ -326,12 +331,12 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
     }
 
     @Override
-    public void DeleteVideo(final String id, final String type) {
+    public void DeleteVideo(final String id, final String type , final Boolean isPrivate) {
         //Toast.makeText(context, "Delete"+id, Toast.LENGTH_SHORT).show();
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppCompatAlertDialogStyle));
         // Setting Dialog Title
-        alertDialog.setTitle("Are you sure you want to delete this ?");
+        alertDialog.setTitle("Are you sure you want to delete this Xpression?");
 
         // Setting Dialog Message
         alertDialog.setMessage("This cannot be undone !");
@@ -343,13 +348,37 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         alertDialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+                if(isPrivate){
+
+                    RestClient.get(context).DeletePrivate(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
+                            new DeleteReq(id, type),
+                            new Callback<Like_Resp>() {
+                                @Override
+                                public void success(Like_Resp like_resp, Response response) {
+
+                                    Toast.makeText(context,"Xpression deleted from your list.",Toast.LENGTH_LONG).show();
+                                    Index = 0;
+                                    playlist.clear();
+                                    getData();
+
+
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+
+                                }
+                            });
+
+                }else {
+
                 RestClient.get(context).Delete(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
                         new DeleteReq(id, type),
                         new Callback<Like_Resp>() {
                             @Override
                             public void success(Like_Resp like_resp, Response response) {
 
-                                Toast.makeText(context,"Deleted",Toast.LENGTH_LONG).show();
+                                Toast.makeText(context,"Xpression Deleted.",Toast.LENGTH_LONG).show();
                                 Index = 0;
                                 playlist.clear();
                                 getData();
@@ -362,6 +391,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
                             }
                         });
+                }
 
             }
         });
@@ -387,12 +417,12 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
 
     public void RefreshToken() {
-        LD.ShowTheDialog("Please Wait", "Loading..", true);
+
         RestClient.get(context).RefreshTokenWS(new AuthTokenReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<AuthTokenResp>() {
             @Override
             public void success(final AuthTokenResp arg0, Response arg1) {
 
-                LD.DismissTheDialog();
+
                 if (arg0.getCode().equals("200")) {
                     editor.putString(SharedPrefUtils.SpToken, arg0.getData()[0].getToken());
                     editor.commit();
@@ -407,8 +437,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
 
             @Override
             public void failure(RetrofitError error) {
-                LD.DismissTheDialog();
-                errorReporting.SendMail("Xpress Error-publicplaylist-RefreshToken", error.toString());
+
                 Toast.makeText(context, "Error Raised", Toast.LENGTH_LONG).show();
             }
         });

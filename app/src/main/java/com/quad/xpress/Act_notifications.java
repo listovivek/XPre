@@ -20,22 +20,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.quad.xpress.Utills.helpers.LoadingDialog;
+import com.quad.xpress.Utills.helpers.NetConnectionDetector;
+import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.AlertStream.AdapterAlertStream;
 import com.quad.xpress.models.AlertStream.AlertStreamModelList;
 import com.quad.xpress.models.AlertStream.AlertStreamReq;
 import com.quad.xpress.models.AlertStream.AlertStreamResp;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.privateAcceptReject.PrivARreq;
 import com.quad.xpress.models.privateAcceptReject.PrivARresp;
 import com.quad.xpress.models.privateBlock.PrivBlockReq;
@@ -376,7 +375,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                     @Override
                     public void success(FollowRep followRep, Response response) {
 
-                        Toast.makeText(context, "UnSubscribed from "+list.get(position).getFromEmail()+" posts...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Unfollowed from "+list.get(position).getFromEmail()+" posts...", Toast.LENGTH_SHORT).show();
                         list.clear();
                         Index =1;
 
@@ -499,7 +498,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
 
         final Dialog proceedDiscardDialog = new Dialog(Act_notifications.this,
                 R.style.Theme_Transparent);
-        SpannableString ss = new SpannableString(list.get(position).getFromEmail()+"\n"+" wanted to Xpress this to you badly. Are you sure you want to reject it?");
+        SpannableString ss = new SpannableString(list.get(position).getFromEmail()+"\n"+" wanted to Xpress this to you immediately. Are you sure you want to reject it?");
 
         ss.setSpan(new ForegroundColorSpan(Color.GREEN), 0, list.get(position).getFromEmail().length(), 0);
         ss.setSpan(new RelativeSizeSpan(1.5f), 0, list.get(position).getFromEmail().length(), 0);
@@ -550,7 +549,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         tv_msg.setText( ss);
 
         btn_confirm = (Button) proceedDiscardDialog.findViewById(R.id.pvt_alert_proceed);
-        btn_confirm.setText("Reject & Block");
+        btn_confirm.setText("Block");
         btn_discard = (Button) proceedDiscardDialog.findViewById(R.id.pvt_alert_dismiss);
         proceedDiscardDialog.show();
 

@@ -2,7 +2,6 @@ package com.quad.xpress;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -25,6 +24,12 @@ import java.io.Writer;
 public class Act_HelpSupportAbout extends Activity {
 
     WebView mWebView;
+    String p1 = "http://www.quadrupleindia.com/ixprez/page/about.html",
+
+    p2 = "http://www.quadrupleindia.com/ixprez/page/help.html",
+
+     p3 = "http://www.quadrupleindia.com/ixprez/page/support.html";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,14 +49,14 @@ public class Act_HelpSupportAbout extends Activity {
 
         if(ItemParent.equalsIgnoreCase("help")){
             tv_title.setText("Help");
-            init("help.html");
+            init(p2);
         }else if (ItemParent.equalsIgnoreCase("About")){
             tv_title.setText("About");
-            init("about.html");
+            init(p1);
         }
         else if(ItemParent.equalsIgnoreCase("support")){
             tv_title.setText("Support");
-            init("support.html");
+            init(p3);
         }
 
 
@@ -67,7 +72,10 @@ public class Act_HelpSupportAbout extends Activity {
 
     private void init(String s) {
 
-        AssetManager mgr = getBaseContext().getAssets();
+        mWebView.loadUrl(s);
+
+
+       /* AssetManager mgr = getBaseContext().getAssets();
         try {
             InputStream in = mgr.open(s, AssetManager.ACCESS_BUFFER);
             String htmlContentInStringFormat = StreamToString(in);
@@ -76,7 +84,7 @@ public class Act_HelpSupportAbout extends Activity {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 

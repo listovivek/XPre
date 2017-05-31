@@ -1,5 +1,10 @@
 package com.quad.xpress.Utills;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import retrofit.mime.TypedFile;
+
 /**
  * Created by kural on 1/27/2017.
  */
@@ -9,9 +14,25 @@ public class StatiConstants {
     public static String followers_following;
     public static String Gcm = null;
     public static Boolean newSignIn = false;
+    public static String Retry = "Retry",Ignore= "Ignore";
+
+    public static  Map<Integer,TypedFile> mapVideoTyped = new HashMap<Integer, TypedFile>();
+    public static  Map<Integer,String> mapTitile = new HashMap<Integer, String>();
+    public static  Map<Integer,String> mapTo = new HashMap<Integer, String>();
+    public static  Map<Integer,String> mapType = new HashMap<Integer, String>();
+    public static  Map<Integer,TypedFile> mapThumbnailTyped = new HashMap<Integer, TypedFile>();
+
+    public static TypedFile TfV,TfT;
+    public static String TagList = "Aggressive, Beautiful, Bold, Brilliant, Calm, Charming, Classic, " +
+            "Contemporary, Cool, Dark, Dramatic, Elegant, Epic, Funny, Hilarious, Upbeat, Informative, Inspirational," +
+            " Intellectual, Modern, Motivational, Heartbreaking, Personal, Political, Professional, " +
+            "Romantic, Sad, Depressing, Tragic, Satire, Parody, Spoof, Suspenseful, Traditional, Upbeat," +
+            "Urban, Clever, Witty,Confusion , Surprise, Shame, Focus, Exhaustion, Angry, Fear, Sad," +
+            " Happy, Bore, Smile, Love";
+
+
 
     public static final String effectConfigs[] = {
-            "",
             "@beautify face 1 480 640", //美颜效果
             "@adjust lut edgy_amber.png",
             "@adjust lut filmstock.png",

@@ -170,11 +170,11 @@ public class ContactMainActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    private void recyclerAdpater() {
+   /* private void recyclerAdpater() {
 
-        /*mAdapter = new
+        *//*mAdapter = new
                 ContactRecycleAdapter(Contact.getInstance(), ContactMainActivity.this,
-                ContactMainActivity.this);*/
+                ContactMainActivity.this);*//*
         recyclerView_ixpress.setAdapter(mAdapter);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -190,7 +190,7 @@ public class ContactMainActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-
+*/
     @Override
     protected void onStop() {
         super.onStop();

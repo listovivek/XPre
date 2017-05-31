@@ -92,7 +92,7 @@ public class FieldsValidator {
 
         // length 0 means there is no text
         if (text.length() == 0) {
-            editText.setError(EMAIL_MSG);
+            editText.setError("Required");
             return false;
         }
 

@@ -66,6 +66,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_tb_title"
         android:text="@string/app_name"
+        android:background="@color/primary"
         android:textSize="0sp"
         android:textStyle="normal"
         android:textColor="@color/white"
@@ -79,11 +80,13 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:padding="15dp"
+        android:background="@color/primary"
         android:src="@drawable/app_logo"/>
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_drawer"
+        android:background="@color/primary"
+        android:src="@drawable/ic_drawer"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:id="@+id/navigation_ic_tb"/>

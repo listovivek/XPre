@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -107,7 +106,6 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
     AutoCompleteTextView av_email;
     Dialog AudioRecordDialog;
     ImageView iv_no_data;
-    private Uri fileUri;
     ProgressBar pb;
     Boolean exit = false;
     Boolean is_vp_Touched = false;
@@ -540,11 +538,48 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
          mtd_getFeatured();
 
 
+
             mPagerContainer.setPageItemClickListener(new PageItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
 
-                    //Toast.makeText(context,"position:c" + position,Toast.LENGTH_SHORT).show();
+
+                  /*  Toast.makeText(context,"position:c" + myPager.getCurrentItem()+"  "+ position,Toast.LENGTH_SHORT).show();
+
+                    if(myPager.getCurrentItem()!= position){
+
+                        Toast.makeText(context,"position:c" + position,Toast.LENGTH_SHORT).show();
+
+                   *//*     Intent video_act = new Intent(context, Actvity_video.class);
+                        String MediaPath,TBPath;
+                        if (media.get(position).contains(StaticConfig.ROOT_URL_Media)) {
+                            MediaPath = StaticConfig.ROOT_URL + media.get(position).replace(StaticConfig.ROOT_URL_Media, "");
+                        } else {
+                            MediaPath = StaticConfig.ROOT_URL + "/" + media.get(position);
+                        }
+                        if (media.get(position).contains(StaticConfig.ROOT_URL_Media)) {
+                            TBPath = StaticConfig.ROOT_URL + media.get(position).replace(StaticConfig.ROOT_URL_Media, "");
+                        } else {
+                            TBPath = StaticConfig.ROOT_URL + "/" + media.get(position);
+                        }
+
+                        video_act.putExtra("url",MediaPath);
+                        video_act.putExtra("thumbImg",TBPath);
+                        video_act.putExtra("type","video");
+                        video_act.putExtra("likes",media.get(position));
+                        video_act.putExtra("views",views_vpdp.get(position));
+                        video_act.putExtra("file_id",file_id_vpdp.get(position));
+                        video_act.putExtra("title",title_vpdp.get(position));
+                        video_act.putExtra("tags",tags_vpdp.get(position));
+                        video_act.putExtra("upload_date",time_vpdp);
+                        video_act.putExtra("isliked","0");
+                        video_act.putExtra("img_url",TBPath);
+                        video_act.putExtra("isPrivate","false");
+                        startActivity(video_act);
+*//*
+                    }*/
+
+
                     mtd_getFeatured();
 
                 }
@@ -1052,16 +1087,16 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                                 RefreshTokenMethodName = "getData";
 
                             } else if (arg0.getCode().equals("202")) {
-                                Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
                                 pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                                 pb.setVisibility(View.GONE);
 
                             }else if(arg0.getData().getLast().equals("1")||arg0.getData().getRecords().length == 0){
                                 pb.setVisibility(View.INVISIBLE);
-                                Toast.makeText(context, "End Of List.. ", Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(context, "End Of List.. ", Toast.LENGTH_LONG).show();
                             }
                             else {
-                                Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
                                 pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                                 pb.setVisibility(View.GONE);
 
@@ -1071,7 +1106,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(context, "Unable to Connect", Toast.LENGTH_LONG).show();
+                           // Toast.makeText(context, "Unable to Connect", Toast.LENGTH_LONG).show();
                             pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                             pb.setVisibility(View.GONE);
                             swipeRefreshLayout.setRefreshing(false);
@@ -1093,13 +1128,13 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                                 pb.setVisibility(View.GONE);
 
                             } else if (arg0.getCode().equals("202")) {
-                                Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                             //   Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
                                 pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                                 pb.setVisibility(View.GONE);
                             }else {
                                 pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                                 pb.setVisibility(View.GONE);
-                                Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
                             }
 
@@ -1109,7 +1144,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                                 if(!last){
                                     last = true;
-                                    Toast.makeText(context, "End Of List.. ", Toast.LENGTH_LONG).show();
+                                 //   Toast.makeText(context, "End Of List.. ", Toast.LENGTH_LONG).show();
                                 }
 
                             }
@@ -1119,7 +1154,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(context, "Unable to Connect", Toast.LENGTH_LONG).show();
+                           // Toast.makeText(context, "Unable to Connect", Toast.LENGTH_LONG).show();
                             pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                             pb.setVisibility(View.GONE);
                             swipeRefreshLayout.setRefreshing(false);
@@ -1214,6 +1249,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                                // tv_counter.setText(counterResp.getData().getTotalNumberofrecords());
                                TopBadge.setMaxTextLength(5);
 
+
                                if(tc >=1000 && tc < 10000){
 
                                    tc =Integer.parseInt(Integer.toString(tc).substring(0, 1));
@@ -1221,20 +1257,24 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
 
                                    TopBadge.setText(""+tc+" K");
+                                   tv_counter_nb.setText(""+tc+" K");
 
                                }else if(tc >=10000 && tc < 100000){
 
                                    tc =Integer.parseInt(Integer.toString(tc).substring(0, 2));
                                    TopBadge.setText(""+tc+" K");
+                                   tv_counter_nb.setText(""+tc+" K");
                                }
                                else if(tc >= 100000 && tc < 10000000){
 
                                    tc =Integer.parseInt(Integer.toString(tc).substring(0, 3));
 
                                    TopBadge.setText(""+tc+" K");
+                                   tv_counter_nb.setText(""+tc+" K");
                                }
                               else  {
                                    TopBadge.setText(""+tc);
+                                   tv_counter_nb.setText(""+tc);
                                }
 
 
@@ -1247,7 +1287,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                                 tv_counter_nb.setVisibility(View.GONE);
                             }else {
                                 tv_counter_nb.setVisibility(View.VISIBLE);
-                                tv_counter_nb.setText(counterResp.getData().getTotalNumberofrecords());
+                              //  tv_counter_nb.setText(counterResp.getData().getTotalNumberofrecords());
                             }
 
 
@@ -1262,7 +1302,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                             if(counterResp.getData().getPrivateFollowCount().equalsIgnoreCase("0")){
                                 tv_notifi_count.setVisibility(View.GONE);
-                            }else {
+                            }
+
+                            else {
                                 PreviousNotificOUNT = counterResp.getData().getPrivateFollowCount();
                                 tv_notifi_count.setText(" "+counterResp.getData().getPrivateFollowCount()+" ");
                                 tv_notifi_count.setVisibility(View.VISIBLE);
@@ -1524,6 +1566,22 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
             adapterRcv.notifyDataSetChanged();
         }
+
+        // upating the follow list locally
+        try {
+            for (int i = 0; i <playlist.size() ; i++) {
+
+                if(Act_user_data.fromemail.equals(playlist.get(i).getFromEmail())){
+                    playlist.get(i).setIsUserFollowing(Act_user_data.isfollowing);
+                }
+
+                adapterRcv.notifyDataSetChanged();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         is_vp_Touched = false ;
 
         try {

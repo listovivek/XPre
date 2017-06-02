@@ -73,7 +73,7 @@
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical|center_horizontal"
                 android:textColor="@color/orange"
-                android:background="@android:drawable/list_selector_background"
+                android:background="@android:color/transparent"
                 android:id="@+id/tv_avd_spinner_holder"
                 android:layout_marginBottom="3dp"
                 android:layout_alignTop="@+id/tv_share_ass"

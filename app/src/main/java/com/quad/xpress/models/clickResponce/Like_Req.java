@@ -13,6 +13,7 @@ public class Like_Req {
         this.emotion = emotion;
         this.status = status;
         this.id = id;
+
     }
 
 }

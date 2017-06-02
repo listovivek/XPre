@@ -77,7 +77,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
     Activity _activity;
     String AppName;
     Boolean isResumed = false;
-    int Index = 1;
+    int Index = 0;
     boolean loading;
     String EndOfRecords = "0";
     public static Boolean RvDisabler= false;
@@ -159,7 +159,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                     Index++;
                     getDatas();
                 }else{loading = false;
-                    Index = 1;
+                    Index = 0;
                 }
             }
 
@@ -196,7 +196,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                         }
 
                         else {
-                            Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Error " + arg0.getCode(), Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -659,7 +659,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {
                   //  Toast.makeText(context, "Updated your feelings", Toast.LENGTH_LONG).show();
-                    Index = 1;
+                    Index = 0;
                     playlist.clear();
                     getDatas();
                    // Toast.makeText(context, "Reloading Your Private List.", Toast.LENGTH_LONG).show();
@@ -770,7 +770,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
         if(isResumed){
 
-            Index = 1;
+            Index = 0;
             playlist.clear();
 
             getDatas();

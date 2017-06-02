@@ -59,7 +59,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     Context context;
     Activity _activity;
     String AppName;
-    int Index = 1;
+    int Index = 0;
     String PreviousNotificOUNT;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
@@ -231,7 +231,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                     @Override
                     public void success(AlertStreamResp alertStreamResp, Response response) {
 
-                        if(alertStreamResp.getCode().equalsIgnoreCase("200") && alertStreamResp.getData().getLast().equals("0") ){
+                        if(alertStreamResp.getCode().equalsIgnoreCase("200")  ){
 
                             for (int i =0 ; i< alertStreamResp.getData().getRecords().length; i++){
                                 listDatas = new AlertStreamModelList(
@@ -255,6 +255,9 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                             list.add(listDatas);
 
                             }
+
+
+
                             pbLoading.setVisibility(View.GONE);
 
                             adapter.notifyDataSetChanged();
@@ -263,13 +266,13 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                                 EndOfRecords = "0";
 
 
-                        } else if(alertStreamResp.getData().getLast().equals("1")){
-                            Index = 1;
+                        } else if(alertStreamResp.getData().getRecords().length > 10){
+                            Index = 0;
                             EndOfRecords = "1";
                             pbLoading.setVisibility(View.GONE);
 
                         }
-                        else{
+                        else if (list.isEmpty()){
 
                             pbLoading.setVisibility(View.GONE);
                             iv_nothing_to_show.setVisibility(View.VISIBLE);
@@ -376,10 +379,14 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                     public void success(FollowRep followRep, Response response) {
 
                         Toast.makeText(context, "Unfollowed from "+list.get(position).getFromEmail()+" posts...", Toast.LENGTH_SHORT).show();
+
+
                         list.clear();
-                        Index =1;
+                        Index =0;
 
-
+                        //Refrencing Static data on resume for reduced API calls
+                        Act_user_data.fromemail = list.get(position).getFromEmail();
+                        Act_user_data.isfollowing = "0";
 
                         getData();
 
@@ -634,7 +641,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                 }
 
                 list.clear();
-                Index= 1;
+                Index= 0;
                 getData();
             }
 
@@ -662,7 +669,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {
                     Toast.makeText(context, "Updated your feelings", Toast.LENGTH_LONG).show();
-                    Index = 1;
+                    Index = 0;
                     list.clear();
 
                     getData();

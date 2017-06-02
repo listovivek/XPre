@@ -18,7 +18,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -60,7 +59,7 @@ public class NotifyUtils {
 
 
         // notification icon
-         int icon = R.mipmap.ic_notficationdrawer;
+        int icon = R.drawable.ic_ixprez_notification_new;
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
          PendingIntent resultPendingIntent =
@@ -81,13 +80,8 @@ public class NotifyUtils {
 
             if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
 
-                Bitmap bitmap = getBitmapFromURL(imageUrl);
-
-                if (bitmap != null) {
-                    showBigNotification(bitmap, mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
-                } else {
                     showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
-                }
+
             }
         } else {
             showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
@@ -135,7 +129,7 @@ public class NotifyUtils {
         notificationManager.notify(NotifyConfig.NOTIFICATION_ID, notification);
     }
 
-    private void showBigNotification(Bitmap bitmap, NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
+/*    private void showBigNotification(Bitmap bitmap, NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
         NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
         bigPictureStyle.setBigContentTitle(title);
         bigPictureStyle.setSummaryText(Html.fromHtml(message).toString());
@@ -155,7 +149,7 @@ public class NotifyUtils {
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NotifyConfig.NOTIFICATION_ID_BIG_IMAGE, notification);
-    }
+    }*/
 
     /**
      * Downloading push notification image before displaying it in

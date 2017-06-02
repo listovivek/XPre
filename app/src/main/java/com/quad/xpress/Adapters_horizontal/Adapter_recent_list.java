@@ -13,7 +13,7 @@ import com.quad.xpress.models.AlertStream.AlertStreamModelList;
 
 import java.util.List;
 
-public class Adapter_filter_list extends RecyclerView.Adapter<Adapter_filter_list.MyViewHolder>{
+public class Adapter_recent_list extends RecyclerView.Adapter<Adapter_recent_list.MyViewHolder>{
 
     private List<AlertStreamModelList> ListData;
     Context context;
@@ -24,19 +24,19 @@ public class Adapter_filter_list extends RecyclerView.Adapter<Adapter_filter_lis
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        public TextView user_name;
 
 
         public MyViewHolder(View view, Context context) {
             super(view);
 
-            title = (TextView) view.findViewById(R.id.ns_adp_tv_title);
+            user_name = (TextView) view.findViewById(R.id.textView_adapter_recent_list);
 
         }
     }
 
 
-    public Adapter_filter_list(List<AlertStreamModelList> ListData, Context context, OnRecyclerListener recyclerListener) {
+    public Adapter_recent_list(List<AlertStreamModelList> ListData, Context context, OnRecyclerListener recyclerListener) {
         this.ListData = ListData;
         this.context = context;
         this.recyclerListener =recyclerListener;
@@ -45,7 +45,7 @@ public class Adapter_filter_list extends RecyclerView.Adapter<Adapter_filter_lis
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_filter_list, parent, false);
+                .inflate(R.layout.adapter_recent_list, parent, false);
 
         return new MyViewHolder(itemView, context);
     }
@@ -53,7 +53,7 @@ public class Adapter_filter_list extends RecyclerView.Adapter<Adapter_filter_lis
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final AlertStreamModelList notificationStreamModelList = ListData.get(position);
-        holder.title.setText(notificationStreamModelList.getTitle());
+        holder.user_name.setText(notificationStreamModelList.getTitle());
 
 
     }

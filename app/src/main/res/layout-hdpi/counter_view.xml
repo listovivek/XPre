@@ -49,7 +49,7 @@
             android:id="@+id/tb_db_badge"
             android:layout_width="42dp"
             android:layout_height="30dp"
-            app:nbTextSize="12sp"
+            app:nbTextSize="10sp"
             android:layout_toRightOf="@id/icon"
             android:layout_alignTop="@id/icon"
             app:nbBackground="@drawable/bg_notification_badge"

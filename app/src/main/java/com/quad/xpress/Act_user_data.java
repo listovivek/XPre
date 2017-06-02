@@ -41,11 +41,11 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     private RecyclerView.Adapter adapter;
 
     String RefreshTokenMethodName = "";
-
+    public static String isfollowing,fromemail;
     Context context;
     Activity _activity;
     FloatingActionButton btn_follow;
-    String AppName,usernae,fromemail,isfollowing;
+    String AppName,usernae;
 
     TextView tv_tb_tilte,tv_username;
     ImageView iv_bg_blur,iv_pic,iv_tb_logo;

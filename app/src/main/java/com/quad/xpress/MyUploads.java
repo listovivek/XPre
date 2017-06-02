@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -32,6 +33,7 @@ import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.clickResponce.Like_Resp;
+import com.quad.xpress.models.receivedFiles.EndlessRecyclerOnScrollListener;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
@@ -68,7 +70,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
     String EndOfRecords = "0";
     StaggeredGridLayoutManager  staggeredGridLayoutManager;
     TabLayout tabLayout;
-
+    LinearLayoutManager layoutManager;
     Boolean Api_private_uploads = false;
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -100,11 +102,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         editor = sharedpreferences.edit();
 
         rv_ll = (LinearLayout) findViewById(R.id.rv_ll);
-       /* recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(false);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context,2);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, 2));
-        //recyclerView.setLayoutManager(layoutManager);*/
+
 
        tabLayout = (TabLayout) findViewById(R.id.tabLayout_private);
         tabLayout.addTab(tabLayout.newTab().setText("Public Uploads"));
@@ -168,6 +166,25 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                 loading = false;
             }
         });*/
+
+      /*  layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                Toast.makeText(MyUploads.this, "dd", Toast.LENGTH_SHORT).show();
+                if (EndOfRecords.equals("0")) {
+                    loading = true;
+                    Index++;
+                    getData();
+                }else{loading = false;
+                    Index = 0;
+                }
+            }
+
+
+        });*/
+
         adapter = new MyUploadsAdapter(playlist, context, MyUploads.this);
         recyclerView.setAdapter(adapter);
     }
@@ -182,7 +199,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         playlist.clear();
 
         if(Api_private_uploads){
-            RestClient.get(context).MyUploads_Private(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
+            RestClient.get(context).MyUploads_Private(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "100",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -219,7 +236,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                     });
         }else {
 
-            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10", sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), emotion),
+            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "100", sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {

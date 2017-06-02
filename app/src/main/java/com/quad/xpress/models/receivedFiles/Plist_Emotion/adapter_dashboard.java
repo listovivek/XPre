@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,7 +48,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
     String video_type;
     String Status = "";
     String TBPath;
-
+    int finalHeight, finalWidth;
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView RvVideoTitle;
@@ -64,7 +64,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         private OnRecyclerListener recyclerListener = null;
 
         public ProgressBar pbar;
-        TextView  Tv_comment_1, Tv_comment_2, Tv_comment_3, Tv_comment_4,tv_follow,tv_emotion_count;
+        TextView  tv_follow,tv_emotion_count;
 
         public MyViewHolder(View view, final Context context, OnRecyclerListener recyclerListeners) {
             super(view);
@@ -88,11 +88,11 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             popupWindow = new PopupWindow(context);
             ll_follow_user = (LinearLayout) itemView.findViewById(R.id.ll_followuser);
 
-
+/*
             Tv_comment_1 = (TextView)itemView.findViewById(R.id.textView_comment_1);
             Tv_comment_2 = (TextView)itemView.findViewById(R.id.textView_comment_2);
             Tv_comment_3 = (TextView)itemView.findViewById(R.id.textView_comment_3);
-            Tv_comment_4 = (TextView)itemView.findViewById(R.id.textView_comment_4);
+            Tv_comment_4 = (TextView)itemView.findViewById(R.id.textView_comment_4);*/
 
             View contentView = LayoutInflater.from(context).inflate(R.layout.rv_options_layout, null);
             contentView.findViewById(R.id.rv_opt_accept).setOnClickListener(this);
@@ -156,38 +156,14 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         holder.RvSender.setText(list.getFromEmail());
         holder.RvTime.setText(list.getCreatedDate());
         holder.RvMoreTag.setText(""+list.getViewsCount()+" Views");
-
+        holder.setIsRecyclable(false);
         try {
             holder.RvTags_full.setText(list.getTags().trim());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.d("list data",list.getEmotion());
-        String tag_txt ="";
-        tag_txt = list.getEmotion().trim();
-        String tag_store[] ;
-        tag_store = tag_txt.split(",");
-        holder.setIsRecyclable(false);
 
-      //  Toast.makeText(_context,"tag_store"+tag_store.length,Toast.LENGTH_LONG).show();
-
-        if(list.getIsUserLiked().matches("1")){
-           // holder.Rvlikes.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_like_filled_liked, 0, 0, 0);
-        }else {
-
-        }
-        for(int i = 0; i < tag_store.length; i++){
-
-            if(tag_store[i].equalsIgnoreCase("null")){
-             tag_store[i]= tag_store[i].replace(tag_store[i],"Reply");
-
-            }
-            else {
-
-            }
-        }
-       // Toast.makeText(_context,"tag_store"+tag_store[1],Toast.LENGTH_LONG).show();
         holder.tv_emotion_count.setText(list.getEmotion_count()+ " Rx");
 
 
@@ -204,6 +180,34 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
             }
         });
+
+
+
+        ViewTreeObserver vto = holder.RvImage.getViewTreeObserver();
+
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                // Remove after the first run so it doesn't fire forever
+                holder.RvImage.getViewTreeObserver().removeOnPreDrawListener(this);
+                finalHeight = holder.RvImage.getMeasuredHeight();
+                finalWidth = holder.RvImage.getMeasuredWidth();
+
+                return true;
+            }
+        });
+
+
+
+        if (list.getIsUserFollowing().equalsIgnoreCase("1")){
+
+            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfollow,0,0,0);
+
+        }else {
+            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_view_profile_icon,0,0,0);
+
+        }
+
+
 
        /* if (list.getIsUserFollowing().equalsIgnoreCase("1")){
 
@@ -275,7 +279,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 } else {
                     TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                 }
-                Log.v("", "TBPath " + TBPath);
+               // Log.v("", "TBPath " + TBPath);
 
                 Glide.with(_context).load(TBPath)
                          // .diskCacheStrategy(SOURCE).skipMemoryCache(true)
@@ -291,10 +295,12 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
-                    Log.v("", "TBPath " + TBPath);
-                Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
+
+
+                Glide.with(_context).load(TBPath).override(finalWidth,finalHeight).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
                       //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
                         .centerCrop().into(holder.RvImage);
+
 
 
             }
@@ -308,7 +314,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
-                    Log.v("", "TBPath " + TBPath);
+                  //  Log.v("", "TBPath " + TBPath);
 
                     Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
                           //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
@@ -513,7 +519,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                         if (arg0.getCode().equals("200")) {
 
                             String Post_status = arg0.getStatus();
-                            Log.d("Mes-Like",Post_status);
+                        //    Log.d("Mes-Like",Post_status);
                            if(Post_status.equals("")){
                               // Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
                            }else {
@@ -558,7 +564,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                         if (arg0.getCode().equals("200")) {
 
                             String Post_status = arg0.getStatus();
-                            Log.d("Mes-views",Post_status);
+                       //     Log.d("Mes-views",Post_status);
                             if(Post_status.equals("")){
                                // Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
                             }else {

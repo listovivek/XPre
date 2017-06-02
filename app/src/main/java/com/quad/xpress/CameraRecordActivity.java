@@ -31,6 +31,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -665,12 +666,12 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         });
 
         //640 × 480
-        mCameraView.setPictureSize(480, 640, true);
-        mCameraView.presetRecordingSize(480, 640);
-      /*  mCameraView.setPictureSize(720, 1280, true);
-        mCameraView.presetRecordingSize(720, 1280);*/
+     /*   mCameraView.setPictureSize(480, 640, true);
+        mCameraView.presetRecordingSize(480, 640);*/
+        mCameraView.setPictureSize(720, 1280, true);
+        mCameraView.presetRecordingSize(720, 1280);
 //      mCameraView.presetRecordingSize(720, 1280);
-        mCameraView.setZOrderOnTop(false);
+        mCameraView.setZOrderOnTop(true);
         mCameraView.setZOrderMediaOverlay(true);
 
         mCameraView.setOnCreateCallback(new CameraRecordGLSurfaceView.OnCreateCallback() {
@@ -690,7 +691,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
             }
         });
 
-     /*   mCameraView.setOnTouchListener(new View.OnTouchListener() {
+        mCameraView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, final MotionEvent event) {
 
@@ -721,7 +722,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
             }
         });
 
-        mCameraView.setPictureSize(600, 800, true);*/
+      //  mCameraView.setPictureSize(600, 800, true);
         CheckAndRequestPermission();
     }
 

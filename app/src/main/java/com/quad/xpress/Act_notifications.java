@@ -381,13 +381,16 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                         Toast.makeText(context, "Unfollowed from "+list.get(position).getFromEmail()+" posts...", Toast.LENGTH_SHORT).show();
 
 
-                        list.clear();
-                        Index =0;
+
 
                         //Refrencing Static data on resume for reduced API calls
                         Act_user_data.fromemail = list.get(position).getFromEmail();
                         Act_user_data.isfollowing = "0";
 
+
+
+                        list.clear();
+                        Index =0;
                         getData();
 
                     }

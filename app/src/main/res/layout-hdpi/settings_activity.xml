@@ -104,7 +104,12 @@
 
 
             </LinearLayout>
-
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:id="@+id/iv_settings_profile_circle"
+                android:src="@mipmap/ic_user_icon"/>
 
         </FrameLayout>
 

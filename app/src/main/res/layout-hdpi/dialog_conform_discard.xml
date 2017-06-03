@@ -27,10 +27,10 @@
             android:id="@+id/pvt_alert_dismiss"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20sp"
             android:text="Cancel"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:padding="8dp"
             android:layout_margin="5dp"
             android:background="@drawable/btn_round_corner"
@@ -44,6 +44,8 @@
             android:padding="8dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            android:textSize="14sp"
+
             android:layout_gravity="center_vertical"
             android:background="@drawable/btn_round_orange"
             android:textColor="@color/white" />

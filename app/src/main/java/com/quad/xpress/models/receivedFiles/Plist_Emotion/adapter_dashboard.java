@@ -175,6 +175,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 IAct.putExtra("username",list.from_user);
                 IAct.putExtra("fromemail",list.from_email);
                 IAct.putExtra("isfollowing",list.getIsUserFollowing());
+
                 v.getContext().startActivity(IAct);
 
 
@@ -297,7 +298,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     }
 
 
-                Glide.with(_context).load(TBPath).override(finalWidth,finalHeight).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
+                Glide.with(_context).load(TBPath)
                       //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
                         .centerCrop().into(holder.RvImage);
 

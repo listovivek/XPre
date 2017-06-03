@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -57,7 +57,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     PlayListitems_emotion playlistItems;
 
     String EndOfRecords = "0";
-    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    LinearLayoutManager linearLayoutManager;
 
 
     @Override
@@ -73,8 +73,6 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
 
         Intent inget = getIntent();
-
-
 
 
         btn_follow = (FloatingActionButton) findViewById(R.id.fab);
@@ -137,8 +135,9 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
         recyclerView.setHasFixedSize(true);
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, 1);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+
+
 
 
         if (NCD.isConnected(context)) {
@@ -167,23 +166,15 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
             }
         });
 
-
-
-      /*recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) staggeredGridLayoutManager) {
-          @Override
-          public void onLoadMore(int current_page) {
-
-              if (!loading && EndOfRecords.equals("0")) {
-                  Log.v("publicactivity", "EndOfRecords " + EndOfRecords);
-                  loading = true;
-                  getData();
-              }
-              loading = false;
-          }
-
-        });*/
+        linearLayoutManager = new LinearLayoutManager(Act_user_data.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new adapter_user_data(playlist, context, Act_user_data.this);
         recyclerView.setAdapter(adapter);
+
+
+
+
+
     }
 
     public void Subcribed(String email) {
@@ -229,12 +220,14 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
     public void getData() {
 
+       // Toast.makeText(context, ""+Index, Toast.LENGTH_SHORT).show();
+
         String emotion="Like";
 
         playlist.clear();
 
 
-            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10", fromemail, emotion),
+            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "300", fromemail, emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -244,18 +237,21 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
                                 ParsePublicFiles(arg0);
 
                                 Index = Index + 1;
+
+
                             } else if (arg0.getCode().equals("601")) {
                                 RefreshTokenMethodName = "getData";
                                 //RefreshToken();
                             } else if (arg0.getCode().equals("202")) {
-                                adapter.notifyDataSetChanged();
-                                Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                               // adapter.notifyDataSetChanged();
+                                EndOfRecords = "1";
+                              //  Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
 
                             } else {
                                 Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
                             }
-                            Index = Index + 1;
+
                         }
 
                         @Override
@@ -290,6 +286,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
             sb.setLength(0);
         }
         EndOfRecords = arg0.getData().getLast();
+        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }

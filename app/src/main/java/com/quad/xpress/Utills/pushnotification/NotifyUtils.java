@@ -19,7 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 
 import com.quad.xpress.R;
@@ -93,9 +92,20 @@ public class NotifyUtils {
     private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
 
         NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle();
-        Log.v(" Notify", "message " + message);
+      //  Log.v(" Notify", "message " + message);
 
-        if (NotifyConfig.appendNotificationMessages) {
+        MyApplication.getInstance().getPrefManager().addNotification(message);
+        // get the notifications from shared preferences
+        String oldNotification = MyApplication.getInstance().getPrefManager().getNotifications();
+
+        List<String> messages = Arrays.asList(oldNotification.split("\\|"));
+
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            //  inboxStyle.(messages.get(i));
+            inboxStyle.bigText(messages.get(i));
+        }
+
+      /*  if (NotifyConfig.appendNotificationMessages) {
             // store the notification in shared pref first
             MyApplication.getInstance().getPrefManager().addNotification(message);
             // get the notifications from shared preferences
@@ -109,7 +119,7 @@ public class NotifyUtils {
             }
         } else {
             inboxStyle.bigText(message);
-        }
+        }*/
 
 
         Notification notification;

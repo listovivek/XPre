@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -98,6 +99,7 @@ public class SettingsActivity extends AppCompatActivity implements
     Activity _activity;
     private int PICK_IMAGE_REQUEST = 1;
     Uri Imageuri;
+    CircleImageView circleImageView_profile;
     ImageButton btn_scroll2btm;
     Dialog cropping_dialog;
     String notification=""+1 ,remainder=""+1;
@@ -111,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity implements
         context = getApplicationContext();
         _activity = this;
         Permission4 = PermissionStrings.WRITE_EXTERNAL_STORAGE;
-
+        circleImageView_profile = (CircleImageView) findViewById(R.id.iv_settings_profile_circle);
         btn_edit_pic = (ImageButton) findViewById(R.id.btn_settings_edit_pic);
         btn_tb_back = (ImageButton) findViewById(R.id.tb_normal_back);
         tv_user_name = (TextView) findViewById(R.id.settings_tv_username);

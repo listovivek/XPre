@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class GcmIntentService extends IntentService {
 
-    private static final String TAG = GcmIntentService.class.getSimpleName();
+    private static final String TAG = "ixprez";
 
     public GcmIntentService() {
         super(TAG);

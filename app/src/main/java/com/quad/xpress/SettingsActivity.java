@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -202,7 +203,8 @@ public class SettingsActivity extends AppCompatActivity implements
         if(StatiConstants.user_profilepic_url!= null){
         //    Toast.makeText(context, "nn"+StatiConstants.user_profilepic_url, Toast.LENGTH_SHORT).show();
             try {
-                Glide.with(context).load(StatiConstants.user_profilepic_url).into(imv_bg);
+                Glide.with(context).load(StatiConstants.user_profilepic_url).bitmapTransform(new BlurTransformation(context)).into(imv_bg);
+                Glide.with(context).load(StatiConstants.user_profilepic_url).into(circleImageView_profile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -660,7 +662,8 @@ public class SettingsActivity extends AppCompatActivity implements
 
 
                     Glide.with(context).load(imgUrl).placeholder(R.drawable.ic_user_icon)
-                            .fitCenter().into(imv_bg);
+                            .bitmapTransform(new BlurTransformation(context)).fitCenter().into(imv_bg);
+                    Glide.with(context).load(imgUrl).into(circleImageView_profile);
                     StatiConstants.user_profilepic_url = imgUrl;
 
                 }

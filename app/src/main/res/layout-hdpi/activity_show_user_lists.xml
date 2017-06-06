@@ -42,6 +42,8 @@
         android:id="@+id/iv_show_profile_blur"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
+        android:backgroundTint="@color/white_transparent_80"
+        android:backgroundTintMode="add"
     android:background="@drawable/dashboard_bg"
 
         />
@@ -85,9 +87,20 @@
     <android.support.v7.widget.RecyclerView
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rv_user_data">
+
+
+
     </android.support.v7.widget.RecyclerView>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateBehavior="repeat"
+        app:layout_anchor="@id/rv_user_data"
+        app:layout_anchorGravity="center|center_horizontal"
+        android:id="@+id/pb_user_list"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -97,7 +110,7 @@
         app:backgroundTint="@color/white"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:rippleColor="@color/SwitchOrange"
+        app:rippleColor="@color/white_transparent_80"
         app:srcCompat="@drawable/ic_follow_user" />
 
 </android.support.design.widget.CoordinatorLayout>

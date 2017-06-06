@@ -11,11 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Adapters_horizontal.adapter_user_data;
+import com.quad.xpress.Utills.EndlessRecyclerOnScrollListener;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
@@ -55,7 +57,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     NetConnectionDetector NCD;
     private List<PlayListitems_emotion> playlist = new ArrayList<>();
     PlayListitems_emotion playlistItems;
-
+    ProgressBar pb;
     String EndOfRecords = "0";
     LinearLayoutManager linearLayoutManager;
 
@@ -74,7 +76,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
         Intent inget = getIntent();
 
-
+        pb = (ProgressBar) findViewById(R.id.pb_user_list);
         btn_follow = (FloatingActionButton) findViewById(R.id.fab);
         tv_username = (TextView) findViewById(R.id.tv_show_user_name);
         tv_tb_tilte = (TextView) findViewById(R.id.tb_normal_title);
@@ -134,7 +136,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         NCD = new NetConnectionDetector();
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        recyclerView.setHasFixedSize(true);
+
 
 
 
@@ -168,8 +170,22 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
         linearLayoutManager = new LinearLayoutManager(Act_user_data.this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
         adapter = new adapter_user_data(playlist, context, Act_user_data.this);
         recyclerView.setAdapter(adapter);
+
+
+        recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) linearLayoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+
+                pb.setVisibility(View.VISIBLE);
+                Index ++;
+                getData();
+            }
+        });
+
+
 
 
 
@@ -224,32 +240,40 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
         String emotion="Like";
 
-        playlist.clear();
 
 
-            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "300", fromemail, emotion),
+
+            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30", fromemail, emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
 
                             if (arg0.getCode().equals("200")) {
                                 // Toast.makeText(context, "Data().length" + arg0.getData().length, Toast.LENGTH_LONG).show();
-                                ParsePublicFiles(arg0);
 
-                                Index = Index + 1;
+                              if(arg0.getData().getRecords().length > 0){
+                                  ParsePublicFiles(arg0);
+
+                                  Index = Index + 1;
+                              }else {
+                                  pb.setVisibility(View.INVISIBLE);
+                              }
+
 
 
                             } else if (arg0.getCode().equals("601")) {
                                 RefreshTokenMethodName = "getData";
+                                pb.setVisibility(View.INVISIBLE);
                                 //RefreshToken();
                             } else if (arg0.getCode().equals("202")) {
                                // adapter.notifyDataSetChanged();
                                 EndOfRecords = "1";
+                                pb.setVisibility(View.INVISIBLE);
                               //  Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
 
                             } else {
                                 Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
-
+                                pb.setVisibility(View.INVISIBLE);
                             }
 
                         }
@@ -258,7 +282,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
                         public void failure(RetrofitError error) {
 
 
-
+                            pb.setVisibility(View.INVISIBLE);
                             Toast.makeText(context, "Unable to connect.", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -281,13 +305,14 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),
-                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getFrom_email(),iii.getFrom_user());
+                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getFrom_email(),iii.getFrom_user(),iii.getMydp());
             playlist.add(playlistItems);
             sb.setLength(0);
         }
         EndOfRecords = arg0.getData().getLast();
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        pb.setVisibility(View.GONE);
 
     }
 

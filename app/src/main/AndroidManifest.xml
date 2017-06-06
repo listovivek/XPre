@@ -57,6 +57,13 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+
+
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_gcm_notification" />
+
+
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
@@ -195,6 +202,11 @@
             android:theme="@style/AppTheme"
             android:launchMode="singleTop"/>
 
+
+
+
+
+
         <!-- START Added for GCM -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -225,8 +237,10 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-        <!-- END Added for GCM -->
-        <!-- local notification-->
+         END Added for GCM
+
+
+         local notification
         <receiver android:name=".CameraRecordActivity$NotificationRetry">
             <intent-filter>
                 <action android:name="Retry"/>

@@ -13,13 +13,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Patterns;
 
 import com.quad.xpress.R;
 
@@ -40,25 +38,16 @@ public class NotifyUtils {
 
     private Context mContext;
 
-    public NotifyUtils() {
-    }
 
     public NotifyUtils(Context mContext) {
         this.mContext = mContext;
     }
 
-    public void showNotificationMessage(String title, String message, String timeStamp, Intent intent) {
-        showNotificationMessage(title, message, timeStamp, intent, null);
-    }
 
-    public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl) {
+    public void showNotificationMessage( String title,  String message,  String timeStamp, Intent intent) {
         // Check for empty push message
         if (TextUtils.isEmpty(message))
             return;
-
-
-        // notification icon
-        int icon = R.drawable.ic_ixprez_notification_new;
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
          PendingIntent resultPendingIntent =
@@ -72,24 +61,17 @@ public class NotifyUtils {
          NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 mContext);
 
-       /* final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                + "://" + mContext.getPackageName() + "/raw/notification");*/
-        final Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        if (!TextUtils.isEmpty(imageUrl)) {
 
-            if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-                    showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
+        showSmallNotification(mBuilder, title, message, timeStamp, resultPendingIntent, alarmSound);
 
-            }
-        } else {
-            showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
-            playNotificationSound();
-        }
+
+
     }
 
 
-    private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
+    private void showSmallNotification(NotificationCompat.Builder mBuilder, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound) {
 
         NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle();
       //  Log.v(" Notify", "message " + message);
@@ -105,37 +87,25 @@ public class NotifyUtils {
             inboxStyle.bigText(messages.get(i));
         }
 
-      /*  if (NotifyConfig.appendNotificationMessages) {
-            // store the notification in shared pref first
-            MyApplication.getInstance().getPrefManager().addNotification(message);
-            // get the notifications from shared preferences
-            String oldNotification = MyApplication.getInstance().getPrefManager().getNotifications();
+        int icon = R.drawable.ic_ixprez_notification_new;
 
-            List<String> messages = Arrays.asList(oldNotification.split("\\|"));
-
-            for (int i = messages.size() - 1; i >= 0; i--) {
-              //  inboxStyle.(messages.get(i));
-                inboxStyle.bigText(messages.get(i));
-            }
-        } else {
-            inboxStyle.bigText(message);
-        }*/
-
+        int icon1 = R.drawable.ic_gcm_notification;
 
         Notification notification;
-        notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
+
+        notification = mBuilder.setTicker(title).setWhen(0)
                 .setAutoCancel(true)
                 .setContentTitle("ixpress")
                 .setContentIntent(resultPendingIntent)
                 .setSound(alarmSound)
                 .setStyle(inboxStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
-                .setSmallIcon(R.drawable.ic_gcm_notification)
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                 .setContentText(message)
+                .setSmallIcon(icon1)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
         notificationManager.notify(NotifyConfig.NOTIFICATION_ID, notification);
     }
 
@@ -177,19 +147,6 @@ public class NotifyUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    // Playing notification sound
-    public void playNotificationSound() {
-        try {
-            /*Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + MyApplication.getInstance().getApplicationContext().getPackageName() + "/raw/notification");*/
-            final Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(MyApplication.getInstance().getApplicationContext(), alarmSound);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

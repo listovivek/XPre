@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:local="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:background="@drawable/bg_tile">
     <include layout="@layout/toolbar_normal"
@@ -55,7 +56,7 @@
             <ImageView
                 android:id="@+id/dash_imv_bg"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="175dp"
                 android:layout_gravity="top"
                 android:scaleType="centerCrop"
                 android:src="@drawable/app_logo"
@@ -107,7 +108,10 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal|top"
+                app:civ_border_width="6dp"
+                android:layout_marginTop="10dp"
+                app:civ_border_color="@color/white_transparent_80"
                 android:id="@+id/iv_settings_profile_circle"
                 android:src="@mipmap/ic_user_icon"/>
 

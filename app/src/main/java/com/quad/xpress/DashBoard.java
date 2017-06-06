@@ -41,6 +41,7 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -63,6 +64,7 @@ import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.Utills.pushnotification.GcmIntentService;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.acceptRejectCount.AcceptRejectCount;
@@ -640,7 +642,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         // Verifying guide
         Boolean guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
        // mtd_getProfilePic();
-        guide = false;
+      //  guide = false;
         if(!guide) {
             mtd_guide_view_pager();
         }
@@ -653,8 +655,8 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             @Override
             public void onClick(View v) {
 
-                finish();
-             /*   final Dialog proceedDiscardDialog = new Dialog(DashBoard.this,
+              //  finish();
+                final Dialog proceedDiscardDialog = new Dialog(DashBoard.this,
                         R.style.Theme_Transparent);
                 String a = "Are you sure you want to log out ?.\n\nYou will still receive notifications if haven't turned it off in your settings.";
                 proceedDiscardDialog.setContentView(R.layout.dialog_conform_discard);
@@ -675,9 +677,12 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                     @Override
                     public void onClick(View v) {
 
-                        editor.putBoolean(SharedPrefUtils.SpOtpVerify,false);
+                        editor.clear();
                         editor.commit();
-                       Exit_Actvity.exitApplicationAnRemoveFromRecent(context);
+                        finish();
+                        Intent intent = new Intent(DashBoard.this, GcmIntentService.class);
+                        intent.putExtra("key", "UNSUBSCRIBE");
+                        startService(intent);
                         proceedDiscardDialog.dismiss();
 
 
@@ -692,7 +697,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                         proceedDiscardDialog.dismiss();
 
                     }
-                });*/
+                });
             }
         });
         btn_nb_settings.setOnClickListener(new View.OnClickListener() {
@@ -1192,7 +1197,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),iii.getEmotionCount()
-                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user());
+                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),iii.getMydp());
 
             playlist.add(playlistItems);
         }

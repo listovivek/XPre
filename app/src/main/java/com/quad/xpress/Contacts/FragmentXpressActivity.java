@@ -11,6 +11,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.quad.xpress.AudioRecordActivity;
@@ -49,7 +50,12 @@ public class FragmentXpressActivity extends Fragment implements
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();
-        searchView.setQueryHint("Search your favorite user");
+        searchView.setQueryHint("Find and Xpress");
+        EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(getResources().getColor(R.color.white));
+        searchEditText.setHintTextColor(getResources().getColor(R.color.white_transparent));
+
+
 
         mAdapter = new ContactRecycleAdapter(Contact.getInstance(), FragmentXpressActivity.this,
                 FragmentXpressActivity.this);

@@ -223,6 +223,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     public void getData() {
     pbLoading.setVisibility(View.VISIBLE);
 
+        if(Index> 0)
+            PreviousNotificOUNT = 0+"";
 
         RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"10",PreviousNotificOUNT),
                 new Callback<AlertStreamResp>() {

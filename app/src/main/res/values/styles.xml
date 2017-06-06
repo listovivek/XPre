@@ -70,6 +70,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <!-- Base application theme. -->
@@ -144,8 +145,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <!-- SpeedyTheme Style which simply shows the App Logo. -->
+
     <style name="SpeedyTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_layer</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 
@@ -171,9 +174,12 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:spinnerStyle">@style/AlertDialog.AppCompat</item>
         <item name="android:windowIsFloating">false</item>
+
+
     </style>
 
     <style name="dilaogtitleapperance" parent="AppCompatAlertDialogStyle">

@@ -240,7 +240,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
     public Filter getFilter() {
         if (valueFilter == null) {
             valueFilter = new ValueFilter();
-        }
+        }else{}
         return valueFilter;
 
     }
@@ -250,10 +250,11 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
+
             HashMap<String, String> nn = new HashMap<>();
 
             if (constraint != null && constraint.length() > 0) {
-                List<String> filterList = new ArrayList<>();
+
 
                 for (int i = 0; i < mStringFilterList.size(); i++) {
                     if ((mStringFilterList.get(i).toUpperCase()).contains(constraint.toString().toUpperCase())) {
@@ -288,6 +289,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
         protected void publishResults(CharSequence constraint, FilterResults results) {
 
             if(results.count > 0){
+
                 HashMap<String, String> fill = (HashMap<String, String>) results.values;
 
                 ArrayList<String> email = new ArrayList<>();
@@ -309,15 +311,27 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                 mFilterEmail = email;
                 mFilterName = name;
                 mFilterPic = pic;
-                notifyDataSetChanged();
+
+                if(email.size()==0){
+
+                    mFilterEmail.clear();
+                    mFilterName .clear();
+                    mFilterPic .clear();
+                }
+
+
 
             }else{
+
                 mFilterEmail = mStringFilterList;
                 mFilterName = mContact.ixpressname;
-              mFilterPic = mContact.ixpress_user_pic;
-                notifyDataSetChanged();
-            }
+                mFilterPic = mContact.ixpress_user_pic;
 
+
+
+
+            }
+            notifyDataSetChanged();
 
         }
     }

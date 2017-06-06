@@ -5,7 +5,7 @@ package com.quad.xpress.Utills.helpers;
  */
 public class StaticConfig {
 
-   /* public static String ROOT_URL = "http://103.235.104.118:3000";  // live server
+  /*  public static String ROOT_URL = "http://103.235.104.118:3000";  // live server
      public static String ROOT_URL_Media = "/root/cpanel3-skel/public_html/Xpress";  //live*/
 
 

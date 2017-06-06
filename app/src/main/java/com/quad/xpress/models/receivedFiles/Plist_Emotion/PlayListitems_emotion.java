@@ -13,7 +13,7 @@ public class PlayListitems_emotion {
     private String title;
     private String created_date;
     String from_email,from_user;
-    String TBPath;
+    String TBPath,Mydp;
     String to_email;
     private String filemimeType;
     private String fileuploadPath;
@@ -34,7 +34,7 @@ public class PlayListitems_emotion {
     public PlayListitems_emotion(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                                  String fileuploadPath, String fileuploadFilename, String fileID,String tags,
                                  String likesCount, String viewsCount, String isUserLiked,String emotion,String emotion_count,
-                                    String isUserFollowing, String Privacy ,String to_email,String from_user) {
+                                    String isUserFollowing, String Privacy ,String to_email,String from_user,String Mydp) {
         this.filename = filename;
         this.title = title;
         this.to_email =to_email;
@@ -54,7 +54,15 @@ public class PlayListitems_emotion {
         this.emotion_count =emotion_count;
         this.isUserFollowing= isUserFollowing;
         this.Privacy = Privacy;
+        this.Mydp = Mydp;
+    }
 
+    public void setMydp(String mydp) {
+        Mydp = mydp;
+    }
+
+    public String getMydp() {
+        return Mydp;
     }
 
     public String getFrom_user() {

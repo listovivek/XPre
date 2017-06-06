@@ -72,7 +72,7 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(final int position) {
 
-                if (position < 2){
+                if (position < 3){
 
 
                 }else {

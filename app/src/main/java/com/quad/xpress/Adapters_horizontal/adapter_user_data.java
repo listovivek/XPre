@@ -2,14 +2,11 @@ package com.quad.xpress.Adapters_horizontal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +40,7 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
     public String file_id_;
 
     String video_type;
-    String Status = "";
+
 
 
 
@@ -91,29 +88,8 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
             Tv_comment_3 = (TextView)itemView.findViewById(R.id.textView_comment_3);
             Tv_comment_4 = (TextView)itemView.findViewById(R.id.textView_comment_4);
 
-            View contentView = LayoutInflater.from(context).inflate(R.layout.rv_options_layout, null);
-            contentView.findViewById(R.id.rv_opt_accept).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_reject).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_block).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_later).setOnClickListener(this);
 
-
-            popupWindow.setContentView(contentView);
-
-            float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140, context.getResources().getDisplayMetrics());
-            popupWindow.setWindowLayoutMode((int) width, WindowManager.LayoutParams.WRAP_CONTENT);
-            popupWindow.setWidth((int) width);
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setFocusable(true);
-            popupWindow.setTouchable(true);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
-            button.setOnClickListener(this);
-            if (StaticConfig.IsPublicActivity) {
-                rv_menu_button_ll.setVisibility(LinearLayout.GONE);
-                // RvTags.setVisibility(TextView.VISIBLE);
-            }
-
-        }
+                  }
 
 
         @Override
@@ -213,7 +189,7 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                 } else {
                     TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                 }
-                Log.v("", "TBPath " + TBPath);
+              //  Log.v("", "TBPath " + TBPath);
 
                 Glide.with(_context).load(TBPath)
                          // .diskCacheStrategy(SOURCE).skipMemoryCache(true)
@@ -229,7 +205,7 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
-                    Log.v("", "TBPath " + TBPath);
+                 //   Log.v("", "TBPath " + TBPath);
                 Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
                       //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
                         .centerCrop().into(holder.RvImage);
@@ -246,7 +222,7 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
-                    Log.v("", "TBPath " + TBPath);
+                 //   Log.v("", "TBPath " + TBPath);
 
                     Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
                           //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)

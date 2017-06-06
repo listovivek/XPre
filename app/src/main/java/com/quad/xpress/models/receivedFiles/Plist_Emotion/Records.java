@@ -3,9 +3,8 @@ package com.quad.xpress.models.receivedFiles.Plist_Emotion;
 /**
  * Created by kural on 9/3/2016.
  */
-public class Records {
-
-
+public class Records
+{
     private String fileuploadFilename;
 
     private String likeCount;
@@ -30,9 +29,9 @@ public class Records {
 
     private String from_user;
 
-    private String del_status;
-
     private String to_user;
+
+    private String del_status;
 
     private String thumbnailFilename;
 
@@ -58,6 +57,8 @@ public class Records {
 
     private String country;
 
+    private String myname;
+
     private Emotion[] emotion;
 
     private String updatedAt;
@@ -67,6 +68,8 @@ public class Records {
     private String thumbnailmimeType;
 
     private String filemimeType;
+
+    private String mydp;
 
     private String language;
 
@@ -196,16 +199,6 @@ public class Records {
         this.from_user = from_user;
     }
 
-    public String getDel_status ()
-    {
-        return del_status;
-    }
-
-    public void setDel_status (String del_status)
-    {
-        this.del_status = del_status;
-    }
-
     public String getTo_user ()
     {
         return to_user;
@@ -214,6 +207,16 @@ public class Records {
     public void setTo_user (String to_user)
     {
         this.to_user = to_user;
+    }
+
+    public String getDel_status ()
+    {
+        return del_status;
+    }
+
+    public void setDel_status (String del_status)
+    {
+        this.del_status = del_status;
     }
 
     public String getThumbnailFilename ()
@@ -336,6 +339,16 @@ public class Records {
         this.country = country;
     }
 
+    public String getMyname ()
+    {
+        return myname;
+    }
+
+    public void setMyname (String myname)
+    {
+        this.myname = myname;
+    }
+
     public Emotion[] getEmotion ()
     {
         return emotion;
@@ -386,6 +399,16 @@ public class Records {
         this.filemimeType = filemimeType;
     }
 
+    public String getMydp ()
+    {
+        return mydp;
+    }
+
+    public void setMydp (String mydp)
+    {
+        this.mydp = mydp;
+    }
+
     public String getLanguage ()
     {
         return language;
@@ -429,6 +452,6 @@ public class Records {
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", from_user = "+from_user+", del_status = "+del_status+", to_user = "+to_user+", thumbnailFilename = "+thumbnailFilename+", emotionCount = "+emotionCount+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", from_user = "+from_user+", to_user = "+to_user+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", emotionCount = "+emotionCount+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", myname = "+myname+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", mydp = "+mydp+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

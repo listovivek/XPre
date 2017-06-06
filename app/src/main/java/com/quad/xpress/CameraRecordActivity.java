@@ -104,7 +104,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     CounterClass timer;
     Animation animBlink;
     //private Context myContext;
-    private Camera mCamera = null;
+
     LinearLayout linearLayoutbtm;
     RelativeLayout m_linear_feelingwith;
     private CameraRecordGLSurfaceView mCameraView;
@@ -411,8 +411,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         AVTagsListAdapter = new ArrayAdapter(this, R.layout.spinner_autofill_av_dialouge, Tags);
         AVDialog = new Dialog(CameraRecordActivity.this, R.style.AVdialouge);
 
-        AVDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        AVDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+       /* AVDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        AVDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);*/
 
 
         AVDialog.setContentView(R.layout.av_details);
@@ -604,7 +604,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
 
-        FrontCamAvailable = myCameraProperty.FindFrontCamera(_activity, mCamera);
+
 
         timer = new CounterClass(40000, 1000);
 
@@ -721,6 +721,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 return true;
             }
         });
+
+
 
       //  mCameraView.setPictureSize(600, 800, true);
         CheckAndRequestPermission();

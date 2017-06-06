@@ -12,8 +12,7 @@ import com.tsengvn.typekit.Typekit;
 
 public class MyApplication extends Application {
 
-    public static final String TAG = MyApplication.class
-            .getSimpleName();
+    public static final String TAG = "ixpress";
 
     private static MyApplication mInstance;
 

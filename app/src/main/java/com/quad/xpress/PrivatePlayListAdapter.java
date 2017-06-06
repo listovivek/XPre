@@ -204,9 +204,13 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
         holder.time.setText(OutDate);
 
 
-        if (!list.getTags().equals("")) {
-            holder.RvTags.setVisibility(View.INVISIBLE);
-            holder.RvTags.setText(list.getTags());
+        try {
+            if (!list.getTags().equals("")) {
+                holder.RvTags.setVisibility(View.INVISIBLE);
+                holder.RvTags.setText(list.getTags());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
             if (list.getFileMimeType().equals("audio/mp3")) {

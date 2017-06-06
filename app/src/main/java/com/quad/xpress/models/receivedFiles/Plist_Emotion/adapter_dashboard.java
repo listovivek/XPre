@@ -3,14 +3,11 @@ package com.quad.xpress.models.receivedFiles.Plist_Emotion;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,7 +19,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.ErrorReporting;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Req;
@@ -44,7 +40,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
     SharedPreferences.Editor editor;
     public OnRecyclerListener recyclerListener;
     public String file_id_;
-    ErrorReporting errorReporting;
+
     String video_type;
     String Status = "";
     String TBPath;
@@ -88,41 +84,11 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             popupWindow = new PopupWindow(context);
             ll_follow_user = (LinearLayout) itemView.findViewById(R.id.ll_followuser);
 
-/*
-            Tv_comment_1 = (TextView)itemView.findViewById(R.id.textView_comment_1);
-            Tv_comment_2 = (TextView)itemView.findViewById(R.id.textView_comment_2);
-            Tv_comment_3 = (TextView)itemView.findViewById(R.id.textView_comment_3);
-            Tv_comment_4 = (TextView)itemView.findViewById(R.id.textView_comment_4);*/
-
-            View contentView = LayoutInflater.from(context).inflate(R.layout.rv_options_layout, null);
-            contentView.findViewById(R.id.rv_opt_accept).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_reject).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_block).setOnClickListener(this);
-            contentView.findViewById(R.id.rv_opt_later).setOnClickListener(this);
-
-
-            popupWindow.setContentView(contentView);
-
-            float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140, context.getResources().getDisplayMetrics());
-            popupWindow.setWindowLayoutMode((int) width, WindowManager.LayoutParams.WRAP_CONTENT);
-            popupWindow.setWidth((int) width);
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setFocusable(true);
-            popupWindow.setTouchable(true);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(context.getResources().getColor(android.R.color.transparent)));
-            button.setOnClickListener(this);
-            if (StaticConfig.IsPublicActivity) {
-                rv_menu_button_ll.setVisibility(LinearLayout.GONE);
-                // RvTags.setVisibility(TextView.VISIBLE);
-            }
-
         }
 
 
         @Override
         public void onClick(View v) {
-
-
 
 
 
@@ -164,14 +130,40 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         }
 
 
-        holder.tv_emotion_count.setText(list.getEmotion_count()+ " Rx");
+        int emotionCount  =  Integer.parseInt(list.getEmotion_count());
+        holder.tv_emotion_count.setText(""+emotionCount+" Rx");
+        if(emotionCount > 99 ){
+            emotionCount = Integer.parseInt(Integer.toString(emotionCount).substring(0, 1));
+            holder.tv_emotion_count.setText(emotionCount+" h Rx");
+        } else if(emotionCount > 999 ){
+
+            emotionCount = Integer.parseInt(Integer.toString(emotionCount).substring(0, 1));
+            holder.tv_emotion_count.setText(emotionCount+" k Rx");
+        } else if(emotionCount > 9999 ){
+            emotionCount = Integer.parseInt(Integer.toString(emotionCount).substring(0, 2));
+            holder.tv_emotion_count.setText(emotionCount+" k Rx");
+        } if(emotionCount > 9999999 ){
+            emotionCount = Integer.parseInt(Integer.toString(emotionCount).substring(0, 1));
+            holder.tv_emotion_count.setText(emotionCount+" m Rx");
+        }
+
+
 
 
         holder.tv_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent IAct = new Intent(_context, Act_user_data.class);
-                IAct.putExtra("ProfilePic",TBPath);
+                    String getMydp;
+
+                if (list.getMydp().contains(StaticConfig.ROOT_URL_Media)) {
+                    getMydp = StaticConfig.ROOT_URL + list.getMydp().replace(StaticConfig.ROOT_URL_Media, "");
+
+                } else {
+                    getMydp = StaticConfig.ROOT_URL + "/" + list.getMydp();
+                }
+
+                IAct.putExtra("ProfilePic",getMydp);
                 IAct.putExtra("username",list.from_user);
                 IAct.putExtra("fromemail",list.from_email);
                 IAct.putExtra("isfollowing",list.getIsUserFollowing());
@@ -261,6 +253,26 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
         int likes_count  =  Integer.parseInt(list.getLikesCount());
          holder.Rvlikes.setText(""+likes_count+" Likes");
+
+        if(likes_count > 99 ){
+            likes_count = Integer.parseInt(Integer.toString(likes_count).substring(0, 1));
+            holder.Rvlikes.setText(likes_count+" h Likes");
+        } else if(likes_count > 999 ){
+
+            likes_count = Integer.parseInt(Integer.toString(likes_count).substring(0, 1));
+            holder.Rvlikes.setText(likes_count+" k Likes");
+        } else if(likes_count > 9999 ){
+            likes_count = Integer.parseInt(Integer.toString(likes_count).substring(0, 2));
+            holder.Rvlikes.setText(likes_count+" k Likes");
+        } if(likes_count > 9999999 ){
+            likes_count = Integer.parseInt(Integer.toString(likes_count).substring(0, 1));
+            holder.Rvlikes.setText(likes_count+" m Likes");
+        }
+
+
+
+
+
         if (!list.getTags().equals("")) {
             holder.RvTags.setVisibility(TextView.VISIBLE);
             holder.RvTags.setText(list.getTags());
@@ -342,8 +354,24 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
+                if(views_count > 99 ){
+                views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" h Views");
+                } else if(views_count > 999 ){
 
-                holder.RvMoreTag.setText(views_count+" Views");
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } else if(views_count > 9999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 2));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } if(views_count > 9999999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" m Views");
+                }
+
+
+
+
                 file_id_=list.getFileID();
 
 
@@ -366,10 +394,23 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 holder.pbar.setVisibility(View.INVISIBLE);
 
                 recyclerListener.onItemClicked(holder.position);
-
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
+                if(views_count > 99 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" h Views");
+                } else if(views_count > 999 ){
+
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } else if(views_count > 9999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 2));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } if(views_count > 9999999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" m Views");
+                }
 
                 holder.RvMoreTag.setText(views_count+" Views");
                 file_id_=list.getFileID();
@@ -391,10 +432,23 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 holder.pbar.setVisibility(View.INVISIBLE);
 
                 recyclerListener.onItemClicked(holder.position);
-
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
+                if(views_count > 99 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" h Views");
+                } else if(views_count > 999 ){
+
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } else if(views_count > 9999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 2));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } if(views_count > 9999999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" m Views");
+                }
 
                 holder.RvMoreTag.setText(views_count+" Views");
                 file_id_=list.getFileID();
@@ -420,6 +474,21 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
+                if(views_count > 99 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" h Views");
+                } else if(views_count > 999 ){
+
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } else if(views_count > 9999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 2));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } if(views_count > 9999999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" m Views");
+                }
+
 
                 holder.RvMoreTag.setText(views_count+" Views");
                 file_id_=list.getFileID();
@@ -444,6 +513,21 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
+                if(views_count > 99 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" h Views");
+                } else if(views_count > 999 ){
+
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } else if(views_count > 9999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 2));
+                    holder.RvMoreTag.setText(views_count+" k Views");
+                } if(views_count > 9999999 ){
+                    views_count = Integer.parseInt(Integer.toString(views_count).substring(0, 1));
+                    holder.RvMoreTag.setText(views_count+" m Views");
+                }
+
 
                 holder.RvMoreTag.setText(views_count+" Views");
                 file_id_=list.getFileID();

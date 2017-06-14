@@ -50,7 +50,7 @@ public class FragmentXpressActivity extends Fragment implements
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
         searchView.clearFocus();
-        searchView.setQueryHint("Find and Xpress");
+        searchView.setQueryHint("Find and xprez");
         EditText searchEditText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(getResources().getColor(R.color.white));
         searchEditText.setHintTextColor(getResources().getColor(R.color.white_transparent));

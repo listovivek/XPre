@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.R;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
@@ -94,11 +95,6 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
 
         @Override
         public void onClick(View v) {
-
-
-
-
-
 
         }
 
@@ -191,9 +187,9 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                 }
               //  Log.v("", "TBPath " + TBPath);
 
-                Glide.with(_context).load(TBPath)
-                         // .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                        .fitCenter().into(holder.RvImage);
+
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
                 holder.Play_icon.setVisibility(View.GONE);
                 holder.audio_icon.setVisibility(View.GONE);
@@ -206,10 +202,9 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
                  //   Log.v("", "TBPath " + TBPath);
-                Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
-                      //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                        .centerCrop().into(holder.RvImage);
 
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
             }
             else if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath()!=null){
@@ -224,9 +219,9 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                     }
                  //   Log.v("", "TBPath " + TBPath);
 
-                    Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
-                          //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                            .centerCrop().into(holder.RvImage);
+
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
                    holder.Play_icon.setVisibility(View.GONE);
                    holder.audio_icon.setVisibility(View.VISIBLE);

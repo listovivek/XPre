@@ -63,7 +63,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
     String url,type,likes,views,file_id,title,ul_date,tags,IsUserLiked,bg_img_url,fromemail,isBoth;
     VideoView mVideoView;
     ProgressBar pb;
-    Boolean looping=true,orientation_poitrate= true,vid_orintaion_lanscape= false ;
+    Boolean looping=true,orientation_poitrate= true,vid_orintaion_lanscape= false,IsMyUploads ;
     NetConnectionDetector NDC;
     ImageView iv_bg,iv_audio_bg;
     ImageButton Ib_close,Ib_loop,btn_vv_next,btn_tb_back;
@@ -89,11 +89,12 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
-
+        _context =getApplicationContext();
 
         Rl_tb = (RelativeLayout) findViewById(R.id.tb);
         btn_vv_next = (ImageButton) findViewById(R.id.btn_vv_next);
 
+     //   Toast.makeText(_context, "Pvt", Toast.LENGTH_SHORT).show();
         btn_vv_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,7 +116,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        _context =getApplicationContext();
+
         ll_btm_bar = (LinearLayout) findViewById(R.id.ll_vv_data_bar);
         ll_btm = (LinearLayout) findViewById(R.id.ll_vv_btm);
         pb = (ProgressBar) findViewById(R.id.progressBar_video_view);
@@ -137,8 +138,14 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
         fromemail = getVurl.getStringExtra("FromEmail");
         isBoth = getVurl.getStringExtra("isBoth");
 
+        try {
+            IsMyUploads  = getVurl.getBooleanExtra("IsMyUploads",false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        String isPvt   = "false";
+
+        String isPvt   = "true";
 
         try {
             Likes_count = Integer.parseInt(likes);
@@ -314,8 +321,9 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
             @Override
             public void onCompletion(MediaPlayer mp) {
 
-                mtd_accept_reject();
-
+                if(!IsMyUploads) {
+                    mtd_accept_reject();
+                }
             }
         });
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -376,10 +384,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
 
             if(isPrivate){
                 ll_btm_bar.setVisibility(View.GONE);
-            }else {
-                ll_btm_bar.setVisibility(View.VISIBLE);
             }
-           // ll_btm.setVisibility(View.VISIBLE);
         }
     }
     public int getscrOrientation()
@@ -469,8 +474,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
         orientation_poitrate=false;
         if(orientation_poitrate){
 
-            ll_btm_bar.setVisibility(View.VISIBLE);
-            ll_btm.setVisibility(View.VISIBLE);
+
 
         }
 
@@ -845,8 +849,7 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
     public void onBackPressed() {
     if(!orientation_poitrate){
 
-    ll_btm_bar.setVisibility(View.VISIBLE);
-    ll_btm.setVisibility(View.VISIBLE);
+
     this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     Toast.makeText(_context,"Press back again to see Controls",Toast.LENGTH_SHORT).show();
     orientation_poitrate=true;

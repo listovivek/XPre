@@ -3,6 +3,7 @@ package com.quad.xpress;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,11 +13,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.models.clickResponce.Like_Resp;
+import com.quad.xpress.models.clickResponce.Viewed_Req;
+import com.quad.xpress.webservice.RestClient;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class Adapter_vp_horizontal extends PagerAdapter {
 	int size;
@@ -25,8 +37,9 @@ public class Adapter_vp_horizontal extends PagerAdapter {
     TextView tv_uname,tv_time,tv_title,tv_likes,tv_views,tv_reactions;
     ImageView iv_thumb;
 	CircleImageView iv_uimg;
-	Context context;
-
+	Context context,_context;
+	String file_id;
+	SharedPreferences sharedpreferences;
 
     ArrayList<String>user_img_vpdp = new ArrayList<>();
 	ArrayList<String>user_name_vpdp = new ArrayList<>();
@@ -96,8 +109,10 @@ public class Adapter_vp_horizontal extends PagerAdapter {
         } else {
             TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
         }
-		Glide.with(context).load(TBPath).placeholder(R.mipmap.ic_launcher).centerCrop().into(iv_thumb);
+	//	Glide.with(context).load(TBPath).placeholder(R.mipmap.ic_launcher).centerCrop().into(iv_thumb);
 
+		Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,15,0))
+				.into(iv_thumb);
 		//user pic
 		String TBPathu = "";
 		if (user_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
@@ -106,24 +121,32 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 			TBPathu = StaticConfig.ROOT_URL + "/" + user_img_vpdp.get(position);
 		}
 		Glide.with(context).load(TBPathu).placeholder(R.mipmap.ic_user_icon).dontAnimate().fitCenter().into(iv_uimg);
+
+		/*Glide.with(context).load(TBPathu).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+				.into(iv_uimg);*/
 		//iv_uimg.setImageURI(Uri.parse(TBPathu));
 
-        tv_title.setText(title_vpdp.get(position));
+        tv_title.setText(StringUtils.capitalize(title_vpdp.get(position)).trim());
         tv_likes.setText(" "+likes_vpdp.get(position));
         tv_views.setText(views_vpdp.get(position));
         tv_reactions.setText(reactions_vpdp.get(position));
 
 		Double Totakseconds = Double.parseDouble(time_vpdp.get(position));
         Double hours = Totakseconds / 3600;
-        if(hours>24){
-        Double Days = (hours/24);
-        String[] splitter = Days.toString().split("\\.");
-        int D = Integer.parseInt(splitter[0]);
+		Double Days = (hours/24);
+		String[] splitter = Days.toString().split("\\.");
+		String[] splitterh = hours.toString().split("\\.");
+		int D = Integer.parseInt(splitter[0]);
+        if(hours > 24){
+
         tv_time.setText(D+ " d  ");
         }
         else {
-            tv_time.setText(hours+ " h  ");
+
+            tv_time.setText(splitterh[0]+ " h  ");
         }
+
+
 		layout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -141,11 +164,19 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 					TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
 				}
 
+				file_id =file_id_vpdp.get(position);
+				mtd_views_count();
+
+				int Vc = Integer.parseInt(views_vpdp.get(position));
+				Vc++;
+
+				DashBoard.views.set(position,""+Vc);
+
 				video_act.putExtra("url",MediaPath);
 				video_act.putExtra("thumbImg",TBPath);
 				video_act.putExtra("type","video");
 				video_act.putExtra("likes",likes_vpdp.get(position));
-				video_act.putExtra("views",views_vpdp.get(position));
+				video_act.putExtra("views",""+Vc);
 				video_act.putExtra("file_id",file_id_vpdp.get(position));
 				video_act.putExtra("title",title_vpdp.get(position));
 				video_act.putExtra("tags",tags_vpdp.get(position));
@@ -183,6 +214,53 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
+	}
+
+
+	private void mtd_views_count() {
+
+		sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+
+		String viewed = "1";
+
+		//"id":"57318bd6db923d57643edd59","viewed":"1","video_type":"video"}
+		RestClient.get(context).Viewd(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Viewed_Req(file_id,viewed,"video"),
+				new Callback<Like_Resp>() {
+					@Override
+					public void success(final Like_Resp arg0, Response arg1) {
+						// LD.DismissTheDialog();
+						if (arg0.getCode().equals("200")) {
+
+							String Post_status = arg0.getStatus();
+							//     Log.d("Mes-views",Post_status);
+							if(Post_status.equals("")){
+								// Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
+							}else {
+								// Toast.makeText(_context, "Failed ", Toast.LENGTH_LONG).show();
+							}
+							// LD.DismissTheDialog();
+							//  Populate();
+						} /*else if (arg0.getCode().equals("601")) {
+							Toast.makeText(context, "Please, try again", Toast.LENGTH_LONG).show();
+							//  RefreshToken();
+						} else if (arg0.getCode().equals("202")) {
+							Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+
+						} else {
+							Toast.makeText(_context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+
+						}*/
+						//Populate();
+					}
+
+					@Override
+					public void failure(RetrofitError error) {
+						// LD.DismissTheDialog();
+
+						//Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
+					}
+				});
+
 	}
 
 }

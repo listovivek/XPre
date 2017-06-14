@@ -145,6 +145,7 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        StatiConstants.newSignIn = true;
         finish();
     }
 

@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:background="@drawable/curved_edges_white"
+android:layout_marginBottom="2dp"
     android:orientation="vertical"
 
    >
@@ -11,9 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:alpha="0.6"
-        android:padding="5dp"
-
+        android:padding="0dp"
+        android:background="@drawable/curved_edges_white"
         >
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="wrap_content"
@@ -22,6 +21,7 @@
         android:gravity="center"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
+        android:layout_margin="5sp"
         android:id="@+id/circleImageView_dvp"/>
 
         <TextView
@@ -30,13 +30,14 @@
             android:layout_height="wrap_content"
             android:text="00hrs"
             android:textSize="10sp"
-            android:textColor="@color/translucent_txt_black"
+            android:textColor="@color/black"
             android:gravity="right|end|center"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:maxLines="1"
             android:maxLength="9"
             android:ellipsize="end"
+            android:alpha=".6"
             android:layout_marginRight="1sp"
             android:drawableLeft="@drawable/ic_clock"/>
 
@@ -48,6 +49,8 @@
             android:gravity="center_vertical"
             android:textColor="@color/black"
             android:maxLines="1"
+            android:alpha=".6"
+            android:layout_centerVertical="true"
             android:maxLength="10"
             android:textSize="12sp"
             android:ellipsize="end"
@@ -66,7 +69,7 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="10"
-    android:background="@android:color/black">
+    android:background="@android:color/transparent">
     <ImageView
         android:id="@+id/dvp_iv_tmb"
         android:layout_width="match_parent"
@@ -74,8 +77,8 @@
         android:contentDescription="@string/app_name"
         android:layout_marginBottom="3dp"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_launcher"
-        android:background="@drawable/curved_edges_white"
+        android:src="@drawable/ic_gcm_notification"
+
         />
     <ImageView
         android:layout_width="45dp"

@@ -195,10 +195,8 @@
                                 android:layout_below="@+id/db_fl_btns"
                                 android:layout_width="match_parent"
                                 android:layout_height="145dp"
-                                android:focusable="false"
-                                android:focusableInTouchMode="false"
                                 android:layout_marginTop="-30dp"
-                                app:layout_scrollFlags="enterAlways|snap"
+                                android:layout_marginBottom="4dp"
                                 >
 
                                 <com.quad.xpress.Utills.ViewPagerCustom
@@ -207,8 +205,7 @@
                                     android:layout_height="145dp"
                                     android:visibility="visible"
                                     android:layout_gravity="center"
-
-                                                                       />
+                                         />
                             </me.crosswall.lib.coverflow.core.PagerContainer>
 
 

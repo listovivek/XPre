@@ -156,6 +156,7 @@
             android:orientation="horizontal"
             android:visibility="visible"
             android:layout_weight="3"
+            android:background="@android:color/transparent"
             android:layout_gravity="center_vertical">
 
 
@@ -163,12 +164,11 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:alpha=".5"
                 android:id="@+id/customFilterBtn3"
                 android:textAllCaps="false"
                 android:text="Reset"
-                android:textColor="@color/black"
-                android:background="@drawable/btn_roundededges_videorecorder"
+                android:textColor="@color/red"
+                android:background="@drawable/btn_selector_filter"
                 android:layout_alignParentBottom="true"
                 android:layout_toEndOf="@+id/button_capture"
                 android:layout_toRightOf="@+id/button_capture"
@@ -186,9 +186,8 @@
                 android:layout_toRightOf="@+id/customFilterBtn3"
                 android:textAllCaps="false"
                 android:text="Instant"
-                android:alpha=".5"
                 android:textColor="@color/black"
-                android:background="@drawable/btn_roundededges_videorecorder"
+                android:background="@drawable/btn_selector_filter"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="0dp"
                 android:layout_margin="2dp"
@@ -231,9 +230,8 @@
                 android:text="Invert"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="2dp"
-                android:alpha=".5"
                 android:textColor="@color/black"
-                android:background="@drawable/btn_roundededges_videorecorder"
+                android:background="@drawable/btn_selector_filter"
                 android:layout_alignParentBottom="true"
                 />
 
@@ -247,9 +245,8 @@
                 android:layout_alignParentBottom="true"
                 android:text="Texture"
                 android:layout_margin="2dp"
-                android:alpha=".5"
                 android:textColor="@color/black"
-                android:background="@drawable/btn_roundededges_videorecorder"
+                android:background="@drawable/btn_selector_filter"
                 android:layout_toRightOf="@+id/customFilterBtn1"
                 />
         </LinearLayout>

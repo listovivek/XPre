@@ -64,8 +64,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
     NetConnectionDetector NCD;
-     AlertStreamModelList listDatas;
-     List<AlertStreamModelList> list = new ArrayList<>();
+    AlertStreamModelList listDatas;
+    List<AlertStreamModelList> list = new ArrayList<>();
     boolean loading;
     String EndOfRecords = "0";
     ImageView iv_nothing_to_show;
@@ -226,14 +226,14 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         if(Index> 0)
             PreviousNotificOUNT = 0+"";
 
-        RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"10",PreviousNotificOUNT),
+        RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"30",PreviousNotificOUNT),
                 new Callback<AlertStreamResp>() {
 
 
                     @Override
                     public void success(AlertStreamResp alertStreamResp, Response response) {
 
-                        if(alertStreamResp.getCode().equalsIgnoreCase("200")  ){
+                        if(alertStreamResp.getCode().equalsIgnoreCase("200") &&  alertStreamResp.getData().getRecords().length != 0){
 
                             for (int i =0 ; i< alertStreamResp.getData().getRecords().length; i++){
                                 listDatas = new AlertStreamModelList(
@@ -264,21 +264,32 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
 
                             adapter.notifyDataSetChanged();
                             iv_nothing_to_show.setVisibility(View.GONE);
-                                Index++;
+                            Index++;
+
+                            if(alertStreamResp.getData().getLast().equals("1")){
+                                EndOfRecords = "1";
+                            }else {
                                 EndOfRecords = "0";
+                            }
 
-
-                        } else if(alertStreamResp.getData().getRecords().length > 10){
-                            Index = 0;
-                            EndOfRecords = "1";
-                            pbLoading.setVisibility(View.GONE);
 
                         }
-                        else if (list.isEmpty()){
+                        else if (alertStreamResp.getCode().equals("202")  ){
 
                             pbLoading.setVisibility(View.GONE);
                             iv_nothing_to_show.setVisibility(View.VISIBLE);
 
+
+                        } else if(alertStreamResp.getData().getRecords().length < 30 ||
+                                alertStreamResp.getData().getLast().equals("1") ||
+                                !list.isEmpty() && alertStreamResp.getCode().equals("200")){
+
+                        Index = 0;
+                        EndOfRecords = "1";
+                        pbLoading.setVisibility(View.GONE);
+
+                    }else {
+                            Toast.makeText(context, "Weird, I thought we fixed it.", Toast.LENGTH_SHORT).show();
                         }
 
                       //  Index++;

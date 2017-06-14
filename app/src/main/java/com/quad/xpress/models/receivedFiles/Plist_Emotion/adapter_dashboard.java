@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
@@ -25,6 +25,8 @@ import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
 import com.quad.xpress.webservice.RestClient;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -118,7 +120,8 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final PlayListitems_emotion list = rvListitems.get(position);
         holder.pbar.setVisibility(View.INVISIBLE);
-        holder.RvVideoTitle.setText(list.getTitle());
+        holder.RvVideoTitle.setText(StringUtils.capitalize(list.getTitle().trim()));
+
         holder.RvSender.setText(list.getFromEmail());
         holder.RvTime.setText(list.getCreatedDate());
         holder.RvMoreTag.setText(""+list.getViewsCount()+" Views");
@@ -176,7 +179,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
 
 
-        ViewTreeObserver vto = holder.RvImage.getViewTreeObserver();
+     /*   ViewTreeObserver vto = holder.RvImage.getViewTreeObserver();
 
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
@@ -188,7 +191,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 return true;
             }
         });
-
+*/
 
 
         if (list.getIsUserFollowing().equalsIgnoreCase("1")){
@@ -196,7 +199,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfollow,0,0,0);
 
         }else {
-            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_view_profile_icon,0,0,0);
+            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow_user ,0,0,0);
 
         }
 
@@ -284,8 +287,6 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         try {
             if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath().contains("icons/microphone.png")){
 
-
-
                 if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
 
@@ -294,9 +295,8 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 }
                // Log.v("", "TBPath " + TBPath);
 
-                Glide.with(_context).load(TBPath)
-                         // .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                        .fitCenter().into(holder.RvImage);
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
                 holder.Play_icon.setVisibility(View.GONE);
                 holder.audio_icon.setVisibility(View.GONE);
@@ -310,28 +310,20 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     }
 
 
-                Glide.with(_context).load(TBPath)
-                      //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                        .centerCrop().into(holder.RvImage);
-
-
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
             }
             else if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath()!=null){
-
-
-
 
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
-                  //  Log.v("", "TBPath " + TBPath);
 
-                    Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,15,0))
-                          //  .diskCacheStrategy(SOURCE).skipMemoryCache(true)
-                            .centerCrop().into(holder.RvImage);
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
+                        .into(holder.RvImage);
 
                    holder.Play_icon.setVisibility(View.GONE);
                    holder.audio_icon.setVisibility(View.VISIBLE);

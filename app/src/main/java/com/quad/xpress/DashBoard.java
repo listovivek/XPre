@@ -30,7 +30,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -64,7 +63,6 @@ import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
-import com.quad.xpress.Utills.pushnotification.GcmIntentService;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.acceptRejectCount.AcceptRejectCount;
@@ -136,7 +134,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
     TextView tv_nb_MyUploads,tv_nb_userName,tv_nb_contacts,tv_nb_help,tv_nb_support,tv_nb_about;
     ImageButton btn_nb_exit,btn_nb_settings;
      SlidingMenu Smenu;
-
+    Adapter_vp_horizontal adapter_vp_db;
 
     String EndOfRecords = "0";
     int Index = 0;
@@ -174,13 +172,14 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
     final ArrayList<String>user_img= new ArrayList<>();
     final ArrayList<String>thumb_url= new ArrayList<>();
     final ArrayList<String>time= new ArrayList<>();
-    final ArrayList<String>likes= new ArrayList<>();
-    final ArrayList<String>views = new ArrayList<>();
+   static final ArrayList<String>likes= new ArrayList<>();
+   static final ArrayList<String>views = new ArrayList<>();
     final ArrayList<String>media= new ArrayList<>();
     final ArrayList<String>reactions= new ArrayList<>();
     final ArrayList<String>title= new ArrayList<>();
     final ArrayList<String>file_id= new ArrayList<>();
     final ArrayList<String>tags= new ArrayList<>();
+    final ArrayList<String>isUserLiked= new ArrayList<>();
     CircleImageView iv_user_pic,iv_user_pic_nb;
     Toolbar toolbar;
     TextView tv_counter,tv_counter_nb;
@@ -240,7 +239,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 Toast customtoastx=new Toast(context);
                 customtoastx.setView(customToastroot);
                 TextView textTitle = (TextView) customToastroot.findViewById(R.id.tv_toast_title);
-                textTitle.setText("Ixprez");
+                textTitle.setText("iXprez");
                 final TextView text = (TextView) customToastroot.findViewById(R.id.tv_toast_msg);
 
                 final NotificationBadge nb_toast = (NotificationBadge) customToastroot.findViewById(R.id.toast_db_badge);
@@ -333,7 +332,11 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             public void onRefresh() {
                 playlist.clear();
                 Index = 0;
-                getData();
+                try {
+                    getData();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -483,7 +486,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 ItemParent.putExtra("ItemParent","help");
                 startActivity(ItemParent);*/
 
-                String shareBody = "Hi, iam using this Xpressive app, Ixprez to send my emotions.";
+                String shareBody = "Hi, iam using this Xpressive app, iXprez to send my emotions.";
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ixprez");
@@ -539,21 +542,23 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         //Web sv for featured vids
          mtd_getFeatured();
 
-
+         /*   myPager.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Toast.makeText(context, "vp  "+myPager.getCurrentItem(), Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });*/
 
             mPagerContainer.setPageItemClickListener(new PageItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
 
 
-                  /*  Toast.makeText(context,"position:c" + myPager.getCurrentItem()+"  "+ position,Toast.LENGTH_SHORT).show();
+                    if(position != -1) {
 
-                    if(myPager.getCurrentItem()!= position){
-
-                        Toast.makeText(context,"position:c" + position,Toast.LENGTH_SHORT).show();
-
-                   *//*     Intent video_act = new Intent(context, Actvity_video.class);
-                        String MediaPath,TBPath;
+                        Intent video_act = new Intent(context, Actvity_video.class);
+                        String MediaPath, TBPath;
                         if (media.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                             MediaPath = StaticConfig.ROOT_URL + media.get(position).replace(StaticConfig.ROOT_URL_Media, "");
                         } else {
@@ -565,24 +570,23 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                             TBPath = StaticConfig.ROOT_URL + "/" + media.get(position);
                         }
 
-                        video_act.putExtra("url",MediaPath);
-                        video_act.putExtra("thumbImg",TBPath);
-                        video_act.putExtra("type","video");
-                        video_act.putExtra("likes",media.get(position));
-                        video_act.putExtra("views",views_vpdp.get(position));
-                        video_act.putExtra("file_id",file_id_vpdp.get(position));
-                        video_act.putExtra("title",title_vpdp.get(position));
-                        video_act.putExtra("tags",tags_vpdp.get(position));
-                        video_act.putExtra("upload_date",time_vpdp);
-                        video_act.putExtra("isliked","0");
-                        video_act.putExtra("img_url",TBPath);
-                        video_act.putExtra("isPrivate","false");
+                        video_act.putExtra("url", MediaPath);
+                        video_act.putExtra("thumbImg", TBPath);
+                        video_act.putExtra("type", "video");
+                        video_act.putExtra("likes", likes.get(position));
+                        video_act.putExtra("views", views.get(position));
+                        video_act.putExtra("file_id", file_id.get(position));
+                        video_act.putExtra("title", title.get(position));
+                        video_act.putExtra("tags", tags.get(position));
+                        video_act.putExtra("upload_date", time);
+                        video_act.putExtra("isliked", "0");
+                        video_act.putExtra("img_url", TBPath);
+                        video_act.putExtra("isPrivate", "false");
                         startActivity(video_act);
-*//*
-                    }*/
+                    }
 
 
-                    mtd_getFeatured();
+                //    user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags
 
                 }
             });
@@ -620,9 +624,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 }
 
                LayoutTransition lt = new LayoutTransition();
-               lt.disableTransitionType(LayoutTransition.DISAPPEARING);
+               lt.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
                myPager.setLayoutTransition(lt);
-              // myPager.setPageTransformer(true, new DepthPageTransformer());
+
 
 
             }
@@ -642,7 +646,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         // Verifying guide
         Boolean guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
        // mtd_getProfilePic();
-      //  guide = false;
+        guide = false;
         if(!guide) {
             mtd_guide_view_pager();
         }
@@ -658,7 +662,8 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
               //  finish();
                 final Dialog proceedDiscardDialog = new Dialog(DashBoard.this,
                         R.style.Theme_Transparent);
-                String a = "Are you sure you want to log out ?.\n\nYou will still receive notifications if haven't turned it off in your settings.";
+                String a = "Are you sure you want to logout ?.\n\nYou will still receive notifications if haven't turned it off in your settings.";
+               // String a = "Are you sure you want to logout ?";
                 proceedDiscardDialog.setContentView(R.layout.dialog_conform_discard);
                 TextView tv_msg = (TextView) proceedDiscardDialog.findViewById(R.id.tv_pvt_alert_reject_msg);
                 tv_msg.setText(a);
@@ -677,12 +682,12 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                     @Override
                     public void onClick(View v) {
 
-                        editor.clear();
-                        editor.commit();
+                      /*  editor.clear();
+                        editor.commit();*/
                         finish();
-                        Intent intent = new Intent(DashBoard.this, GcmIntentService.class);
+                      /*  Intent intent = new Intent(DashBoard.this, GcmIntentService.class);
                         intent.putExtra("key", "UNSUBSCRIBE");
-                        startService(intent);
+                        startService(intent);*/
                         proceedDiscardDialog.dismiss();
 
 
@@ -869,7 +874,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         appendProfilePic.clear();
 
 
-        Log.d("email contactttss", Contact.getInstance().email_list.toString());
+       // Log.d("email contactttss", Contact.getInstance().email_list.toString());
 
         if (Contact.getInstance().email_list != null) {
 
@@ -969,10 +974,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                         }
                         noofsize= featuredResp.getData().length;
-                        Adapter_vp_horizontal adapter_vp_db = new Adapter_vp_horizontal(DashBoard.this,noofsize,user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags);
+                        adapter_vp_db = new Adapter_vp_horizontal(DashBoard.this,noofsize,user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags);
                         myPager.setOffscreenPageLimit(adapter_vp_db.getCount());
-                        myPager.setAdapter(adapter_vp_db);
-                        adapter_vp_db.notifyDataSetChanged();
+
                         // myPager.setOffscreenPageLimit(2);
                         // myPager.setCurrentItem(1,true);
 
@@ -985,6 +989,8 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                                 .build();
 
                         //  Toast.makeText(_activity, ""+media.size(), Toast.LENGTH_LONG).show();
+                        myPager.setAdapter(adapter_vp_db);
+                        adapter_vp_db.notifyDataSetChanged();
                         mtd_counter();
                         //  mtd_getProfilePic();
 
@@ -997,6 +1003,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
 
                         myPager = (ViewPagerCustom) findViewById(R.id.reviewpager);
                         mPagerContainer.setVisibility(View.GONE);
+
                     }});
 
     }
@@ -1013,7 +1020,11 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         Rv_lists.setAdapter(adapterRcv);
         playlist.clear();
         Index = 0;
-        getData();
+        try {
+            getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Index++;
 
         // show hide floating btn
@@ -1026,7 +1037,11 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                 pb = (ProgressBar) findViewById(R.id.progressBar_dash);
                 pb.setVisibility(View.VISIBLE);
                 Index ++;
-                getData();
+                try {
+                    getData();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -1079,7 +1094,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         if(Api_Popular){
 
 
-            RestClient.get(context).MyPublicLists_Popular(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
+            RestClient.get(context).MyPublicLists_Popular(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -1118,7 +1133,7 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
                         }
                     });
         }else {
-            RestClient.get(context).Recent(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "10",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
+            RestClient.get(context).Recent(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -1441,7 +1456,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             videoIntent.putExtra("url",Selected_file_url);
             videoIntent.putExtra("type",selected_file_mime);
             videoIntent.putExtra("likes",playlistItems.getLikesCount());
-            videoIntent.putExtra("views",playlistItems.getViewsCount());
+            int vCout = Integer.parseInt(playlistItems.getViewsCount());
+            vCout++;
+            videoIntent.putExtra("views",""+vCout);
             videoIntent.putExtra("file_id",playlistItems.getFileID());
             videoIntent.putExtra("title",playlistItems.getTitle());
             videoIntent.putExtra("tags",playlistItems.getTags());
@@ -1452,9 +1469,9 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             startActivity(videoIntent);
 
             //  new DownloadFileFromURL().execute(Selected_file_url);
-            Log.v("serverplusUrl", "" + Selected_file_url);
+           // Log.v("serverplusUrl", "" + Selected_file_url);
         } else if (!NCD.isConnected(context)) {
-            Toast.makeText(context, "No Internet to download", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Check your connectivity.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -1542,6 +1559,14 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
         super.onResume();
       //  mtd_pvtCount();
         //Change value of like count here based on input on AVDisply Screen
+        if(Actvity_video.like_clicked && Actvity_video.LikeChangedValue == 0){
+
+
+            playlist.get(previousposition).setLikesCount(""+0);
+            playlist.get(previousposition).setIsUserLiked("0");
+            adapterRcv.notifyDataSetChanged();
+
+        }
 
         if( Actvity_video.LikeChangedValue != 0){
 
@@ -1585,6 +1610,22 @@ public class DashBoard extends AppCompatActivity implements adapter_dashboard.On
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(is_vp_Touched){
+
+          user_name.clear();
+            user_img.clear();
+            thumb_url.clear();
+            time.clear();likes.clear();
+            views.clear();media.clear();
+            reactions.clear();title.clear();
+            file_id.clear();tags.clear();isUserLiked.clear();
+
+
+            mtd_getFeatured();
+
+
+
         }
 
         is_vp_Touched = false ;

@@ -88,7 +88,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         _activity = this;
         StaticConfig.IsPublicActivity = true;
         TextView tv_tb_title = (TextView) findViewById(R.id.tb_normal_title);
-        tv_tb_title.setText("Your Uploads");
+        tv_tb_title.setText("My uploads");
         ImageButton  btn_tb_back = (ImageButton) findViewById(R.id.tb_normal_back);
         btn_tb_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,8 +328,20 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             img_url = "audio";
         }
 
+        Intent videoIntent = null;
 
-        Intent videoIntent = new Intent(MyUploads.this,Actvity_video.class);
+        if(!Api_private_uploads){
+
+            videoIntent    = new Intent(MyUploads.this,Actvity_video.class);
+            videoIntent.putExtra("isPrivate","false");
+        }else {
+
+            videoIntent    = new Intent(MyUploads.this,Actvity_videoPlayback_Private.class);
+            videoIntent.putExtra("isPrivate","true");
+        }
+
+
+
         videoIntent.putExtra("url",Selected_file_url);
         videoIntent.putExtra("type",playlist.get(position).getFileMimeType());
         videoIntent.putExtra("likes",playlist.get(position).getLikesCount());
@@ -340,7 +352,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         videoIntent.putExtra("upload_date",playlist.get(position).getCreatedDate());
         videoIntent.putExtra("isliked",playlist.get(position).getIsUserLiked());
         videoIntent.putExtra("img_url",img_url);
-        videoIntent.putExtra("isPrivate","false");
+        videoIntent.putExtra("IsMyUploads",true);
         startActivity(videoIntent);
 
 

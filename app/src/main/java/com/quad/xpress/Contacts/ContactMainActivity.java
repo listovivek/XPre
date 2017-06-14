@@ -164,7 +164,7 @@ public class ContactMainActivity extends AppCompatActivity implements View.OnCli
     private void setUpViewPager(ViewPager mViewPager) {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragmentXpressActivity(), "Ixpress");
+        adapter.addFragment(new FragmentXpressActivity(), "Ixprez");
         adapter.addFragment(new FragmentRecentActivity(), "Recent");
         mViewPager.setAdapter(adapter);
 

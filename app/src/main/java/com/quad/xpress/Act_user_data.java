@@ -106,7 +106,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         if(isfollowing.equals("1")){
             btn_follow.setImageResource(R.drawable.ic_unfollow);
         }else {
-            btn_follow.setImageResource(R.drawable.ic_follow_user);
+            btn_follow.setImageResource(R.drawable.ic_view_profile_icon);
         }
 
 
@@ -149,13 +149,18 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         }
 
 
+        if(sharedpreferences.getString(SharedPrefUtils.SpEmail, "").equals(fromemail)){
+            btn_follow.setVisibility(View.GONE);
+        }
+
+
         btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(isfollowing.equals("1")){
                    UnSubcribed(fromemail);
-                    btn_follow.setImageResource(R.drawable.ic_follow_user);
+                    btn_follow.setImageResource(R.drawable.ic_view_profile_icon);
                     isfollowing = "0";
 
                 }else {

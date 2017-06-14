@@ -7,14 +7,15 @@
     swipe:leftEdgeSwipeOffset="0dp"
     swipe:rightEdgeSwipeOffset="0dp"
     android:layout_gravity="center"
-    android:layout_marginTop="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginLeft="15dp"
-    swipe:cardBackgroundColor="@color/cardview_light_background">
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    swipe:cardBackgroundColor="@color/curved_dark">
 
     <LinearLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="240dp"
+        android:padding="2dp"
         android:layout_height="match_parent"
         android:background="@drawable/private_recycle_view"
         android:weightSum="3">
@@ -81,11 +82,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/private_recycle_curve"
         android:orientation="horizontal"
+        android:background="@drawable/curved_dark"
         android:id="@+id/pvt_relative_foreground"
   >
-
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fl_img">
 
             <ImageView
                 android:id="@+id/RvImage"
@@ -93,15 +97,35 @@
                 android:layout_height="80dp"
                 android:layout_margin="5sp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_play"/>
+                android:src="@drawable/ic_play">
 
+        </ImageView>
+        <ImageView
+            android:id="@+id/RvImage_overlay"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5sp"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play"
+            android:scaleType="centerCrop"/>
 
+            <ImageView
+                android:id="@+id/RvImage_overlay_audio"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="5sp"
+                android:visibility="invisible"
+                android:layout_gravity="left|top"
+                android:src="@drawable/ic_mic"
+                android:scaleType="centerCrop"/>
+        </FrameLayout>
 
             <TextView
                 android:id="@+id/RvVideoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/RvImage"
+                android:layout_toRightOf="@+id/fl_img"
                 android:singleLine="true"
                 android:text="New Text"
                 android:layout_marginTop="10dp"
@@ -114,7 +138,7 @@
                 android:id="@+id/RvSender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/RvImage"
+                android:layout_toRightOf="@+id/fl_img"
                 android:layout_below="@+id/RvVideoTitle"
                 android:layout_marginBottom="3sp"
                 android:layout_marginLeft="5sp"
@@ -182,6 +206,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
+
             android:layout_alignLeft="@+id/RvSender"
             android:layout_alignStart="@+id/RvSender"
             android:layout_below="@+id/RvSender">

@@ -42,7 +42,7 @@
         android:id="@+id/iv_show_profile_blur"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        android:backgroundTint="@color/white_transparent_80"
+        android:backgroundTint="@color/white"
         android:backgroundTintMode="add"
     android:background="@drawable/dashboard_bg"
 
@@ -111,6 +111,6 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:rippleColor="@color/white_transparent_80"
-        app:srcCompat="@drawable/ic_follow_user" />
+        app:srcCompat="@drawable/ic_view_profile_icon" />
 
 </android.support.design.widget.CoordinatorLayout>

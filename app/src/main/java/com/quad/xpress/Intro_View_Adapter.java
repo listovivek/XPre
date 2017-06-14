@@ -94,4 +94,5 @@ public class Intro_View_Adapter extends PagerAdapter {
         ((ViewPager) container).removeView((RelativeLayout) object);
 
     }
+
 }

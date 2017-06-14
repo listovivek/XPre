@@ -180,6 +180,7 @@
                     android:layout_gravity="left|center_vertical"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:inputType="textCapWords"
                     android:typeface="normal"/>
 
 

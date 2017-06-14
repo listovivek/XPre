@@ -137,7 +137,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
 
         TextView tv_tb_title = (TextView) findViewById(R.id.tb_normal_title);
-        tv_tb_title.setText("Your Private List");
+        tv_tb_title.setText("My private xpressions");
 
 
         if (NCD.isConnected(context)) {

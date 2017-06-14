@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/ic_private_btm_selected"
+
+
+    <item android:drawable="@color/RedAccent"
         android:state_pressed="true" />
-    <item android:drawable="@drawable/ic_private_btm_selected"
+    <item android:drawable="@color/colorPrimary_transparent"
         android:state_focused="true" />
-    <item android:drawable="@drawable/ic_private_btm" />
-    <item android:state_selected="@bool/default_circle_indicator_snap"/>
+  <item android:drawable="@color/white_transparent_80"/>
 </selector>

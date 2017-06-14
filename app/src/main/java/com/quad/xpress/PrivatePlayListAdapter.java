@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.quad.xpress.Contacts.Contact;
@@ -28,10 +29,14 @@ import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.PlayListitems;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayListAdapter.MyViewHolder> {
 
@@ -52,7 +57,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
         public TextView RvSender;
         public TextView RvTags;
         //public TextView RvTime;
-        public ImageView RvImage;
+        public ImageView RvImage,iv_plyIcon, iv_mic_placeholder;
         public LinearLayout rv_menu_button_ll;
         public SwipeLayout rv_swipeLayout;
         public TextView date, time;
@@ -71,6 +76,8 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
             rv_menu_button_ll = (LinearLayout) itemView.findViewById(R.id.rv_menu_button_ll);
             button = (ImageButton) itemView.findViewById(R.id.menu_button);
             RvImage = (ImageView) itemView.findViewById(R.id.RvImage);
+            iv_plyIcon = (ImageView) itemView.findViewById(R.id.RvImage_overlay);
+            iv_mic_placeholder = (ImageView) itemView.findViewById(R.id.RvImage_overlay_audio);
             RvVideoTitle = (TextView) itemView.findViewById(R.id.RvVideoTitle);
             RvSender = (TextView) itemView.findViewById(R.id.RvSender);
             RvTags = (TextView) itemView.findViewById(R.id.RvTags);
@@ -149,7 +156,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final PlayListitems list = rvListitems.get(position);
-        holder.RvVideoTitle.setText(list.getTitle());
+        holder.RvVideoTitle.setText(StringUtils.capitalize(list.getTitle().trim()));
         holder.RvSender.setText(list.getFromEmail());
         //holder.RvTime.setText(list.getCreatedDate());
 
@@ -213,25 +220,46 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
             e.printStackTrace();
         }
         try {
+
+
+            String TBPath;
+
+            if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
+                TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
+            } else {
+                TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
+            }
+
+
+
             if (list.getFileMimeType().equals("audio/mp3")) {
+
                 Glide.with(_context).load(R.drawable.ic_mic_placeholder)
                         .into(holder.RvImage);
-            } else if (list.getFileMimeType().equals("video/mp4")) {
-                String TBPath;
 
-                Log.v("Tpath", "list.getTBPath() " + list.getTBPath());
 
-                if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
-                    TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                } else {
-                    TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
+
+                if(TBPath!= null){
+
+                    Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,7,0))
+                            .into(holder.RvImage);
+                    holder.iv_mic_placeholder.setVisibility(View.VISIBLE);
                 }
-                Log.v("", "TBPath " + TBPath);
 
-                Glide.with(_context)
-                        .load(TBPath)
+
+            } else if (list.getFileMimeType().equals("video/mp4")) {
+
+
+
+
+                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,7,0))
                         .into(holder.RvImage);
+                holder.iv_plyIcon.setVisibility(View.VISIBLE);
+
             }
+
+
+
         } catch (Exception e) {
             Log.v("Exception ", "Exception " + e);
 
@@ -244,11 +272,11 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
             holder.RvImage.setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP);
         }
         else if(Contact.getInstance().email_list.isEmpty()){
-            holder.rl_foreground.setBackgroundResource(R.drawable.private_recycle_curve);
+            holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
             holder.RvImage.clearColorFilter();
         }
         else {
-            holder.rl_foreground.setBackgroundResource(R.drawable.private_recycle_curve);
+            holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
             holder.RvImage.clearColorFilter();
         }
 

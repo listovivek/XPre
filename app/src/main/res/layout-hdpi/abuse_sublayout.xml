@@ -20,7 +20,7 @@
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:textStyle="bold"
-            android:text="Report Abuse"
+            android:text="Report abuse"
             android:textSize="20sp" />
 
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="55dp"
             android:background="@drawable/btn_round_red"
-            android:text="Post"
+            android:text="Report"
             android:textColor="@color/white"
             android:layout_marginEnd="55dp"
             android:textAllCaps="false"
@@ -43,16 +43,19 @@
             android:id="@+id/abuse_edittext"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:hint="Report Abuse"
+            android:hint="Report abuse if you find this clip to be in violation of iXprez guide lines."
             android:textColor="@color/white"
             android:paddingLeft="5dp"
+            android:gravity="start"
             android:textColorHint="@color/white_transparent_80"
-            android:background="@android:color/transparent"
-            android:textCursorDrawable="@color/black"
+            android:background="@drawable/abuse_shape"
             android:layout_marginLeft="55dp"
             android:minLines="3"
+            android:drawableTint="@color/white_transparent_80"
+            android:foregroundTintMode="add"
             android:layout_marginBottom="17dp"
             android:layout_above="@+id/abuse_send"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:layout_centerHorizontal="true" />
 
         <Button
@@ -60,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_round_purple"
-            android:text="Discard"
+            android:text="Cancel"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:layout_marginBottom="28dp"

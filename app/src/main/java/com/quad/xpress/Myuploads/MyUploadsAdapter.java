@@ -22,6 +22,8 @@ import com.quad.xpress.R;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyViewHolder> {
@@ -154,7 +156,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
     public void onBindViewHolder(final MyViewHolder holder,  int position) {
         final PlayListitems_emotion list = rvListitems.get(position);
         holder.pbar.setVisibility(View.INVISIBLE);
-        holder.RvVideoTitle.setText(list.getTitle());
+        holder.RvVideoTitle.setText(StringUtils.capitalize(list.getTitle().trim()));
         holder.RvSender.setText(list.getFromEmail());
         holder.RvTime.setText(list.getCreatedDate());
         holder.RvMoreTag.setText(list.getViewsCount()+" Views");

@@ -15,15 +15,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.daimajia.swipe.SwipeLayout;
 import com.quad.xpress.R;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.MyViewHolder>{
 
@@ -84,7 +89,7 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final AlertStreamModelList notificationStreamModelList = ListData.get(position);
-        holder.title.setText(notificationStreamModelList.getTitle());
+        holder.title.setText(StringUtils.capitalize(notificationStreamModelList.getTitle()).trim());
         holder.user_name.setText(notificationStreamModelList.getSendername());
         String DateTime = notificationStreamModelList.getCreatedDate();
         String outTime="",OutDate = "";
@@ -98,7 +103,7 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
         holder.rv_swipeLayout.addDrag(SwipeLayout.DragEdge.Right,
                 holder.rv_swipeLayout.findViewById(R.id.bottom_wrapper));
 
-        if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Private")|| notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){
+        if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Private")){
             holder.swipe_Layout.setVisibility(View.VISIBLE);
             holder.swipe_follower.setVisibility(View.GONE);
         }/*else if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){
@@ -203,22 +208,25 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
             tb = notificationStreamModelList.getTBPath();
             if (tb.contains(StaticConfig.ROOT_URL_Media)) {
                 TBPath = StaticConfig.ROOT_URL + tb.replace(StaticConfig.ROOT_URL_Media, "");
-                Glide.with(context).load(TBPath).placeholder(R.drawable.app_logo).centerCrop().into(holder.iv_thumb);
+
+
+                Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+                        .into(holder.iv_thumb);
+
+
             } else {
                 TBPath = StaticConfig.ROOT_URL + "/" + tb;
-                Glide.with(context).load(TBPath).centerCrop().into(holder.iv_thumb);
+                Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+                        .into(holder.iv_thumb);
             }
             holder.iv_playIcon.setVisibility(View.VISIBLE);
 
         }else {
-
-            Glide.with(context).load(R.drawable.ic_mic_placeholder).fitCenter().into(holder.iv_thumb);
+            Glide.with(context).load(R.drawable.ic_mic_placeholder).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+                    .into(holder.iv_thumb);
+          //  Glide.with(context).load(R.drawable.ic_mic_placeholder).fitCenter().into(holder.iv_thumb);
              holder.iv_playIcon.setVisibility(View.GONE);
-        /*    Glide.with(context).load(R.drawable.ic_mic).fitCenter().into(holder.iv_playIcon);
 
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.FILL_PARENT);
-            params.gravity = Gravity.BOTTOM|Gravity.RIGHT;
-            holder.iv_playIcon.setLayoutParams(params);*/
 
         }
 

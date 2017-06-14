@@ -33,7 +33,6 @@ import android.widget.Toast;
 
 import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SaveResponseForOffline;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 import com.quad.xpress.models.Follow.FollowRep;
@@ -200,73 +199,77 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         final ArrayList<String>tags= new ArrayList<>();
 
 
-        RestClient.get(context).GetTrendingSearch(new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
-                new Callback<Tsresp>() {
-                    @Override
-                    public void success(Tsresp tsresp, Response response) {
-                      int RSize =   tsresp.getData().getRecords().length ;
-                        if(tsresp.getCode().equals("200")){
-                            for (int i=0 ; i < tsresp.getData().getRecords().length;i++){
-                                user_name.add(tsresp.getData().getRecords()[i].getFrom_email());
-                                user_img.add(tsresp.getData().getRecords()[i].getThumbnailPath());
-                                thumb_url.add(tsresp.getData().getRecords()[i].getThumbnailPath());
-                                time.add(tsresp.getData().getRecords()[i].getCreated_date());
-                                likes.add(tsresp.getData().getRecords()[i].getLikeCount());
-                                views.add(tsresp.getData().getRecords()[i].getView_count());
-                                media.add(tsresp.getData().getRecords()[i].getFileuploadPath());
-                                reactions.add(tsresp.getData().getRecords()[i].getLikeCount());
-                                title.add(tsresp.getData().getRecords()[i].getTitle());
-                                file_id.add(tsresp.getData().getRecords()[i].get_id());
-                                tags.add(tsresp.getData().getRecords()[i].getTags());
+        try {
+            RestClient.get(context).GetTrendingSearch(new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+                    new Callback<Tsresp>() {
+                        @Override
+                        public void success(Tsresp tsresp, Response response) {
+                          int RSize =   tsresp.getData().getRecords().length ;
+                            if(tsresp.getCode().equals("200")){
+                                for (int i=0 ; i < tsresp.getData().getRecords().length;i++){
+                                    user_name.add(tsresp.getData().getRecords()[i].getFrom_email());
+                                    user_img.add(tsresp.getData().getRecords()[i].getThumbnailPath());
+                                    thumb_url.add(tsresp.getData().getRecords()[i].getThumbnailPath());
+                                    time.add(tsresp.getData().getRecords()[i].getCreated_date());
+                                    likes.add(tsresp.getData().getRecords()[i].getLikeCount());
+                                    views.add(tsresp.getData().getRecords()[i].getView_count());
+                                    media.add(tsresp.getData().getRecords()[i].getFileuploadPath());
+                                    reactions.add(tsresp.getData().getRecords()[i].getLikeCount());
+                                    title.add(tsresp.getData().getRecords()[i].getTitle());
+                                    file_id.add(tsresp.getData().getRecords()[i].get_id());
+                                    tags.add(tsresp.getData().getRecords()[i].getTags());
 
-                                // Toast.makeText(_activity, "rved"+user_name.get(0), Toast.LENGTH_LONG).show();
+                                    // Toast.makeText(_activity, "rved"+user_name.get(0), Toast.LENGTH_LONG).show();
+                                }
+
+                            }else {
+                                Toast.makeText(getApplicationContext(), "Featured Videos are not Available", Toast.LENGTH_LONG).show();
+
+                            }
+                            int noofsize= RSize;
+                            Adapter_vp_search adapter_vp_db = new Adapter_vp_search(Search_activity_list.this,noofsize,user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags);
+                            Vp_search.setOffscreenPageLimit(adapter_vp_db.getCount());
+                            Vp_search.setAdapter(adapter_vp_db);
+                            adapter_vp_db.notifyDataSetChanged();
+                            pb_loading.setVisibility(View.GONE);
+
+                            new CoverFlow.Builder()
+                                    .with(Vp_search)
+                                    .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
+                                    .scale(0)
+                                    .spaceSize(2f)
+                                    .rotationY(0f)
+                                    .build();
+
+
+                            Intent getSearch =  getIntent();
+
+                            try {
+                                if(getSearch.getStringExtra("searchstring") != null){
+                                    Search_query =  getSearch.getStringExtra("searchstring");
+                                    searchView_SA.setQuery(Search_query,false);
+                                    getSearchData();
+                                }
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
                             }
 
-                        }else {
-                            Toast.makeText(getApplicationContext(), "Featured Videos are not Available", Toast.LENGTH_LONG).show();
-
-                        }
-                        int noofsize= RSize;
-                        Adapter_vp_search adapter_vp_db = new Adapter_vp_search(Search_activity_list.this,noofsize,user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags);
-                        Vp_search.setOffscreenPageLimit(adapter_vp_db.getCount());
-                        Vp_search.setAdapter(adapter_vp_db);
-                        adapter_vp_db.notifyDataSetChanged();
-                        pb_loading.setVisibility(View.GONE);
-
-                        new CoverFlow.Builder()
-                                .with(Vp_search)
-                                .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
-                                .scale(0)
-                                .spaceSize(2f)
-                                .rotationY(0f)
-                                .build();
-
-
-                        Intent getSearch =  getIntent();
-
-                        try {
-                            if(getSearch.getStringExtra("searchstring") != null){
-                                Search_query =  getSearch.getStringExtra("searchstring");
-                                searchView_SA.setQuery(Search_query,false);
-                                getSearchData();
-                            }
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
 
                         }
 
-
+                        @Override
+                        public void failure(RetrofitError error) {
+                            pb_loading.setVisibility(View.GONE);
+                        }
                     }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        pb_loading.setVisibility(View.GONE);
-                    }
-                }
-
-        );
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
       /*  RestClient.get(context).GetFeatured(new featuredReq("video"),
@@ -618,7 +621,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         final TextView tv_nothing_to_show = (TextView) findViewById(R.id.tv_nothing_to_show);
         tv_nothing_to_show.setVisibility(View.GONE);
 
-        RestClient.get(context).SearchFilesApi(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new SearchFilesReq(Search_query,Integer.toString(Index), "10",SortType,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(context).SearchFilesApi(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new SearchFilesReq(Search_query,Integer.toString(Index), "30",SortType,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<PlayListResp_emotion>() {
                     @Override
                     public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -627,16 +630,13 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
                             // Toast.makeText(context, "Data().length" + arg0.getData().length, Toast.LENGTH_LONG).show();
                             ParsePublicFiles(arg0);
-                            if (Index == 1) {
-                                SaveResponseForOffline srfo = new SaveResponseForOffline(context);
-                                srfo.save(arg1, SharedPrefUtils.SpPublicFiles);
-                            }
-                            Index = Index + 1;
+
+
                         } else if (arg0.getCode().equals("601")) {
                             RefreshTokenMethodName = "getData";
                             RefreshToken();
 
-                        } else if (arg0.getCode().equals("202")) {
+                        } else if (arg0.getCode().equals("202") && Index == 0) {
                             String a1;
                             a1 ="Nothing found with the name ";
                             ToastCustom toastCustom = new ToastCustom(Search_activity_list.this);
@@ -652,11 +652,11 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
 
                         } else {
-                            Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+                           // Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
 
                         }
-                        Index = Index + 1;
+                       // Index = Index + 1;
                     }
 
                     @Override
@@ -670,8 +670,10 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     }
 
     private void ParsePublicFiles(PlayListResp_emotion arg0) {
+
         int RLength = arg0.getData().getRecords().length;
         StringBuilder sb=new StringBuilder();
+
         for (int i = 0; i < RLength; i++) {
            Records iii = arg0.getData().getRecords()[i];
             try {
@@ -699,6 +701,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         EndOfRecords = arg0.getData().getLast();
 
         adapter.notifyDataSetChanged();
+        Index = Index + 1;
         rl_heading.setVisibility(View.VISIBLE);
         tv_search_title.setText(Search_query);
       //  tv_tb.setText(Search_query);

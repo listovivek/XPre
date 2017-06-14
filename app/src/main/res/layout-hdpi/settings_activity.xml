@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:id="@+id/scrollView"
-        android:layout_above="@+id/ll_helppanel"
+
         >
 
 
@@ -56,13 +56,13 @@
             <ImageView
                 android:id="@+id/dash_imv_bg"
                 android:layout_width="match_parent"
-                android:layout_height="175dp"
+                android:layout_height="165dp"
                 android:layout_gravity="top"
+                android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
                 android:src="@drawable/app_logo"
-                android:contentDescription="@string/app_name"
-                android:tintMode="src_atop"
-                android:tint="@color/translucent_white"/>
+                android:tint="@color/translucent_white"
+                android:tintMode="src_atop" />
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,8 +74,8 @@
 
             <ImageView
                 android:id="@+id/imageView_profie_pic"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:visibility="gone"
                 android:layout_gravity="center_horizontal|bottom"
                 android:background="@drawable/bg_round_corner" />
@@ -109,9 +109,9 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_horizontal|top"
-                app:civ_border_width="6dp"
-                android:layout_marginTop="10dp"
-                app:civ_border_color="@color/white_transparent_80"
+                app:civ_border_width="3dp"
+                android:layout_marginTop="15dp"
+                app:civ_border_color="@color/white"
                 android:id="@+id/iv_settings_profile_circle"
                 android:src="@mipmap/ic_user_icon"/>
 
@@ -190,6 +190,7 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="3dp"
                     android:layout_weight="2"
+                    android:inputType="phone"
                     android:background="@android:color/transparent"
                     android:gravity="right"
                     android:textColor="@color/white"
@@ -432,8 +433,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/btn_round_orange"
             android:text="SAVE"
             android:paddingLeft="20dp"
@@ -448,7 +449,8 @@
             android:layout_alignParentBottom="true"
             android:id="@+id/ll_helppanel"
             android:gravity="center_vertical|bottom"
-            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             >
             <ImageButton
                 android:layout_width="wrap_content"

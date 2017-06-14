@@ -30,10 +30,10 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -104,7 +104,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     CounterClass timer;
     Animation animBlink;
     //private Context myContext;
-
+    static int MapKey;
     LinearLayout linearLayoutbtm;
     RelativeLayout m_linear_feelingwith;
     private CameraRecordGLSurfaceView mCameraView;
@@ -154,7 +154,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     String RefreshTokenMethodName = "";
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
-
+    TypedValue typedValue;
     LinearLayout linear_discard, Linear_cameracapture;
     PulsatorLayout pulsator;
     PulsatorLayout pulsator_dialouge;
@@ -213,8 +213,13 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
         Log.v("preference", sptoken + spCOuntry + spLauguge);
 
-        StatiConstants.TfV = VideoTypedFile;
-        StatiConstants.TfT = ThumbnailTypedFile;
+
+    //    Toast.makeText(_activity, ""+ToEmail+AVTitle+ShareAsText+VideoTypedFile+ThumbnailTypedFile, Toast.LENGTH_SHORT).show();
+        StatiConstants.mapTo = ToEmail;
+        StatiConstants.mapTitile = AVTitle;
+        StatiConstants.mapType = ShareAsText;
+        StatiConstants.mapVideoTyped = VideoTypedFile;
+        StatiConstants.mapThumbnailTyped = ThumbnailTypedFile;
 
         RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), VideoTypedFile, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), ToEmail, AVTitle, Tags, ShareAsText,
                 sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"), sharedpreferences.getString(SharedPrefUtils.SpLanguage, Locale.getDefault().getDisplayLanguage()), ThumbnailTypedFile, new Callback<SVideoResp>() {
@@ -243,6 +248,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                                 }
                             }
 
+                            DeleteUploadedFile(videoUri);
+
                         } else if (sVideoResp.getCode().equals("601")) {
                             RefreshTokenMethodName = "VideoUploadToServer";
                             RefreshToken(videoUri);
@@ -265,7 +272,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
                     @Override
                     public void failure(RetrofitError error) {
-                        localNotify.UploadNotificationFailedRetry(LOCAL_NOTIFY_STATIC_ID, "Slow Internet Connection, Push failed.",_activity,VideoTypedFile,ToEmail,ShareAsText,ThumbnailTypedFile);
+                        localNotify.UploadNotificationFailedRetry(LOCAL_NOTIFY_STATIC_ID, AVTitle,_activity,VideoTypedFile,ToEmail,ShareAsText,ThumbnailTypedFile);
+
                        // DeleteUploadedFile(videoUri);
                     }
                 });
@@ -315,6 +323,15 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
             MyButtons btn = (MyButtons)v;
 
+
+            v.setBackgroundResource(R.drawable.btn_selector_filter);
+
+            /* if (typedValue.resourceId != 0) {
+                v.setBackgroundResource(typedValue.resourceId);
+            } else {
+                // this should work whether there was a resource id or not
+                v.setBackgroundColor(typedValue.data);
+            }*/
             mCameraView.setFilterWithConfig(btn.filterConfig);
             mCurrentConfig = btn.filterConfig;
         }
@@ -327,6 +344,10 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         setContentView(R.layout.new_video_capture);
         toolBar = (RelativeLayout) findViewById(R.id.tb_top);
         Hs_filter = (HorizontalScrollView) findViewById(R.id.scroll_filter);
+
+         typedValue = new TypedValue();
+         getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -353,24 +374,24 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         String effectConfigsLocal[] = {
 
-                StatiConstants.effectConfigs[8],
-                StatiConstants.effectConfigs[10],
+                StatiConstants.effectConfigs[99],
+                StatiConstants.effectConfigs[39],
+                StatiConstants.effectConfigs[19],
                 StatiConstants.effectConfigs[11],
                 StatiConstants.effectConfigs[12],
-                StatiConstants.effectConfigs[18],
-                StatiConstants.effectConfigs[19],
-                StatiConstants.effectConfigs[24],
-                StatiConstants.effectConfigs[25],
-                StatiConstants.effectConfigs[26],
-                StatiConstants.effectConfigs[31],
-                StatiConstants.effectConfigs[39],
                 StatiConstants.effectConfigs[59],
                 StatiConstants.effectConfigs[62],
-                StatiConstants.effectConfigs[99],
+                StatiConstants.effectConfigs[26],
+                StatiConstants.effectConfigs[25],
+                StatiConstants.effectConfigs[24]
 
         };
 
 
+
+        String effectConfigsLocalname[] = {
+                "Gorgeous","Cold","Charcoal","Waves","Pencil","Chrome","Lomo","Aqua","Reddish","Dotted"
+        };
 
 
         for(int i = 0; i != effectConfigsLocal.length; ++i) {
@@ -384,7 +405,10 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
             button.setLayoutParams(params);
 
-            button.setText("Filter " + i);
+            button.setText(effectConfigsLocalname[i]);
+
+
+
             button.setOnClickListener(mFilterSwitchListener);
             layout.addView(button);
         }
@@ -524,19 +548,19 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                                       public void onClick(View view) {
                                           Uri RecordedFileUri = null;
 
-                                          if (CD.isConnected(getApplicationContext())) {
+                                        /*  if (CD.isConnected(getApplicationContext())) {*/
                                                RecordedFileUri = Uri.parse(Environment.getExternalStorageDirectory() + "/" + AppName + "/" +
                                                       FileNameWithMimeType);
-                                              Log.v("", "RecordedFileUri " + RecordedFileUri);
+                                           //   Log.v("", "RecordedFileUri " + RecordedFileUri);
                                               VideoUploadToServer(RecordedFileUri);
                                               finish();
 
-                                          }else{
+                                        /*  }else{
 
                                               localNotify.UploadNotificationFailed(LOCAL_NOTIFY_STATIC_ID, "Slow Internet Connection, Push failed, TryAgain",_activity,RecordedFileUri);
                                               Toast.makeText(_activity, "You are offline", Toast.LENGTH_SHORT).show();
                                               finish();
-                                          }
+                                          }*/
 
 
                                       }
@@ -754,12 +778,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.CAMERA},
                             VIDEO_PERMISSION_REQUEST_CANCEL);
                     //Intent2Activity();
+
+                    mCameraView.setEnabled(true);
                 } else {
                    /*CheckAndRequestPermission();
                     Toast.makeText(_context, "Kindly, give storage permission to store and" +
                             " access the video and audio", Toast.LENGTH_SHORT).show();*/
                     this.finish();
-                    CheckAndRequestPermission();
+                  //  CheckAndRequestPermission();
 
                 }
                 break;
@@ -767,6 +793,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.RECORD_AUDIO},
                             AUDIO_PERMISSION_REQUEST_CODE);
+                    mCameraView.setEnabled(true);
+
                 }else{
                     this.finish();
                 }
@@ -788,6 +816,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) { // Marshmallow+
             if (checkPermission(Permission2) && checkPermission(Permission4) && checkPermission(permission5) && checkPermission(permission6)) {
                 // Intent2Activity();
+
                 return;
             }
             requestPermission(Permission4);
@@ -1247,16 +1276,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        /*try {
-            if (SendDiscardDialog != null && SendDiscardDialog.isShowing()) {
-                SendDiscardDialog.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        mCameraView.onPause();
+
         super.onDestroy();
+
+        stopRecording();
+
     }
+
+
 
   /*  public void ShowSendOrDiscardDialog() {
 
@@ -1336,7 +1363,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         int result = ContextCompat.checkSelfPermission(_activity, permission);
         if (result == PackageManager.PERMISSION_GRANTED) {
-
+            mCameraView.setEnabled(true);
             return true;
         } else {
 
@@ -1408,14 +1435,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public void onClick(View view) {
 
         if(view.getId() == R.id.customFilterBtn1){
-            customFilter1.setBackgroundColor(getResources().getColor(R.color.primary));
+   /*         customFilter1.setBackgroundColor(getResources().getColor(R.color.primary));
             customFilter1.setTextColor(Color.WHITE);
             customFilter2.setTextColor(Color.BLACK);
             customFilter3.setTextColor(Color.BLACK);
             customFilter4.setTextColor(Color.BLACK);
             customFilter4.setBackgroundColor(getResources().getColor(R.color.white));
             customFilter2.setBackgroundColor(getResources().getColor(R.color.white));
-            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));
+            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));*/
             int Filter1=1;
             Filter1 %= CGENativeLibrary.cgeGetCustomFilterNum();
             mCameraView.queueEvent(new Runnable() {
@@ -1426,14 +1453,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 }
             });
         }else if(view.getId() == R.id.customFilterBtn2){
-            customFilter2.setBackgroundColor(getResources().getColor(R.color.primary));
+           /* customFilter2.setBackgroundColor(getResources().getColor(R.color.primary));
             customFilter2.setTextColor(Color.WHITE);
             customFilter1.setTextColor(Color.BLACK);
             customFilter3.setTextColor(Color.BLACK);
             customFilter4.setTextColor(Color.BLACK);
             customFilter1.setBackgroundColor(getResources().getColor(R.color.white));
             customFilter4.setBackgroundColor(getResources().getColor(R.color.white));
-            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));
+            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));*/
             int Filter2=2;
             Filter2 %= CGENativeLibrary.cgeGetCustomFilterNum();
             mCameraView.queueEvent(new Runnable() {
@@ -1447,14 +1474,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
             mCameraView.setFilterWithConfig(StatiConstants.effectConfigs[0]);
             int Filter3=3;
-            customFilter3.setBackgroundColor(getResources().getColor(R.color.primary));
+           /* customFilter3.setBackgroundColor(getResources().getColor(R.color.primary));
             customFilter3.setTextColor(Color.WHITE);
             customFilter2.setTextColor(Color.BLACK);
             customFilter4.setTextColor(Color.BLACK);
             customFilter1.setTextColor(Color.BLACK);
             customFilter1.setBackgroundColor(getResources().getColor(R.color.white));
             customFilter2.setBackgroundColor(getResources().getColor(R.color.white));
-            customFilter4.setBackgroundColor(getResources().getColor(R.color.white));
+            customFilter4.setBackgroundColor(getResources().getColor(R.color.white));*/
 
 
 
@@ -1467,14 +1494,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 }
             });*/
         }else if(view.getId() == R.id.customFilterBtn4){
-            customFilter4.setBackgroundColor(getResources().getColor(R.color.primary));
+           /* customFilter4.setBackgroundColor(getResources().getColor(R.color.primary));
             customFilter4.setTextColor(Color.WHITE);
             customFilter2.setTextColor(Color.BLACK);
             customFilter3.setTextColor(Color.BLACK);
             customFilter1.setTextColor(Color.BLACK);
             customFilter1.setBackgroundColor(getResources().getColor(R.color.white));
             customFilter2.setBackgroundColor(getResources().getColor(R.color.white));
-            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));
+            customFilter3.setBackgroundColor(getResources().getColor(R.color.white));*/
             int Filter4=4;
             Filter4 %= CGENativeLibrary.cgeGetCustomFilterNum();
             mCameraView.queueEvent(new Runnable() {
@@ -1534,53 +1561,64 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
       @Override
       public void onReceive(final Context context, Intent intent) {
 
-          Toast.makeText(context, "dd", Toast.LENGTH_SHORT).show();
 
-          if(StatiConstants.mapVideoTyped != null || StatiConstants.mapThumbnailTyped != null) {
+          SharedPreferences sharedpreferences;
+          sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
 
-
-              SharedPreferences sharedpreferences;
-              SharedPreferences.Editor editor;
-              sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-
+          String sptoken = sharedpreferences.getString(SharedPrefUtils.SpToken, "");
+          String spCOuntry = sharedpreferences.getString(SharedPrefUtils.SpCountry, "");
+          String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
 
 
-        String sptoken = sharedpreferences.getString(SharedPrefUtils.SpToken, "");
-        String spCOuntry = sharedpreferences.getString(SharedPrefUtils.SpCountry, "");
-        String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
+          Toast.makeText(context, "dd"+
+                 sharedpreferences.getString(SharedPrefUtils.SpEmail, "")+
+                 StatiConstants.mapTo+
+                 StatiConstants.mapTitile
+                 /*StatiConstants.mapType+
+                 spCOuntry+
+                spLauguge+
+                  Locale.getDefault().getDisplayLanguage())+*/
+                 , Toast.LENGTH_SHORT).show();
+
+          if(StatiConstants.mapVideoTyped != null && StatiConstants.mapThumbnailTyped != null && StatiConstants.mapTitile != null
+                  && StatiConstants.mapTo != null  && StatiConstants.mapType != null) {
+
+              Toast.makeText(context, ""+StatiConstants.mapTitile, Toast.LENGTH_SHORT).show();
 
         Log.v("Offline upload log", sptoken + spCOuntry + spLauguge);
 
-/*
-   RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
-   VideoTypedFile,
-   sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
-   ToEmail,
-   AVTitle,
-    Tags,
-     ShareAsText,
 
-                sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
-                 sharedpreferences.getString(SharedPrefUtils.SpLanguage,
-                  Locale.getDefault().getDisplayLanguage()),
-                   ThumbnailTypedFile,
-                    new Callback<SVideoResp>() {, @Part("country") String country, @Part("language") String language, @Part("thumbnail") TypedFile thumbnail,
-                      Callback<SVideoResp> callback);
+/*   RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, "")
+, VideoTypedFile,
+sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
+ ToEmail,
+ AVTitle,
+  Tags,
+   ShareAsText,
+   sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
+   sharedpreferences.getString(SharedPrefUtils.SpLanguage,
+    Locale.getDefault().getDisplayLanguage()),
+    ThumbnailTypedFile,
+    new Callback<SVideoResp>() {
+                    @Override*/
+           /*   for (int i = 0; i <StatiConstants.mapThumbnailTyped.size() ; i++) {
+
+                  Toast.makeText(context, ""+StatiConstants.mapThumbnailTyped.size(), Toast.LENGTH_SHORT).show();
+              }
 */
-
-
+                MapKey =1;
 
               RestClient.get(context).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
-                StatiConstants.TfV,
+                StatiConstants.mapVideoTyped,
                 sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
-                StatiConstants.mapTo.get(1),
-                StatiConstants.mapTitile.get(1),
+                StatiConstants.mapTo,
+                StatiConstants.mapTitile,
                 "Retry,Upload",
-                StatiConstants.mapType.get(1),
+                StatiConstants.mapType,
                 sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
                 sharedpreferences.getString(SharedPrefUtils.SpLanguage,
-                        Locale.getDefault().getDisplayLanguage()),
-                StatiConstants.TfT,
+                Locale.getDefault().getDisplayLanguage()),
+                StatiConstants.mapThumbnailTyped,
 
                 new Callback<SVideoResp>() {
                     @Override
@@ -1601,7 +1639,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
                         }
                         else {
-                            Toast.makeText(context, "else", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, ""+sVideoResp.getCode(), Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -1626,13 +1664,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public void onBackPressed() {
         super.onBackPressed();
 
-        if(AVDialog.isShowing()){
-            finish();
-        }else {
-            linearLayoutbtm.setVisibility(View.INVISIBLE);
-            AVDialog.show();
-        }
-
+       finish();
 
 
     }

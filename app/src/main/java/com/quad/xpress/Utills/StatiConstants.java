@@ -1,8 +1,5 @@
 package com.quad.xpress.Utills;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import retrofit.mime.TypedFile;
 
 /**
@@ -16,13 +13,14 @@ public class StatiConstants {
     public static Boolean newSignIn = false;
     public static String Retry = "Retry",Ignore= "Ignore";
 
-    public static  Map<Integer,TypedFile> mapVideoTyped = new HashMap<Integer, TypedFile>();
-    public static  Map<Integer,String> mapTitile = new HashMap<Integer, String>();
-    public static  Map<Integer,String> mapTo = new HashMap<Integer, String>();
-    public static  Map<Integer,String> mapType = new HashMap<Integer, String>();
-    public static  Map<Integer,TypedFile> mapThumbnailTyped = new HashMap<Integer, TypedFile>();
+    public static  TypedFile mapVideoTyped ;
+    public static  String mapTitile;
+    public static  String mapTo ;
+    public static  String mapType ;
+    public static  TypedFile mapThumbnailTyped;
 
-    public static TypedFile TfV,TfT;
+
+
     public static String TagList = "Aggressive, Beautiful, Bold, Brilliant, Calm, Charming, Classic, " +
             "Contemporary, Cool, Dark, Dramatic, Elegant, Epic, Funny, Hilarious, Upbeat, Informative, Inspirational," +
             " Intellectual, Modern, Motivational, Heartbreaking, Personal, Political, Professional, " +

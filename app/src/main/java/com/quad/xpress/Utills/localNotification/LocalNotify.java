@@ -62,6 +62,7 @@ public class LocalNotify {
         mContext = _activity.getApplicationContext();
         if (notificationManager != null) {
             mBuilder.setContentText(Title)
+                    .setContentTitle("xpressed")
                     .setSmallIcon(R.drawable.ic_done)
                     // Removes the progress bar
                     .setProgress(0, 0, false)
@@ -72,11 +73,11 @@ public class LocalNotify {
     public void UploadNotificationFailedRetry(int ID, String Title, Activity _activity, TypedFile uri, String toUser, String toType, TypedFile typedFile) {
 
 
-        StatiConstants.mapVideoTyped.put(1,uri);
+     /*   StatiConstants.mapVideoTyped.put(1,uri);
         StatiConstants.mapTitile.put(1,Title);
         StatiConstants.mapTo.put(1,toUser);
         StatiConstants.mapType.put(1,toType);
-        StatiConstants.mapThumbnailTyped.put(1,typedFile);
+        StatiConstants.mapThumbnailTyped.put(1,typedFile);*/
 
           mContext = _activity.getApplicationContext();
 

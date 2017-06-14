@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.quad.xpress.Utills.StatiConstants;
+import com.quad.xpress.Utills.helpers.FieldsValidator;
 import com.quad.xpress.Utills.helpers.LoadingDialog;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
@@ -136,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements
         tv_support = (TextView) findViewById(R.id.tv_settings_support);
 
 
+
         tv_about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,7 +174,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
       TextView  tv_tb_title = (TextView) findViewById(R.id.tb_normal_title);
       ImageButton  btn_back_tb= (ImageButton) findViewById(R.id.tb_normal_back);
-        tv_tb_title.setText("Your Profile");
+        tv_tb_title.setText("My profile");
         btn_back_tb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,9 +301,12 @@ public class SettingsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
 
+               if (FieldsValidator.hasTextUserName(tv_userName) && FieldsValidator.isPhoneNumber(tv_mobile, true))
+                {
+
                 SaveInServer();
 
-                //save_pic();
+                }
 
 
             }
@@ -416,8 +421,10 @@ public class SettingsActivity extends AppCompatActivity implements
                    /*CheckAndRequestPermission();
                     Toast.makeText(_context, "Kindly, give storage permission to store and" +
                             " access the video and audio", Toast.LENGTH_SHORT).show();*/
-                    this.finish();
-                    CheckAndRequestPermission();
+                  //  this.finish();
+                    Toast.makeText(context, "Kindly, give storage permission to store and" +
+                            " access the video and audio", Toast.LENGTH_SHORT).show();
+                   // CheckAndRequestPermission();
 
                 }
                 break;
@@ -429,6 +436,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         mCropImageView.setOnSetImageUriCompleteListener(this);
         mCropImageView.setOnCropImageCompleteListener(this);
+
 
     }
 
@@ -534,7 +542,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     tv_spinner_lang_holder.setText(lang_list.get(0));
                     LD.DismissTheDialog();
 
-
+                    scrollView.scrollTo(0, (int) btn_scroll2btm.getY());
 
                 }
 
@@ -562,8 +570,8 @@ public class SettingsActivity extends AppCompatActivity implements
         CountryCode=spin_country.getSelectedItem().toString();
 
 
-        RestClient.get(_activity).Registration(new RegRequest(sharedpreferences.getString(SharedPrefUtils.SpUserName, ""),
-                sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), sharedpreferences.getString(SharedPrefUtils.SpPhone, ""),
+        RestClient.get(_activity).Registration(new RegRequest(tv_userName.getText().toString(),
+                sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), tv_mobile.getText().toString(),
                 CountryCode, LangNo, sharedpreferences.getString(SharedPrefUtils.SpDeviceId, ""),
                 sharedpreferences.getString(SharedPrefUtils.SpGcmToken, ""), "Android",
                 Integer.toString(Build.VERSION.SDK_INT), Build.MANUFACTURER + " " + Build.MODEL,"1",notification,remainder), new Callback<RegResp>() {
@@ -572,16 +580,16 @@ public class SettingsActivity extends AppCompatActivity implements
                 LD.DismissTheDialog();
                 if (arg0.getStatus().equals("OK")) {
 
-                    editor.putString(SharedPrefUtils.SpUserName, tv_userName.getText().toString());
-                    editor.putString(SharedPrefUtils.SpEmail, tv_email.getText().toString());
-                    editor.putString(SharedPrefUtils.SpPhone, tv_mobile.getText().toString());
+                    editor.putString(SharedPrefUtils.SpUserName, tv_userName.getText().toString().trim());
+                    editor.putString(SharedPrefUtils.SpEmail, tv_email.getText().toString().trim());
+                    editor.putString(SharedPrefUtils.SpPhone, tv_mobile.getText().toString().trim());
                     editor.putString(SharedPrefUtils.SpLanguage, LangNo);
                     editor.putString(SharedPrefUtils.SpCountry, CountryCode);
                     editor.commit();
                     btn_cancel.setText("Back");
 
                     Toast.makeText(_activity, "Saved...", Toast.LENGTH_LONG).show();
-                    finish();
+
                 } else {
                     Toast.makeText(_activity, "Settings save failed. Try again later ", Toast.LENGTH_LONG).show();
                 }

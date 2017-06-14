@@ -2,9 +2,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/private_recycle_curve"
+    android:background="@drawable/curved_dark"
     android:layout_margin="5dp"
-    android:padding="3dp"
+    android:padding="1dp"
     >
 
     <com.daimajia.swipe.SwipeLayout
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         android:id="@+id/swipe"
-        app:cardBackgroundColor="@color/primary"
+
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -128,14 +128,14 @@
         android:layout_marginLeft="4dp"
         android:addStatesFromChildren="true"
         android:descendantFocusability="beforeDescendants"
-        android:background="@drawable/private_recycle_curve"
+        android:background="@drawable/curved_dark"
         android:clickable="true"
         >
 
         <FrameLayout
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@color/BG_dark"
+
             android:id="@+id/fl_parent"
             android:padding="5dp"
             android:descendantFocusability="beforeDescendants"
@@ -146,7 +146,6 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:layout_gravity="center"
                 android:id="@+id/ns_adp_iv_thumb"
                 android:scaleType="fitXY"/>
@@ -233,8 +232,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"
-            android:scaleX="-1.2"
-            android:scaleY="-1.2"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
             android:src="@drawable/ic_reviel"/>
 
     </RelativeLayout>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/toolbar_normal"
 
@@ -13,6 +15,7 @@
         android:background="@color/black">
 
 
+
         <VideoView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,6 +26,8 @@
 
             />
 
+
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,6 +35,17 @@
             android:scaleType="centerCrop"
 
             />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal|top"
+            app:civ_border_width="3dp"
+            android:layout_marginTop="60dp"
+            app:civ_border_color="@color/white_transparent_80"
+            android:id="@+id/iv_videoview_profile_circle"
+            android:visibility="gone"
+            android:src="@mipmap/ic_user_icon"/>
+
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
@@ -41,6 +57,22 @@
 
 
             />
+<com.quad.xpress.Utills.audio_visulizer
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:id="@+id/audio_visulizer_videoview"
+    android:layout_gravity="center"/>
+
+      <!--  <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="sds"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="200dp"
+            android:id="@+id/tv_timer"/>-->
+
+
 
         <ProgressBar
             style="?android:attr/progressBarStyle"
@@ -151,6 +183,7 @@
                         android:gravity="left|center_vertical"
                         android:id="@+id/tv_vv_views"
                         android:textColor="@color/white"
+
                         android:drawableLeft="@drawable/ic_view_white"
                         android:layout_weight="1"/>
 

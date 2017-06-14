@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Utills.helpers.StaticConfig;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -115,7 +117,7 @@ public class Adapter_vp_search extends PagerAdapter {
 		}
 		//iv_uimg.setImageURI(Uri.parse(TBPathu));
 
-        tv_title.setText(title_vpdp.get(position));
+        tv_title.setText(StringUtils.capitalize(title_vpdp.get(position)).trim());
         tv_likes.setText(likes_vpdp.get(position)+ " Likes");
         tv_views.setText(views_vpdp.get(position)+ " Views");
         tv_reactions.setText(reactions_vpdp.get(position)+ " Reactions");

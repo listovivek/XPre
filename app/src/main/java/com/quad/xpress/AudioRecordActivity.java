@@ -48,7 +48,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Contacts.Contact;
@@ -151,7 +150,7 @@ public class AudioRecordActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-
+        super.onBackPressed();
 
         finish();
 
@@ -311,8 +310,7 @@ public class AudioRecordActivity extends Activity {
         btn_AD_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AudioRecordActivity.this, "Press microphone Button again to stop.",
-                        Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
 
@@ -806,26 +804,30 @@ public class AudioRecordActivity extends Activity {
         // Stop recording and release resource
         //AudioTimerValue.setVisibility(TextView.GONE);
         //AudioSeekBar.setProgress(0);
-        mAudioRecorder.stop();
-        mAudioRecorder.release();
-        mAudioRecorder = null;
-        StartRecord.setEnabled(false);
-        StartRecord.setBackgroundResource(R.drawable.circle_with_crossmic);
-        if (ARTimer != null)
-            ARTimer.cancel();
-        // Change isRecording flag to false
-        isAudioRecording = true;
-        if(AudioTimerValue.getText().equals("00:40")){
-            AudioTimerValue.setText("Out of time.");
-            pulsator_pic.stop();
-        }else
-        {  AudioTimerValue.setText("Done.");}
+        if(mAudioRecorder!= null) {
 
-        AudioTimerValue.clearAnimation();
-        SdDiscard.setVisibility(View.VISIBLE);
-        SdSend.setVisibility(View.VISIBLE);
+            mAudioRecorder.stop();
+            mAudioRecorder.release();
+            mAudioRecorder = null;
+            StartRecord.setEnabled(false);
+            StartRecord.setBackgroundResource(R.drawable.circle_with_crossmic);
+            if (ARTimer != null)
+                ARTimer.cancel();
+            // Change isRecording flag to false
+            isAudioRecording = true;
+            if (AudioTimerValue.getText().equals("00:40")) {
+                AudioTimerValue.setText("Out of time.");
+                pulsator_pic.stop();
+            } else {
+                AudioTimerValue.setText("Done.");
+            }
 
-        handler.removeCallbacks(updateVisualizer);
+            AudioTimerValue.clearAnimation();
+            SdDiscard.setVisibility(View.VISIBLE);
+            SdSend.setVisibility(View.VISIBLE);
+
+            handler.removeCallbacks(updateVisualizer);
+        }
     }
 
 
@@ -896,7 +898,7 @@ public class AudioRecordActivity extends Activity {
                     public void success(SVideoResp sVideoResp, Response response) {
                         if (sVideoResp.getCode().equals("200")) {
 
-                            localNotify.FinishedUploadNotification(LOCAL_NOTIFY_STATIC_ID, AVTitle + " xpressed successfully");
+                            localNotify.FinishedUploadNotification(LOCAL_NOTIFY_STATIC_ID, AVTitle + " successfully");
 
 
                             SpannableString ss = new SpannableString(AVTitle+ " xpressed to "+ ToEmail);
@@ -990,7 +992,7 @@ public class AudioRecordActivity extends Activity {
                     Toast.makeText(_context, "Kindly, give storage permission to store and" +
                             " access the video and audio", Toast.LENGTH_SHORT).show();*/
                     this.finish();
-                    CheckAndRequestPermission();
+                  //  CheckAndRequestPermission();
 
                 }
                 break;
@@ -1016,6 +1018,13 @@ public class AudioRecordActivity extends Activity {
             // Intent2Activity();
         }
 
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StopAudioRecording();
     }
 
     private void requestPermission(String Permission) {

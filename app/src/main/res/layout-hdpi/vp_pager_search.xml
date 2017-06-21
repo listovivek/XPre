@@ -1,16 +1,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="145dp"
     android:layout_marginRight="20dp"
     android:background="@drawable/curved_edges_white_bottomcurved"
     android:orientation="vertical"
     >
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/primary"
+        >
+    </FrameLayout>
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="10"
     android:background="@android:color/black">
+
+
     <ImageView
         android:id="@+id/dvp_iv_tmb"
         android:layout_width="match_parent"
@@ -38,7 +45,7 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:alpha="1"
-
+        android:background="@color/white"
         >
         <TextView
             android:text="Video Title"

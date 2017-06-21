@@ -174,7 +174,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
        // playlist.clear();
         pb_loading.setVisibility(View.VISIBLE);
 
-        RestClient.get(context).MyPrivateLists(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivatePlayListReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), Integer.toString(Index), "10"),
+        RestClient.get(context).MyPrivateLists(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivatePlayListReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), Integer.toString(Index), "30"),
                 new Callback<PlayListResp>() {
                     @Override
                     public void success(final PlayListResp arg0, Response arg1) {
@@ -654,7 +654,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
         editor.commit();
 
 
-        RestClient.get(context).PrivateAcceptReject(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivARreq(fileID, FileType, Feedback), new Callback<PrivARresp>() {
+        RestClient.get(context).PrivateAcceptReject(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivARreq(fileID, FileType, Feedback
+                ,sharedpreferences.getString(SharedPrefUtils.SpEmail,"")), new Callback<PrivARresp>() {
             @Override
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {

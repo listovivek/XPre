@@ -101,6 +101,7 @@ public class Adapter_vp_search extends PagerAdapter {
             }
 			Glide.with(context).load(TBPath).fitCenter().into(iv_thumb);
 
+		//	Glide.with(context).load(TBPath).placeholder(R.drawable.ic_user_icon).dontAnimate().bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,10,0)).into(iv_thumb);
 			//user pic
 			String TBPathu = "";
 			if (user_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {

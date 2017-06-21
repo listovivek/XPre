@@ -52,11 +52,12 @@ public class Adapter_vp_horizontal extends PagerAdapter {
     ArrayList<String>title_vpdp = new ArrayList<>();
     ArrayList<String>file_id_vpdp = new ArrayList<>();
     ArrayList<String>tags_vpdp = new ArrayList<>();
+	ArrayList<String>isUserLiked_vpdp = new ArrayList<>();
 	//user_name,user_img,thumb_url,time,likes,views,media,reactions,title
 
-	public Adapter_vp_horizontal(DashBoard dashBoard, int noofsizeguide, ArrayList<String>user_name, ArrayList<String>user_img,
-								 ArrayList<String>thumb_url, ArrayList<String>time, ArrayList<String>likes, ArrayList<String>views,
-								 ArrayList<String>media, ArrayList<String>reactions, ArrayList<String>title, ArrayList<String>file_id, ArrayList<String>tags) {
+	public Adapter_vp_horizontal(DashBoard dashBoard, int noofsizeguide, ArrayList<String> user_name, ArrayList<String> user_img,
+								 ArrayList<String> thumb_url, ArrayList<String> time, ArrayList<String> likes, ArrayList<String> views,
+								 ArrayList<String> media, ArrayList<String> reactions, ArrayList<String> title, ArrayList<String> file_id, ArrayList<String> tags, ArrayList<String> isUserLiked) {
 		// TODO Auto-generated constructor stub
 		size = noofsizeguide;
 		act = dashBoard;
@@ -71,6 +72,7 @@ public class Adapter_vp_horizontal extends PagerAdapter {
         title_vpdp = title;
         file_id_vpdp=file_id;
         tags_vpdp=tags;
+		isUserLiked_vpdp =isUserLiked;
 
 	}
 
@@ -152,16 +154,22 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 			public void onClick(View v) {
 				//Toast.makeText(context, "p"+position, Toast.LENGTH_SHORT).show();
 				Intent video_act = new Intent(context, Actvity_video.class);
-				String MediaPath,TBPath;
-				if (media_url_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
-					MediaPath = StaticConfig.ROOT_URL + media_url_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-				} else {
-					MediaPath = StaticConfig.ROOT_URL + "/" + media_url_vpdp.get(position);
-				}
-				if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
-					TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-				} else {
-					TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
+				String MediaPath = null,TBPath =null;
+
+
+				try {
+					if (media_url_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
+                        MediaPath = StaticConfig.ROOT_URL + media_url_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
+                    } else {
+                        MediaPath = StaticConfig.ROOT_URL + "/" + media_url_vpdp.get(position);
+                    }
+					if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
+                        TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
+                    } else {
+                        TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
+                    }
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 
 				file_id =file_id_vpdp.get(position);
@@ -181,9 +189,11 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 				video_act.putExtra("title",title_vpdp.get(position));
 				video_act.putExtra("tags",tags_vpdp.get(position));
 				video_act.putExtra("upload_date",time_vpdp);
-				video_act.putExtra("isliked","0");
+				video_act.putExtra("isliked",isUserLiked_vpdp.get(position));
 				video_act.putExtra("img_url",TBPath);
 				video_act.putExtra("isPrivate","false");
+				video_act.putExtra("fromfeatured",true);
+
 				v.getContext().startActivity(video_act);
 
 

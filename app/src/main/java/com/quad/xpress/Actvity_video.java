@@ -103,7 +103,7 @@ public class Actvity_video extends AppCompatActivity{
     EditText abuse_edt;
     Dialog mBottomSheetDialog, AVDialog;
     AutoLabelUI tagviewLable;
-    static Boolean like_clicked = false;
+    static Boolean like_clicked = false, isFromFeatured =false;
     SpannableString spannableStringTag;
     //TextView btn_post,btn_cancel,btn_abuse;
    // EditText et_abuse;
@@ -208,6 +208,13 @@ public class Actvity_video extends AppCompatActivity{
         IsUserLiked = getVurl.getStringExtra("isliked");
         bg_img_url = getVurl.getStringExtra("img_url");
 
+        try {
+            isFromFeatured = getVurl.getBooleanExtra("fromfeatured",false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         String isPvt   = "false";
 
         try {
@@ -238,6 +245,7 @@ public class Actvity_video extends AppCompatActivity{
         tv_views = (TextView) findViewById(R.id.tv_vv_views);
         tv_comment = (TextView) findViewById(R.id.tv_vv_emotion);
         tv_date  = (TextView) findViewById(R.id.tv_vv_date);
+
         if(IsUserLiked.equals("1")){
             tv_likes.setCompoundDrawablesWithIntrinsicBounds( R.drawable.ic_heart_white_liked, 0, 0, 0);
         }else {

@@ -20,13 +20,20 @@
         android:layout_width="71dp"
         android:layout_height="71dp"
         android:layout_marginTop="0dp"
-        app:civ_border_width="2dp"
+        app:civ_border_width="0dp"
         android:layout_marginBottom="0dp"
-        app:civ_border_color="@android:color/transparent"
+        app:civ_border_color="@color/primary_transparent"
         android:layout_gravity="center"
         android:src="@mipmap/ic_user_icon"
         />
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="71dp"
+    android:layout_centerVertical="true"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="40dp"
+    android:layout_toRightOf="@+id/rounded_iv_profile"
+    android:layout_toEndOf="@+id/rounded_iv_profile">
 
     <TextView
         android:id="@+id/tv_label"
@@ -37,8 +44,7 @@
         android:text="User Name"
         android:layout_marginLeft="0dp"
         android:textColor="@color/white"
-        android:layout_toRightOf="@+id/rounded_iv_profile"
-        android:layout_toEndOf="@+id/rounded_iv_profile" />
+       />
 
     <TextView
         android:id="@+id/tv_email"
@@ -49,10 +55,13 @@
         android:ellipsize="end"
         android:layout_marginLeft="0dp"
         android:layout_below="@+id/tv_label"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/white"
-        android:layout_toRightOf="@+id/rounded_iv_profile"
-        android:layout_toEndOf="@+id/rounded_iv_profile" />
+        />
+
+</RelativeLayout>
+
+
 
     <ImageButton
         android:id="@+id/contact_right_button"

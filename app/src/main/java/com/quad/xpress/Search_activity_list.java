@@ -79,7 +79,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     String EndOfRecords = "0";
     private List<PlayListitems_emotion> playlist = new ArrayList<>();
     ProgressDialog pDialog;
-    ProgressBar pb_loading;
+    ProgressBar pb_loading,pb_loading_search;
     String AppName,SortType = "like";
     SearchView searchView,searchView_SA;
     ViewPager Vp_search;
@@ -102,6 +102,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         context = getApplicationContext();
         activity = this;
         pb_loading = (ProgressBar) findViewById(R.id.pb_search_act);
+        pb_loading_search = (ProgressBar) findViewById(R.id.progressBar2_search);
         Vp_search = (ViewPager) findViewById(R.id.viewPager_search);
         recyclerView = (RecyclerView) findViewById(R.id.RvRcvVideo);
         recyclerView.setHasFixedSize(true);
@@ -350,32 +351,73 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     protected void onResume() {
         super.onResume();
 
-        if( Actvity_video.LikeChangedValue != 0){
+        try {
+            if(Actvity_video.like_clicked && Actvity_video.LikeChangedValue == 0 && !Actvity_video.isFromFeatured){
 
-            PlayListitems_emotion  playlistItemstemp = playlist.get(previousposition);
-
-            // is userlike derevative
-
-            int lkin = Integer.parseInt(playlistItemstemp.getLikesCount());
-
-            if(lkin > Actvity_video.LikeChangedValue){
-
-                playlistItemstemp.setIsUserLiked("1");
-
-            }else {
-
-                playlistItemstemp.setIsUserLiked("0");
+                playlist.get(previousposition).setLikesCount(""+0);
+                playlist.get(previousposition).setIsUserLiked("0");
+                adapter.notifyDataSetChanged();
 
             }
-            playlistItemstemp.setIsUserLiked("1");
-            int vC = Integer.parseInt(playlistItemstemp.getViewsCount());
-            vC++;
-            playlistItemstemp.setViewsCount(""+vC);
-            playlistItemstemp.setLikesCount(""+Actvity_video.LikeChangedValue);
-            playlist.remove(previousposition);
-            playlist.add(previousposition,playlistItemstemp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            adapter.notifyDataSetChanged();
+        try {
+            if( !Actvity_video.isFromFeatured && Actvity_video.LikeChangedValue != 0  ){
+
+                PlayListitems_emotion  playlistItemstemp = null;
+
+                if(playlistItemstemp != null && playlist.size() >= previousposition) {
+                    playlistItemstemp = playlist.get(previousposition);
+
+
+                    // is userlike derevative
+
+                    int lkin = 0;
+
+                    lkin = Integer.parseInt(playlistItemstemp.getLikesCount());
+
+
+                    if (lkin > Actvity_video.LikeChangedValue) {
+
+                        playlistItemstemp.setIsUserLiked("1");
+
+                    } else {
+
+                        playlistItemstemp.setIsUserLiked("0");
+
+                    }
+
+                    playlistItemstemp.setIsUserLiked("1");
+                    int vC = Integer.parseInt(playlistItemstemp.getViewsCount());
+                    vC++;
+                    playlistItemstemp.setViewsCount("" + vC);
+                    playlistItemstemp.setLikesCount("" + Actvity_video.LikeChangedValue);
+                    playlist.remove(previousposition);
+                    playlist.add(previousposition, playlistItemstemp);
+
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+
+        // upating the follow list locally
+        try {
+            for (int i = 0; i <playlist.size() ; i++) {
+
+                if(Act_user_data.fromemail.equals(playlist.get(i).getFromEmail())){
+                    playlist.get(i).setIsUserFollowing(Act_user_data.isfollowing);
+                }
+
+                adapter.notifyDataSetChanged();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -398,14 +440,14 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!Search_query.equals(query)) {
+                /*if (!Search_query.equals(query)) {
                     Search_query = query;
                     playlist.clear();
                     Index = 0;
                     if (NCD.isConnected(context)) {
                         if (Search_query.length() >= 3) {
-                           /* InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);*/
+                           *//* InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);*//*
                             searchView.clearFocus();
                             getSearchData();
                         } else {
@@ -414,12 +456,19 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                     } else {
                         Toast.makeText(context, "Please check your Internet Connection", Toast.LENGTH_LONG).show();
                     }
-                }
+                }*/
                 return false;
             }
 
             public boolean onQueryTextChange(String newText) {
-                // this is your adapter that will be filtered
+
+                Search_query = newText;
+                playlist.clear();
+                Index = 0;
+                searchView.clearFocus();
+                getSearchData();
+
+
                 return true;
             }
 
@@ -616,7 +665,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     }
 
     private void getSearchData() {
-
+        pb_loading_search.setVisibility(View.VISIBLE);
         ivNTS.setVisibility(View.GONE);
         final TextView tv_nothing_to_show = (TextView) findViewById(R.id.tv_nothing_to_show);
         tv_nothing_to_show.setVisibility(View.GONE);
@@ -635,8 +684,10 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                         } else if (arg0.getCode().equals("601")) {
                             RefreshTokenMethodName = "getData";
                             RefreshToken();
+                            pb_loading_search.setVisibility(View.GONE);
 
                         } else if (arg0.getCode().equals("202") && Index == 0) {
+                            pb_loading_search.setVisibility(View.GONE);
                             String a1;
                             a1 ="Nothing found with the name ";
                             ToastCustom toastCustom = new ToastCustom(Search_activity_list.this);
@@ -652,6 +703,8 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
 
                         } else {
+                            pb_loading_search.setVisibility(View.GONE);
+                            ivNTS.setVisibility(View.VISIBLE);
                            // Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
 
@@ -663,7 +716,9 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                     public void failure(RetrofitError error) {
 
                         Toast.makeText(context, "Error Raised", Toast.LENGTH_LONG).show();
-                        rl_heading.setVisibility(View.GONE);
+                        pb_loading_search.setVisibility(View.GONE);
+                        ivNTS.setVisibility(View.VISIBLE);
+                       // rl_heading.setVisibility(View.GONE);
                     }
                 });
 
@@ -699,7 +754,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();
-
+        pb_loading_search.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
         Index = Index + 1;
         rl_heading.setVisibility(View.VISIBLE);

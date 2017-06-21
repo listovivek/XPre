@@ -70,7 +70,6 @@ import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
 import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.models.videocapture.MediaHelper;
-import com.quad.xpress.models.videocapture.MyCameraProperty;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -113,7 +112,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public final static String LOG_TAG = CameraRecordGLSurfaceView.LOG_TAG;
 
     Button  customFilter1, customFilter2, customFilter3, customFilter4;
-    MyCameraProperty myCameraProperty;
+   // MyCameraProperty myCameraProperty;
     boolean FrontCamAvailable = false;
 
     ImageButton recordBtn;
@@ -145,7 +144,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     private static final int VIDEO_PERMISSION_REQUEST_CANCEL = 93;
     private static final int VIDEO_PERMISSION_REQUEST_CODE = 91;
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 92;
-    private static final int GET_ACCOUNTS = 11;
+    private static final int GET_ACCOUNTS_Reqcode = 11;
 
     String ToSaveURI;
     int LOCAL_NOTIFY_STATIC_ID = 20;
@@ -177,7 +176,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
     public String getThumbNailUri(Uri VideoUri) {
-        String FileNamePath = "/sdcard/ThumbTemp.png";
+        String FileNamePath = "/sdcard/ixprez/ThumbTemp.png";
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(FileNamePath);
@@ -322,8 +321,6 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         public void onClick(View v) {
 
             MyButtons btn = (MyButtons)v;
-
-
             v.setBackgroundResource(R.drawable.btn_selector_filter);
 
             /* if (typedValue.resourceId != 0) {
@@ -500,16 +497,6 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         m_linear_feelingwith = (RelativeLayout) AVDialog.findViewById(R.id.ll_share_target_parent);
         pulsator_dialouge = (PulsatorLayout) AVDialog.findViewById(R.id.pulsator);
         pulsator_dialouge.start();
-        String emailID = null;
-
-        /*try {
-           // emailID = getIntent().getExtras().getString("emailID");
-            if(ContactMainActivity.finalEmail != null){
-                av_email.setText(ContactMainActivity.finalEmail);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         try {
 
@@ -604,9 +591,6 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
 
-        myCameraProperty = new MyCameraProperty();
-
-
         timerValue = (TextView) findViewById(R.id.timerValue);
         recordBtn = (ImageButton) findViewById(R.id.button_capture);
         mCameraView = (CameraRecordGLSurfaceView)findViewById(R.id.myGLSurfaceView);
@@ -674,14 +658,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 mCameraView.switchCamera();
             }
         });
-        /*if (FrontCamAvailable) {
+      /*  if (FrontCamAvailable) {
 
             switchBtn.setVisibility(View.VISIBLE);
 
         }else{
             switchBtn.setVisibility(View.GONE);
         }*/
-
+        mCameraView.stopPreview();
         switchBtn.post(new Runnable() {
             @Override
             public void run() {
@@ -756,17 +740,17 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
 
-            case GET_ACCOUNTS:
+            case GET_ACCOUNTS_Reqcode:
 
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.GET_ACCOUNTS}, 93);
 
-
-
                 }
               else{
 
+                   /* Toast.makeText(getApplicationContext(), "Kindly, give storage permission to store and" +
+                            " access the video and audio", Toast.LENGTH_SHORT).show();*/
                this.finish();
 
                 }
@@ -777,12 +761,25 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.CAMERA},
                             VIDEO_PERMISSION_REQUEST_CANCEL);
-                    //Intent2Activity();
 
-                    mCameraView.setEnabled(true);
+                    mCameraView.stopPreview();
+
+                    switchBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mCameraView.setEnabled(true);
+                            mCameraView.cameraInstance().isPreviewing();
+
+                     //       switchBtn.performClick();
+
+
+                        }
+                    });
+
                 } else {
-                   /*CheckAndRequestPermission();
-                    Toast.makeText(_context, "Kindly, give storage permission to store and" +
+                /*
+                    Toast.makeText(getApplicationContext(), "Kindly, give storage permission to store and" +
                             " access the video and audio", Toast.LENGTH_SHORT).show();*/
                     this.finish();
                   //  CheckAndRequestPermission();
@@ -791,21 +788,55 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 break;
             case VIDEO_PERMISSION_REQUEST_CANCEL:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.RECORD_AUDIO},
                             AUDIO_PERMISSION_REQUEST_CODE);
-                    mCameraView.setEnabled(true);
+
+                    mCameraView.stopPreview();
+                    switchBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mCameraView.setEnabled(true);
+                            mCameraView.cameraInstance().isPreviewing();
+
+
+                        }
+                    });
 
                 }else{
+                 /*   Toast.makeText(getApplicationContext(), "Kindly, give storage permission to store and" +
+                            " access the video and audio", Toast.LENGTH_SHORT).show();*/
                     this.finish();
                 }
             break;
             case AUDIO_PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    mCameraView.stopPreview();
+
+                    switchBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCameraView.setEnabled(true);
+                            mCameraView.cameraInstance().isPreviewing();
+
+                         //   switchBtn.performClick();
+
+
+                        }
+                    });
+
+
+
 
 
                 }else{
+                    /*Toast.makeText(getApplicationContext(), "Kindly, give storage permission to store and" +
+                            " access the video and audio", Toast.LENGTH_SHORT).show();
+                    */
                     this.finish();
+
                 }
 
                 break;
@@ -815,11 +846,11 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public void CheckAndRequestPermission() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) { // Marshmallow+
             if (checkPermission(Permission2) && checkPermission(Permission4) && checkPermission(permission5) && checkPermission(permission6)) {
-                // Intent2Activity();
 
                 return;
             }
             requestPermission(Permission4);
+
         } else {
             // Intent2Activity();
         }
@@ -829,6 +860,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     private void requestPermission(String Permission) {
         ActivityCompat.requestPermissions(_activity, new String[]{Permission}, VIDEO_PERMISSION_REQUEST_CODE);
     }
+
 
     private void AVDetailsDialog(final boolean GoingToRecordVideo, final String fileMimeType) {
 
@@ -1363,7 +1395,12 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         int result = ContextCompat.checkSelfPermission(_activity, permission);
         if (result == PackageManager.PERMISSION_GRANTED) {
+
             mCameraView.setEnabled(true);
+            mCameraView.cameraInstance().isPreviewing();
+
+
+
             return true;
         } else {
 
@@ -1378,15 +1415,15 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     public void onPause() {
         super.onPause();
         CameraInstance.getInstance().stopCamera();
-        Log.i(LOG_TAG, "activity onPause...");
         mCameraView.onPause();
     }
 
     @Override
     protected void onStop() {
+
         super.onStop();
         CameraInstance.getInstance().stopCamera();
-        Log.i(LOG_TAG, "activity onPause...");
+
         mCameraView.endRecording();
     }
 
@@ -1556,7 +1593,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
         return emlRecs;
     }
-  public static class NotificationRetry extends BroadcastReceiver{
+  public class NotificationRetry extends BroadcastReceiver{
 
       @Override
       public void onReceive(final Context context, Intent intent) {
@@ -1570,42 +1607,24 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
           String spLauguge = sharedpreferences.getString(SharedPrefUtils.SpLanguage, "");
 
 
-          Toast.makeText(context, "dd"+
+         /* Toast.makeText(context, "dd"+
                  sharedpreferences.getString(SharedPrefUtils.SpEmail, "")+
                  StatiConstants.mapTo+
                  StatiConstants.mapTitile
-                 /*StatiConstants.mapType+
+                 *//*StatiConstants.mapType+
                  spCOuntry+
                 spLauguge+
-                  Locale.getDefault().getDisplayLanguage())+*/
-                 , Toast.LENGTH_SHORT).show();
+                  Locale.getDefault().getDisplayLanguage())+*//*
+                 , Toast.LENGTH_SHORT).show();*/
 
           if(StatiConstants.mapVideoTyped != null && StatiConstants.mapThumbnailTyped != null && StatiConstants.mapTitile != null
                   && StatiConstants.mapTo != null  && StatiConstants.mapType != null) {
 
-              Toast.makeText(context, ""+StatiConstants.mapTitile, Toast.LENGTH_SHORT).show();
-
-        Log.v("Offline upload log", sptoken + spCOuntry + spLauguge);
 
 
-/*   RestClient.get(getApplicationContext()).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, "")
-, VideoTypedFile,
-sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
- ToEmail,
- AVTitle,
-  Tags,
-   ShareAsText,
-   sharedpreferences.getString(SharedPrefUtils.SpCountry, "IN"),
-   sharedpreferences.getString(SharedPrefUtils.SpLanguage,
-    Locale.getDefault().getDisplayLanguage()),
-    ThumbnailTypedFile,
-    new Callback<SVideoResp>() {
-                    @Override*/
-           /*   for (int i = 0; i <StatiConstants.mapThumbnailTyped.size() ; i++) {
+  //      Log.v("Offline upload log", sptoken + spCOuntry + spLauguge);
 
-                  Toast.makeText(context, ""+StatiConstants.mapThumbnailTyped.size(), Toast.LENGTH_SHORT).show();
-              }
-*/
+
                 MapKey =1;
 
               RestClient.get(context).UploadVideo(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),
@@ -1625,18 +1644,23 @@ sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
                     public void success(SVideoResp sVideoResp, Response response) {
                         if (sVideoResp.getCode().equals("200")) {
 
-                            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
 
+                            Toast.makeText(context, "Xpressed successfully, Swipe to clear data.", Toast.LENGTH_SHORT).show();
+                         /*
+                            toastCustom = new ToastCustom(NotificationRetry.this);
+                            SpannableString ss = new SpannableString(StatiConstants.mapTitile+ " Xpressed to "+ ToEmail);
+                            ss.setSpan(new ForegroundColorSpan(Color.RED), 0, StatiConstants.mapTitile.length(), 0);
+                            ss.setSpan(new RelativeSizeSpan(1.2f), 0, StatiConstants.mapTitile.length(), 0);
+                            ss.setSpan(new ForegroundColorSpan(Color.GREEN), ss.length()-StatiConstants.mapTo.length(), ss.length(), 0);
+                            ss.setSpan(new RelativeSizeSpan(1.2f), ss.length()-StatiConstants.mapTo.length(), ss.length(), 0);
+                            toastCustom.ShowToast("iXprez",ss,2);*/
 
                         } else if (sVideoResp.getCode().equals("601")) {
 
                             Toast.makeText(context, "601", Toast.LENGTH_SHORT).show();
-
                         }
                         else if (sVideoResp.getCode().equals("701")) {
                             Toast.makeText(context, "User has blocked you !", Toast.LENGTH_LONG).show();
-
-
                         }
                         else {
                             Toast.makeText(context, ""+sVideoResp.getCode(), Toast.LENGTH_SHORT).show();
@@ -1646,7 +1670,7 @@ sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Toast.makeText(context, "fail", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "failed Retry", Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -1656,7 +1680,7 @@ sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
 
 
           }else {
-              Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show();
+              Toast.makeText(context, "Empty data lost, send a new video. ", Toast.LENGTH_SHORT).show();
           }
       }
   }

@@ -36,12 +36,12 @@
 
     <!-- START Added for GCM -->
     <permission
-        android:name="com.quad.xpress.permission.C2D_MESSAGE"
+        android:name="com.quad.xpressed.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
 
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="com.quad.xpress.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.quad.xpressed.permission.C2D_MESSAGE" />
     <!-- END Added for GCM -->
 
     <uses-feature android:name="android.hardware.camera" />
@@ -216,7 +216,7 @@
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.quad.xpress" />
+                <category android:name="com.quad.xpressed" />
             </intent-filter>
         </receiver>
 

@@ -142,11 +142,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
 
 
-        if (NCD.isConnected(context)) {
-            getData();
-        } else {
-            Toast.makeText(context,"Your are Offline",Toast.LENGTH_LONG).show();
-        }
+
 
 
         if(sharedpreferences.getString(SharedPrefUtils.SpEmail, "").equals(fromemail)){
@@ -368,10 +364,20 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        if (NCD.isConnected(context)) {
+            playlist.clear();
+            Index = 0;
 
-
-   /* public void RefreshToken() {
+            getData();
+        } else {
+            Toast.makeText(context,"Your are Offline",Toast.LENGTH_LONG).show();
+        }
+    }
+/* public void RefreshToken() {
 
         RestClient.get(context).RefreshTokenWS(new AuthTokenReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<AuthTokenResp>() {
             @Override

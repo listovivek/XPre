@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
@@ -295,8 +296,8 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 }
                // Log.v("", "TBPath " + TBPath);
 
-                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
-                        .into(holder.RvImage);
+                Glide.with(_context).load(TBPath).fitCenter().dontAnimate()
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT).into(holder.RvImage);
 
                 holder.Play_icon.setVisibility(View.GONE);
                 holder.audio_icon.setVisibility(View.GONE);
@@ -311,7 +312,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
 
                 Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
-                        .into(holder.RvImage);
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT) .dontAnimate().into(holder.RvImage);
 
             }
             else if ( list.getFileMimeType().equalsIgnoreCase("audio/mp3") && list.getTBPath()!=null){
@@ -323,7 +324,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                     }
 
                 Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
-                        .into(holder.RvImage);
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT) .into(holder.RvImage);
 
                    holder.Play_icon.setVisibility(View.GONE);
                    holder.audio_icon.setVisibility(View.VISIBLE);

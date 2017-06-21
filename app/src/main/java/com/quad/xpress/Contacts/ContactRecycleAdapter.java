@@ -1,6 +1,7 @@
 package com.quad.xpress.Contacts;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.quad.xpress.AudioRecordActivity;
 import com.quad.xpress.CameraRecordActivity;
@@ -42,7 +44,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
     public List<String> mFilterEmail;
     List<String> mFilterName;
     List<String> mFilterPic;
-
+    Context context;
     List<String> mStringFilterList;
 
     /*public ContactRecycleAdapter(Contact contact, onRecyclerListener recycler, Context con) {
@@ -68,14 +70,21 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+
         public TextView mLabel, mEmail;
-         CircleImageView mImage;
+        CircleImageView mImage;
         ImageButton mImageButton;
         private ImageButton audio_Button, video_Button;
         private ArrayList<String> contacts;
 
         public MyViewHolder(View itemView) {
             super(itemView);
+            context = ContactMainActivity.mContactMainActivity;
+
+            mImage = (CircleImageView) itemView.findViewById(R.id.rounded_iv_profile);
+            mLabel = (TextView) itemView.findViewById(R.id.tv_label);
+            mEmail = (TextView) itemView.findViewById(R.id.tv_email);
+            mImageButton = (ImageButton) itemView.findViewById(R.id.contact_right_button);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -91,10 +100,19 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                 }
             });
 
-            mImage = (CircleImageView) itemView.findViewById(R.id.rounded_iv_profile);
-            mLabel = (TextView) itemView.findViewById(R.id.tv_label);
-            mEmail = (TextView) itemView.findViewById(R.id.tv_email);
-            mImageButton = (ImageButton) itemView.findViewById(R.id.contact_right_button);
+            mEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnRecyclerListener.setOnItemClick(v, mFilterEmail, mFilterName);
+                }
+            });
+
+            mImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             /*SendDiscardDialog = new Dialog(mContext,R.style.Theme_Transparent);
             SendDiscardDialog.setContentView(R.layout.send_discard_dialog);

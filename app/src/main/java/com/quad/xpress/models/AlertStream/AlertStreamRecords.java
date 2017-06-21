@@ -9,9 +9,13 @@ public class AlertStreamRecords {
 
     private String likeCount;
 
+    private String both;
+
     private String thumbnailPath;
 
     private String fileuploadPath;
+
+    private String date;
 
     private String feedback;
 
@@ -25,6 +29,10 @@ public class AlertStreamRecords {
 
     private String createdAt;
 
+    private String del_status;
+
+    private String dp;
+
     private String thumbnailFilename;
 
     private String created_date;
@@ -34,6 +42,8 @@ public class AlertStreamRecords {
     private String featuredVideo;
 
     private String isUserLiked;
+
+    private String status;
 
     private String __v;
 
@@ -77,6 +87,16 @@ public class AlertStreamRecords {
         this.likeCount = likeCount;
     }
 
+    public String getBoth ()
+    {
+        return both;
+    }
+
+    public void setBoth (String both)
+    {
+        this.both = both;
+    }
+
     public String getThumbnailPath ()
     {
         return thumbnailPath;
@@ -95,6 +115,16 @@ public class AlertStreamRecords {
     public void setFileuploadPath (String fileuploadPath)
     {
         this.fileuploadPath = fileuploadPath;
+    }
+
+    public String getDate ()
+    {
+        return date;
+    }
+
+    public void setDate (String date)
+    {
+        this.date = date;
     }
 
     public String getFeedback ()
@@ -157,6 +187,26 @@ public class AlertStreamRecords {
         this.createdAt = createdAt;
     }
 
+    public String getDel_status ()
+    {
+        return del_status;
+    }
+
+    public void setDel_status (String del_status)
+    {
+        this.del_status = del_status;
+    }
+
+    public String getDp ()
+    {
+        return dp;
+    }
+
+    public void setDp (String dp)
+    {
+        this.dp = dp;
+    }
+
     public String getThumbnailFilename ()
     {
         return thumbnailFilename;
@@ -205,6 +255,16 @@ public class AlertStreamRecords {
     public void setIsUserLiked (String isUserLiked)
     {
         this.isUserLiked = isUserLiked;
+    }
+
+    public String getStatus ()
+    {
+        return status;
+    }
+
+    public void setStatus (String status)
+    {
+        this.status = status;
     }
 
     public String get__v ()
@@ -320,6 +380,6 @@ public class AlertStreamRecords {
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", feedback = "+feedback+", title = "+title+", from_name = "+from_name+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", thumbnailFilename = "+thumbnailFilename+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", __v = "+__v+", privacy = "+privacy+", viewed = "+viewed+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", from_name = "+from_name+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", del_status = "+del_status+", dp = "+dp+", thumbnailFilename = "+thumbnailFilename+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", __v = "+__v+", privacy = "+privacy+", viewed = "+viewed+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

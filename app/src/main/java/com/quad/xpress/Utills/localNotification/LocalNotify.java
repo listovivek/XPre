@@ -10,7 +10,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import com.quad.xpress.Act_pending_uploads;
 import com.quad.xpress.R;
 import com.quad.xpress.Utills.StatiConstants;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
@@ -62,7 +61,7 @@ public class LocalNotify {
         mContext = _activity.getApplicationContext();
         if (notificationManager != null) {
             mBuilder.setContentText(Title)
-                    .setContentTitle("xpressed")
+                    .setContentTitle("Xpressed")
                     .setSmallIcon(R.drawable.ic_done)
                     // Removes the progress bar
                     .setProgress(0, 0, false)
@@ -118,19 +117,6 @@ public class LocalNotify {
 
         mContext = _activity.getApplicationContext();
 
-        Intent intent = new Intent(mContext, Act_pending_uploads.class);
-        PendingIntent pIntent = PendingIntent.getActivity(mContext, (int) System.currentTimeMillis(), intent, 0);
-
-        Intent RetryiNTENT = new Intent();
-        RetryiNTENT.setAction(StatiConstants.Retry);
-        Intent IgnoreIntent = new Intent();
-        IgnoreIntent.setAction(StatiConstants.Retry);
-
-        PendingIntent PRetery = PendingIntent.getBroadcast(mContext, 12345, RetryiNTENT, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent PIgnore = PendingIntent.getBroadcast(mContext, 12345, IgnoreIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-
 
 
         notification = mBuilder.setTicker(Title).setWhen(0)
@@ -140,8 +126,7 @@ public class LocalNotify {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setSmallIcon(R.drawable.ic_failed)
                 .setProgress(0, 0, false)
-                .addAction(R.drawable.ic_failed, "Retry",PRetery)
-                //.addAction(R.drawable.ic_user_icon, "Ignore",PIgnore)
+
                 .build();
 
 

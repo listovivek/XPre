@@ -3,6 +3,8 @@
     android:layout_margin="2sp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
    >
 
 
@@ -21,7 +23,8 @@
             android:layout_marginLeft="5dp"
             android:layout_weight="6"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="85dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/private_recycle_curve">
 
             <ImageView
@@ -29,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+
                 />
             <ImageView
                 android:layout_width="wrap_content"
@@ -227,7 +231,7 @@
                 android:focusableInTouchMode="true"
                 android:drawableLeft="@drawable/ic_comment"
                 android:gravity="left|center_vertical"
-                android:layout_weight="2"/>
+                android:layout_weight="1.5"/>
 
             <TextView
                 android:id="@+id/textView_viewsMoreTags"
@@ -240,12 +244,13 @@
                 android:textSize="9sp"
                 android:clickable="true"
                 android:maxLines="1"
+                android:minLines="1"
                 android:drawablePadding="3dp"
                 android:textAlignment="gravity"
                 android:focusableInTouchMode="true"
                 android:drawableLeft="@drawable/ic_views"
                 android:gravity="left|center_vertical"
-                android:layout_weight="2"/>
+                android:layout_weight="2.5"/>
         </LinearLayout>
         </LinearLayout>
 

@@ -22,7 +22,7 @@ public class StatiConstants {
 
 
     public static String TagList = "Aggressive, Beautiful, Bold, Brilliant, Calm, Charming, Classic, " +
-            "Contemporary, Cool, Dark, Dramatic, Elegant, Epic, Funny, Hilarious, Upbeat, Informative, Inspirational," +
+            "Contemporary, Cool, Dark, Dramatic, Elegant, Epic, Funny, Hilarious, Informative, Inspirational," +
             " Intellectual, Modern, Motivational, Heartbreaking, Personal, Political, Professional, " +
             "Romantic, Sad, Depressing, Tragic, Satire, Parody, Spoof, Suspenseful, Traditional, Upbeat," +
             "Urban, Clever, Witty,Confusion , Surprise, Shame, Focus, Exhaustion, Angry, Fear, Sad," +

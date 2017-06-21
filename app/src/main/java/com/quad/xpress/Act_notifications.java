@@ -60,7 +60,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     Activity _activity;
     String AppName;
     int Index = 0;
-    String PreviousNotificOUNT;
+    String PreviousNotificOUNT ;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
     NetConnectionDetector NCD;
@@ -72,7 +72,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     Dialog SendDiscardDialog;
     ImageButton   audio_Button,video_Button;
     Button btn_confirm,btn_discard;
-    String from_email;
+    String from_email,dp_path;
     ProgressBar pbLoading;
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -221,12 +221,13 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
 
 
     public void getData() {
-    pbLoading.setVisibility(View.VISIBLE);
+
+        pbLoading.setVisibility(View.VISIBLE);
 
         if(Index> 0)
             PreviousNotificOUNT = 0+"";
 
-        RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"30",PreviousNotificOUNT),
+        RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"100","0"),
                 new Callback<AlertStreamResp>() {
 
 
@@ -251,7 +252,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                                         alertStreamResp.getData().getRecords()[i].getView_count(),
                                         alertStreamResp.getData().getRecords()[i].getIsUserLiked(),//is userliked
                                         alertStreamResp.getData().getRecords()[i].getPrivacy(),//
-                                        alertStreamResp.getData().getRecords()[i].getFrom_name()
+                                        alertStreamResp.getData().getRecords()[i].getFrom_name(),
+                                        alertStreamResp.getData().getRecords()[i].getDp()
                                 );
 
                             list.add(listDatas);
@@ -312,10 +314,17 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
 
     @Override
     protected void onResume() {
+
         super.onResume();
+
+
         if (NCD.isConnected(context)) {
+            PreviousNotificOUNT = "0";
+            Index = 0;
+            list.clear();
             getData();
         } else {
+            iv_nothing_to_show.setVisibility(View.VISIBLE);
             Toast.makeText(context,"Your are Offline",Toast.LENGTH_LONG).show();
         }
     }
@@ -350,10 +359,34 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                 img_url = StaticConfig.ROOT_URL + "/" + img_thumb;
 
             }
+        }
+        else if ( list.get(position).getProfile_pic() != null ){
+
+            img_thumb = list.get(position).getProfile_pic();
+            if (img_thumb.contains(StaticConfig.ROOT_URL_Media)) {
+                img_url = StaticConfig.ROOT_URL + img_thumb.replace(StaticConfig.ROOT_URL_Media, "");
+            } else {
+                //Local server
+                img_url = StaticConfig.ROOT_URL + "/" + img_thumb;
+
+            }
+
         }else{
 
             img_url = "audio";
         }
+
+
+
+
+
+        //
+
+
+
+
+
+
 
 
 
@@ -368,7 +401,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         videoIntent.putExtra("upload_date",list.get(position).getCreatedDate());
         videoIntent.putExtra("isliked",list.get(position).getIsUserLiked());
         videoIntent.putExtra("img_url",img_url);
-        if(list.get(position).getPrivacy().equals("Private")){
+
+        if(list.get(position).getPrivacy().equalsIgnoreCase("Private")){
             videoIntent.putExtra("isPrivate","true");
         }else {
             videoIntent.putExtra("isPrivate","false");
@@ -680,7 +714,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         editor.putBoolean(SharedPrefUtils.SpSlideViewusedOnce,false );
         editor.commit();
 
-        RestClient.get(context).PrivateAcceptReject(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivARreq(fileID, FileType, Feedback), new Callback<PrivARresp>() {
+        RestClient.get(context).PrivateAcceptReject(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivARreq(fileID, FileType, Feedback,
+                sharedpreferences.getString(SharedPrefUtils.SpEmail,"")), new Callback<PrivARresp>() {
             @Override
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {

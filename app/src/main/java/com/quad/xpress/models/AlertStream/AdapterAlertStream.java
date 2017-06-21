@@ -37,12 +37,12 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
     OnRecyclerListener recyclerListener;
-
-
+    Boolean swipeStateOpen ;
+    SwipeLayout.SwipeListener swipeGlobalLayoutListener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, user_name, time,date;
-        ImageView iv_thumb,iv_playIcon;
+        ImageView iv_thumb,iv_playIcon,iv_mic_top_left;
         public SwipeLayout rv_swipeLayout;
         private LinearLayout swipe_Layout;
         RelativeLayout swipe_follower,RL_item;
@@ -50,6 +50,7 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
         TextView tv_accept,tv_reject,tv_block;
         FrameLayout fl_parent;
         String file_id_;
+
 
         public MyViewHolder(View view, Context context) {
             super(view);
@@ -68,6 +69,7 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
             tv_block = (TextView) view.findViewById(R.id.text_block);
             RL_item = (RelativeLayout) view.findViewById(R.id.rl_parent);
             fl_parent = (FrameLayout) view.findViewById(R.id.fl_parent);
+            iv_mic_top_left = (ImageView) view.findViewById(R.id.ns_adp_iv_audio_mic);
         }
     }
 
@@ -97,19 +99,93 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
         SimpleDateFormat dateFormat2 = new SimpleDateFormat("HH:mm");
         SimpleDateFormat dateFormat3 = new SimpleDateFormat("MMM dd, yyyy");
 
+        holder.setIsRecyclable(false);
 
         holder.rv_swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
         holder.rv_swipeLayout.addDrag(SwipeLayout.DragEdge.Right,
-                holder.rv_swipeLayout.findViewById(R.id.bottom_wrapper));
+        holder.rv_swipeLayout.findViewById(R.id.bottom_wrapper));
+
+       /* holder.rv_swipeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(swipeStateOpen){
+                    holder.rv_swipeLayout.open(false);
+                    swipeStateOpen =false;
+                }else {
+                    holder.rv_swipeLayout.open(true);
+                }
+
+            }
+        });
+
+        holder.rv_swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+               // swipeStateOpen = true;
+              //  Toast.makeText(context, "So", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+              //  swipeStateOpen = true;
+              //  Toast.makeText(context, "O", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+               *//* if (swipeStateOpen) {
+                    // Opens the layout without animation
+                    holder.rv_swipeLayout.open(false);
+                }*//*
+               // Toast.makeText(context, "SC", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+
+              //  swipeStateOpen = false;
+              //  Toast.makeText(context, "C", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                //Toast.makeText(context, "U", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+               // Toast.makeText(context, "HR", Toast.LENGTH_SHORT).show();
+
+                if (swipeStateOpen) {
+                    // Opens the layout without animation
+                    holder.rv_swipeLayout.open();
+
+                }else {
+                    holder.rv_swipeLayout.close();
+                }
+
+            }
+        });
+
+
+*/
+
+
+
+
+
 
         if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Private")){
             holder.swipe_Layout.setVisibility(View.VISIBLE);
             holder.swipe_follower.setVisibility(View.GONE);
-        }/*else if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){
+        }else if(notificationStreamModelList.getPrivacy().equalsIgnoreCase("Both")){
             holder.swipe_Layout.setVisibility(View.VISIBLE);
             holder.swipe_follower.setVisibility(View.GONE);
-        }*/
+        }
         else{
             holder.swipe_follower.setVisibility(View.VISIBLE);
             holder.swipe_Layout.setVisibility(View.GONE);
@@ -209,7 +285,6 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
             if (tb.contains(StaticConfig.ROOT_URL_Media)) {
                 TBPath = StaticConfig.ROOT_URL + tb.replace(StaticConfig.ROOT_URL_Media, "");
 
-
                 Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
                         .into(holder.iv_thumb);
 
@@ -222,11 +297,29 @@ public class AdapterAlertStream extends RecyclerView.Adapter<AdapterAlertStream.
             holder.iv_playIcon.setVisibility(View.VISIBLE);
 
         }else {
-            Glide.with(context).load(R.drawable.ic_mic_placeholder).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
-                    .into(holder.iv_thumb);
-          //  Glide.with(context).load(R.drawable.ic_mic_placeholder).fitCenter().into(holder.iv_thumb);
-             holder.iv_playIcon.setVisibility(View.GONE);
 
+            String profile_pic_path = notificationStreamModelList.getProfile_pic();
+
+
+            if (profile_pic_path.contains(StaticConfig.ROOT_URL_Media)) {
+                TBPath = StaticConfig.ROOT_URL + profile_pic_path.replace(StaticConfig.ROOT_URL_Media, "");
+
+                Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+                        .into(holder.iv_thumb);
+
+
+            } else {
+                TBPath = StaticConfig.ROOT_URL + "/" + profile_pic_path;
+                Glide.with(context).load(TBPath).bitmapTransform( new CenterCrop(context),new RoundedCornersTransformation(context,7,0))
+                        .into(holder.iv_thumb);
+            }
+
+         if(TBPath.contains("microphone.png")){
+
+         }else {
+             holder.iv_mic_top_left.setVisibility(View.VISIBLE);
+        }
+            holder.iv_playIcon.setVisibility(View.GONE);
 
         }
 

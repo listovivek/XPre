@@ -40,6 +40,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.quad.xpress.Utills.StatiConstants;
 import com.quad.xpress.Utills.helpers.FieldsValidator;
 import com.quad.xpress.Utills.helpers.LoadingDialog;
+import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.PermissionStrings;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
@@ -99,6 +100,7 @@ public class SettingsActivity extends AppCompatActivity implements
     SharedPreferences.Editor editor;
     LoadingDialog LD;
     Activity _activity;
+    NetConnectionDetector NDC;
     private int PICK_IMAGE_REQUEST = 1;
     Uri Imageuri;
     CircleImageView circleImageView_profile;
@@ -136,7 +138,7 @@ public class SettingsActivity extends AppCompatActivity implements
         tv_about = (TextView) findViewById(R.id.tv_settings_about);
         tv_support = (TextView) findViewById(R.id.tv_settings_support);
 
-
+        NDC = new NetConnectionDetector();
 
         tv_about.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,8 +305,13 @@ public class SettingsActivity extends AppCompatActivity implements
 
                if (FieldsValidator.hasTextUserName(tv_userName) && FieldsValidator.isPhoneNumber(tv_mobile, true))
                 {
+                    if(!NDC.isOnline()){
 
-                SaveInServer();
+                        Toast.makeText(context, "Please check your internet connectivity.", Toast.LENGTH_SHORT).show();
+                    }else {
+                        SaveInServer();
+                    }
+
 
                 }
 
@@ -520,6 +527,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
     }
 
+
     private void mtd_langs() {
 
         final ArrayAdapter<String> adapter_lanugage = new ArrayAdapter<String>(this,R.layout.spinner_custom_settings, lang_list);
@@ -554,7 +562,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
                 lang_list.add(0,LangNo_OnFirst);
                 spin_lang.setAdapter(adapter_lanugage);
-
+                LD.DismissTheDialog();
 
             }
 
@@ -695,7 +703,17 @@ public class SettingsActivity extends AppCompatActivity implements
 
            // cropping_dialog.dismiss();
            //  Toast.makeText(this, "Image load successful", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this, "Image load failed "+error, Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+      //  Toast.makeText(context, "Bk ex", Toast.LENGTH_SHORT).show();
+        this.LD.DismissTheDialog();
+        this.finish();
+
     }
 
 

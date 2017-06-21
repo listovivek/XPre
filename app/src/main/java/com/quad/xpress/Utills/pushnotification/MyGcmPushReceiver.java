@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.quad.xpress.Act_notifications;
 import com.quad.xpress.DashBoard;
 import com.quad.xpress.PrivatePlayListActivity;
 
@@ -48,11 +49,18 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
         Intent acceptedRejectIntent = new Intent(getApplicationContext(), DashBoard.class);
 
+        Intent followerIntent = new Intent(getApplicationContext(), Act_notifications.class);
+
+
         if(message.contains("Rise up to")|| message.contains ("Accepted")){
 
             showNotificationMessage(getApplicationContext(), "Xpression " +title, message, timestamp, acceptedRejectIntent);
 
-        }else{
+        }else if (message.contains("latest Xpression")){
+
+            showNotificationMessage(getApplicationContext(), "Xpression " +title, message, timestamp, followerIntent);
+        }
+        else{
 
             showNotificationMessage(getApplicationContext(), "Xpression " +title, message, timestamp, newMessageIntent);
         }

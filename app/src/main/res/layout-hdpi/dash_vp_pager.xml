@@ -77,6 +77,8 @@ android:layout_marginBottom="2dp"
         android:contentDescription="@string/app_name"
         android:layout_marginBottom="3dp"
         android:scaleType="centerInside"
+        android:layout_marginTop="-4dp"
+        android:background="@color/colorPrimary_transparent"
         android:src="@drawable/ic_gcm_notification"
 
         />

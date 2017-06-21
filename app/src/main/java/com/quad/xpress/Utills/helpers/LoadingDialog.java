@@ -11,7 +11,9 @@ public class LoadingDialog {
 
     private Activity _activity;
     ProgressDialog ringProgressDialog;
+
     public LoadingDialog(Activity _activity){
+
         this._activity = _activity;
     }
 
@@ -32,31 +34,10 @@ public class LoadingDialog {
     }
     public void DismissTheDialog(){
 
-
-
         if(ringProgressDialog.isShowing()){
+
             ringProgressDialog.dismiss();
         }
     }
-
-
-   /* public LoadingDialog(Activity _activity, String title, String message, Boolean cancelable) {
-        // this._activity = _activity;
-        ringProgressDialog = new ProgressDialog(_activity);
-        ringProgressDialog.setTitle(title);
-        ringProgressDialog.setMessage(message);
-        ringProgressDialog.setCancelable(cancelable);
-
-    }
-
-    public void ShowtheDialog() {
-        ringProgressDialog.show();
-    }
-
-    public void DismissTheDialog() {
-        if (ringProgressDialog.isShowing()) {
-            ringProgressDialog.dismiss();
-        }
-    }*/
 
 }

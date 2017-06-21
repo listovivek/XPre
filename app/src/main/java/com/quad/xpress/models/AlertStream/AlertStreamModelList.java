@@ -13,7 +13,7 @@ public class AlertStreamModelList {
     private String title;
     private String created_date;
     String from_email,sendername;
-    String TBPath;
+    String TBPath,Profile_pic;
     private String filemimeType;
     private String fileuploadPath;
     private String fileuploadFilename;
@@ -29,7 +29,7 @@ public class AlertStreamModelList {
 
     public AlertStreamModelList(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                                 String fileuploadPath, String fileuploadFilename, String fileID, String tags,
-                                String likesCount, String viewsCount, String isUserLiked, String privacy, String sendername) {
+                                String likesCount, String viewsCount, String isUserLiked, String privacy, String sendername,String Profile_pic) {
         this.filename = filename;
         this.title = title;
         this.created_date = created_date;
@@ -45,6 +45,15 @@ public class AlertStreamModelList {
         this.viewsCount = viewsCount;
         this.isUserLiked= isUserLiked;
         this.privacy = privacy;
+        this.Profile_pic=Profile_pic;
+    }
+
+    public String getProfile_pic() {
+        return Profile_pic;
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        Profile_pic = profile_pic;
     }
 
     public String getSendername() {

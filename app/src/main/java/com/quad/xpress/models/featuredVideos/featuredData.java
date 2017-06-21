@@ -5,61 +5,64 @@ package com.quad.xpress.models.featuredVideos;
  */
 
 public class featuredData {
-    private String fileuploadFilename;
 
-    private String timePost;
+        private String fileuploadFilename;
 
-    private String thumbnailPath;
+        private String timePost;
 
-    private String likeCount;
+        private String thumbnailPath;
 
-    private String fileuploadPath;
+        private String likeCount;
 
-    private String feedback;
+        private String fileuploadPath;
 
-    private String username;
+        private String feedback;
 
-    private String title;
+        private String username;
 
-    private String _id;
+        private String title;
 
-    private String from_email;
+        private String _id;
 
-    private String createdAt;
+        private String from_email;
 
-    private String thumbnailFilename;
+        private String createdAt;
 
-    private String tags;
+        private String thumbnailFilename;
 
-    private String created_date;
+        private String tags;
 
-    private String featuredVideo;
+        private String created_date;
 
-    private String profilePicture;
+        private String featuredVideo;
 
-    private String privacy;
+        private String liked;
 
-    private String __v;
+        private String profilePicture;
 
-    private String viewed;
+        private String privacy;
 
-    private String smailyCount;
+        private String __v;
 
-    private String country;
+        private String viewed;
 
-    private String updatedAt;
+        private String smailyCount;
 
-    private String is_deleted;
+        private String country;
 
-    private String thumbnailmimeType;
+        private String updatedAt;
 
-    private String filemimeType;
+        private String is_deleted;
 
-    private String language;
+        private String thumbnailmimeType;
 
-    private String view_count;
+        private String filemimeType;
 
-    private String to_email;
+        private String language;
+
+        private String view_count;
+
+        private String to_email;
 
     public String getFileuploadFilename ()
     {
@@ -211,6 +214,16 @@ public class featuredData {
         this.featuredVideo = featuredVideo;
     }
 
+    public String getLiked ()
+    {
+        return liked;
+    }
+
+    public void setLiked (String liked)
+    {
+        this.liked = liked;
+    }
+
     public String getProfilePicture ()
     {
         return profilePicture;
@@ -344,6 +357,6 @@ public class featuredData {
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", timePost = "+timePost+", thumbnailPath = "+thumbnailPath+", likeCount = "+likeCount+", fileuploadPath = "+fileuploadPath+", feedback = "+feedback+", username = "+username+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", created_date = "+created_date+", featuredVideo = "+featuredVideo+", profilePicture = "+profilePicture+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", smailyCount = "+smailyCount+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", timePost = "+timePost+", thumbnailPath = "+thumbnailPath+", likeCount = "+likeCount+", fileuploadPath = "+fileuploadPath+", feedback = "+feedback+", username = "+username+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", created_date = "+created_date+", featuredVideo = "+featuredVideo+", liked = "+liked+", profilePicture = "+profilePicture+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", smailyCount = "+smailyCount+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

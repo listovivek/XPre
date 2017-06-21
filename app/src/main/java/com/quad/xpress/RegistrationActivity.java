@@ -119,6 +119,9 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_registration);
+
+
+
         if (checkPlayServices()) {
            // Log.v(TAG, "checkPlayServices");
             registerGCM();

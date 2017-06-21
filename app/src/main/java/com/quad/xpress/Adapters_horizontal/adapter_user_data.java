@@ -188,8 +188,8 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
               //  Log.v("", "TBPath " + TBPath);
 
 
-                Glide.with(_context).load(TBPath).bitmapTransform( new CenterCrop(_context),new RoundedCornersTransformation(_context,10,0))
-                        .into(holder.RvImage);
+                Glide.with(_context).load(TBPath).bitmapTransform(new RoundedCornersTransformation(_context,10,0))
+                        .fitCenter().into(holder.RvImage);
 
                 holder.Play_icon.setVisibility(View.GONE);
                 holder.audio_icon.setVisibility(View.GONE);

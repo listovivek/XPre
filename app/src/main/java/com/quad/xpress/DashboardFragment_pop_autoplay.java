@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.quad.xpress.Adapters_horizontal.adapter_autoplay;
 import com.quad.xpress.Utills.helpers.NetConnectionDetector;
 import com.quad.xpress.Utills.helpers.SharedPrefUtils;
 import com.quad.xpress.Utills.helpers.StaticConfig;
@@ -25,9 +26,14 @@ import com.quad.xpress.models.receivedFiles.Plist_Emotion.Emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
-import com.quad.xpress.models.receivedFiles.Plist_Emotion.adapter_dashboard;
 import com.quad.xpress.models.receivedFiles.PublicPlayListReq;
 import com.quad.xpress.webservice.RestClient;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
+import com.volokh.danylo.video_player_manager.ui.SimpleMainThreadMediaPlayerListener;
+import com.volokh.danylo.video_player_manager.ui.VideoPlayerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +43,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class DashboardFragment_pop extends Fragment implements adapter_dashboard.OnRecyclerListener{
+public class DashboardFragment_pop_autoplay extends Fragment implements adapter_autoplay.OnRecyclerListener{
 
 
     Context context;
@@ -56,7 +62,7 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
     ImageView iv_no_data;
     RecyclerView recyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
-    adapter_dashboard recyclerAdapter;
+    adapter_autoplay recyclerAdapter;
     RecyclerView.LayoutManager mLayoutManager;
 
 
@@ -70,6 +76,12 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
         partThreeFragment.setArguments(bundle);
         return partThreeFragment;
     }*/
+private VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(new PlayerItemChangeListener() {
+    @Override
+    public void onPlayerItemChanged(MetaData metaData) {
+
+    }
+});
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,9 +96,9 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_pop);
-        recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView_frag_pop);
-        recyclerAdapter = new adapter_dashboard(playlist,context,DashboardFragment_pop.this);
+        swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_pop_auto);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView_frag_pop_auto);
+        recyclerAdapter = new adapter_autoplay(playlist,context,DashboardFragment_pop_autoplay.this);
 
         recyclerView.setAdapter(recyclerAdapter);
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -158,11 +170,54 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         iv_no_data = (ImageView) getActivity().findViewById(R.id.ll_rv_bg);
         context = getActivity();
+        VideoPlayerView mVideoPlayer_1,mVideoPlayer_2;
+        mVideoPlayer_1 = (VideoPlayerView)container.findViewById(R.id.video_player_1);
+        mVideoPlayer_1.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener(){
+            @Override
+            public void onVideoPreparedMainThread() {
+                // We hide the cover when video is prepared. Playback is about to start
+               // mVideoCover.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onVideoStoppedMainThread() {
+                // We show the cover when video is stopped
+               // mVideoCover.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onVideoCompletionMainThread() {
+                // We show the cover when video is completed
+               // mVideoCover.setVisibility(View.VISIBLE);
+            }
+        });
+      //  mVideoCover = (ImageView)root.findViewById(R.id.video_cover_1);
+     //   mVideoCover.setOnClickListener(this);
+
+        mVideoPlayer_2 = (VideoPlayerView)container.findViewById(R.id.video_player_2);
+        mVideoPlayer_2.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener(){
+            @Override
+            public void onVideoPreparedMainThread() {
+                // We hide the cover when video is prepared. Playback is about to start
+               // mVideoCover2.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onVideoStoppedMainThread() {
+                // We show the cover when video is stopped
+               // mVideoCover2.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onVideoCompletionMainThread() {
+                // We show the cover when video is completed
+               // mVideoCover2.setVisibility(View.VISIBLE);
+            }
+        });
 
 
 
-
-        return inflater.inflate(R.layout.dashboard_fragment_pop, container, false);
+        return inflater.inflate(R.layout.dashboard_fragment_auto_pop, container, false);
     }
 
 

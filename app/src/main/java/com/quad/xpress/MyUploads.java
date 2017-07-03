@@ -117,9 +117,11 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                 if(position == 0){
                     Api_private_uploads = false;
                     Index = 0;
+                    playlist.clear();
                 }else {
                     Api_private_uploads = true;
                     Index = 0;
+                    playlist.clear();
                 }
 
                 getData();
@@ -136,6 +138,12 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             }
         });
 
+        try {
+            recyclerView.addOnScrollListener(recyclerViewOnScrollListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
       /*  tabLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -143,10 +151,13 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             }
         });*/
 
-       recyclerView.setHasFixedSize(true);
+      // recyclerView.setHasFixedSize(true);
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, 1);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
+      /*  GridLayoutManager mLayoutManager;
+        mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+        mRecyclerView.setLayoutManager(mLayoutManager);*/
 
         if (NCD.isConnected(context)) {
             getData();
@@ -154,36 +165,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
            Toast.makeText(context,"Your are Offline",Toast.LENGTH_LONG).show();
         }
         pDialog = new ProgressDialog(_activity);
-       // errorReporting = new ErrorReporting(_activity);
-       /* recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener((LinearLayoutManager) staggeredGridLayoutManager) {
-            @Override
-            public void onLoadMore() {
-                if (!loading && EndOfRecords.equals("0")) {
-                    Log.v("publicactivity", "EndOfRecords " + EndOfRecords);
-                    loading = true;
-                    getData();
-                }
-                loading = false;
-            }
-        });*/
 
-      /*  layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-                Toast.makeText(MyUploads.this, "dd", Toast.LENGTH_SHORT).show();
-                if (EndOfRecords.equals("0")) {
-                    loading = true;
-                    Index++;
-                    getData();
-                }else{loading = false;
-                    Index = 0;
-                }
-            }
-
-
-        });*/
 
         adapter = new MyUploadsAdapter(playlist, context, MyUploads.this);
         recyclerView.setAdapter(adapter);
@@ -196,34 +178,39 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
        pb.setVisibility(View.VISIBLE);
         String emotion="Like";
 
-        playlist.clear();
+        //playlist.clear();
 
         if(Api_private_uploads){
-            RestClient.get(context).MyUploads_Private(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "100",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
+            RestClient.get(context).MyUploads_Private(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
                             pb.setVisibility(View.GONE);
-                            if (arg0.getCode().equals("200")) {
+                            if (arg0.getCode().equals("200") ) {
                                 // Toast.makeText(context, "" + arg0.getData().getRecords()[0].getTo_email(), Toast.LENGTH_LONG).show();
                                 ParsePublicFiles(arg0);
-                                if (Index == 0) {
-                                    SaveResponseForOffline srfo = new SaveResponseForOffline(context);
-                                    srfo.save(arg1, SharedPrefUtils.SpPublicFiles);
-                                }
-                                Index = Index + 1;
+
                             } else if (arg0.getCode().equals("601")) {
                                 RefreshTokenMethodName = "getData";
                                 RefreshToken();
-                            } else if (arg0.getCode().equals("202")) {
-                                adapter.notifyDataSetChanged();
-                                Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                            } else if (arg0.getCode().equals("202") && arg0.getData().getRecords().length == 1 && playlist.isEmpty()) {
 
-                            } else {
+                                //Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                                iv_empty.setVisibility(View.VISIBLE);
+                                playlist.clear();
+                                adapter.notifyDataSetChanged();
+
+                            }
+                            else if (arg0.getCode().equals("202") && arg0.getData().getLast().equals("1") ) {
+                              //  adapter.notifyDataSetChanged();
+                                Toast.makeText(context, "End of list", Toast.LENGTH_LONG).show();
+                                loading = false;
+
+                            }else {
                                 Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
                             }
-                            Index = Index + 1;
+
                         }
 
                         @Override
@@ -236,7 +223,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                     });
         }else {
 
-            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "100", sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), emotion),
+            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30", sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -244,31 +231,36 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                             if (arg0.getCode().equals("200")) {
                                 // Toast.makeText(context, "Data().length" + arg0.getData().length, Toast.LENGTH_LONG).show();
                                 ParsePublicFiles(arg0);
-                                if (Index == 0) {
-                                    SaveResponseForOffline srfo = new SaveResponseForOffline(context);
-                                    srfo.save(arg1, SharedPrefUtils.SpPublicFiles);
-                                }
-                                Index = Index + 1;
+
                             } else if (arg0.getCode().equals("601")) {
                                 RefreshTokenMethodName = "getData";
                                 RefreshToken();
-                            } else if (arg0.getCode().equals("202")) {
-                                adapter.notifyDataSetChanged();
-                                Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                            } else if (arg0.getCode().equals("202") && arg0.getData().getRecords().length == 1 && playlist.isEmpty()) {
 
-                            } else {
+                                //Toast.makeText(context, "No Records ", Toast.LENGTH_LONG).show();
+                                iv_empty.setVisibility(View.VISIBLE);
+                                playlist.clear();
+                                adapter.notifyDataSetChanged();
+
+                            }
+                            else if (arg0.getCode().equals("202") && arg0.getData().getLast().equals("1") ) {
+                                //  adapter.notifyDataSetChanged();
+                                Toast.makeText(context, "End of list", Toast.LENGTH_LONG).show();
+                                loading = false;
+
+                            }else {
                                 Toast.makeText(context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
 
                             }
-                            Index = Index + 1;
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
+
                             pb.setVisibility(View.GONE);
                             iv_empty.setVisibility(View.VISIBLE);
-
                             Toast.makeText(context, "Unable to connect.", Toast.LENGTH_LONG).show();
+
                         }
                     });
         }
@@ -295,6 +287,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             sb.setLength(0);
         }
         EndOfRecords = arg0.getData().getLast();
+        Index++;
         adapter.notifyDataSetChanged();
 
     }
@@ -443,7 +436,34 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
     public void MenuOnItem(int position) {
 
     }
+    private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
 
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+          int  visibleItemCount = staggeredGridLayoutManager.getChildCount();
+          int  totalItemCount = staggeredGridLayoutManager.getItemCount();
+            int[] firstVisibleItems = null;
+            int pastVisibleItems = 0;
+            firstVisibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(firstVisibleItems);
+            if(firstVisibleItems != null && firstVisibleItems.length > 0) {
+                pastVisibleItems = firstVisibleItems[1];
+            }
+            if ((visibleItemCount + pastVisibleItems) >= totalItemCount && loading) {
+                loading = false;
+                Index ++;
+                getData();
+            }
+
+
+
+
+        }
+    };
 
     public void RefreshToken() {
 

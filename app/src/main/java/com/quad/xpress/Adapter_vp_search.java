@@ -41,11 +41,14 @@ public class Adapter_vp_search extends PagerAdapter {
     ArrayList<String>title_vpdp = new ArrayList<>();
     ArrayList<String>file_id_vpdp = new ArrayList<>();
     ArrayList<String>tags_vpdp = new ArrayList<>();
+	ArrayList<String>isuser_liked_vpdp = new ArrayList<>();
+	ArrayList<String>type_vpdp = new ArrayList<>();
 	//user_name,user_img,thumb_url,time,likes,views,media,reactions,title
 
-	public Adapter_vp_search(Search_activity_list dashBoard, int noofsizeguide, ArrayList<String>user_name, ArrayList<String>user_img,
-							 ArrayList<String>thumb_url, ArrayList<String>time, ArrayList<String>likes, ArrayList<String>views,
-							 ArrayList<String>media, ArrayList<String>reactions, ArrayList<String>title, ArrayList<String>file_id, ArrayList<String>tags) {
+	public Adapter_vp_search(Search_activity_list dashBoard, int noofsizeguide, ArrayList<String> user_name, ArrayList<String> user_img,
+							 ArrayList<String> thumb_url, ArrayList<String> time, ArrayList<String> likes, ArrayList<String> views,
+							 ArrayList<String> media, ArrayList<String> reactions, ArrayList<String> title, ArrayList<String> file_id,
+							 ArrayList<String> tags, ArrayList<String> isuserliked, ArrayList<String> type) {
 		// TODO Auto-generated constructor stub
 		size = noofsizeguide;
 		act = dashBoard;
@@ -60,7 +63,8 @@ public class Adapter_vp_search extends PagerAdapter {
         title_vpdp = title;
         file_id_vpdp=file_id;
         tags_vpdp=tags;
-
+        isuser_liked_vpdp = isuserliked;
+		type_vpdp=type;
 	}
 
 	@Override
@@ -159,14 +163,14 @@ public class Adapter_vp_search extends PagerAdapter {
 
 				video_act.putExtra("url",MediaPath);
 				video_act.putExtra("thumbImg",TBPath);
-				video_act.putExtra("type","video");
+				video_act.putExtra("type",type_vpdp.get(position));
 				video_act.putExtra("likes",likes_vpdp.get(position));
 				video_act.putExtra("views",views_vpdp.get(position));
 				video_act.putExtra("file_id",file_id_vpdp.get(position));
 				video_act.putExtra("title",title_vpdp.get(position));
 				video_act.putExtra("tags",tags_vpdp.get(position));
 				video_act.putExtra("upload_date",time_vpdp);
-				video_act.putExtra("isliked","0");
+				video_act.putExtra("isliked",isuser_liked_vpdp.get(position));
 				video_act.putExtra("img_url",TBPath);
 				video_act.putExtra("isPrivate","false");
 				v.getContext().startActivity(video_act);

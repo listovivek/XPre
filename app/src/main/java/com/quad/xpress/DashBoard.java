@@ -648,6 +648,7 @@ public class DashBoard extends AppCompatActivity {
 
         vp_frga_adapter.addFragment(new DashboardFragment_pop(), "Trending");
         vp_frga_adapter.addFragment(new DashboardFragment_new(), "Recent");
+        vp_frga_adapter.addFragment(new DashboardFragment_pop_autoplay(), "Autoplay");
         viewPager_dash_lists.setAdapter(vp_frga_adapter);
 
 
@@ -955,15 +956,16 @@ public class DashBoard extends AppCompatActivity {
                         myPager.setAdapter(adapter_vp_db);
                         myPager.setOffscreenPageLimit(adapter_vp_db.getCount());
                         mPagerContainer.setVisibility(View.VISIBLE);
-                        // myPager.setOffscreenPageLimit(2);
-                         myPager.setCurrentItem(0,true);
 
+                        // myPager.setOffscreenPageLimit(2);
+                        // myPager.setCurrentItem(0,true);
                         new CoverFlow.Builder()
                                 .with(myPager)
                                 .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
                                 .scale(0.01f)
                                 .spaceSize(1f)
                                 .rotationY(14f)
+
                                 .build();
 
                         //  Toast.makeText(_activity, ""+media.size(), Toast.LENGTH_LONG).show();
@@ -982,6 +984,7 @@ public class DashBoard extends AppCompatActivity {
 
                         myPager = (ViewPagerCustom) findViewById(R.id.reviewpager);
                         mPagerContainer.setVisibility(View.GONE);
+
 
                     }});
 
@@ -1188,73 +1191,6 @@ public class DashBoard extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-      //  mtd_pvtCount();
-        //Change value of like count here based on input on AVDisply Screen
-       /* if(playlist!=null || playlist.size() != 0) {
-
-            if (Actvity_video.like_clicked && Actvity_video.LikeChangedValue == 0 && !Actvity_video.isFromFeatured) {
-
-
-                playlist.get(previousposition).setLikesCount("" + 0);
-                playlist.get(previousposition).setIsUserLiked("0");
-                adapterRcv.notifyDataSetChanged();
-
-            }
-
-            if (Actvity_video.LikeChangedValue != 0 && !Actvity_video.isFromFeatured) {
-
-
-                PlayListitems_emotion playlistItemstemp = null;
-                try {
-                    if(playlist.size() >= previousposition ){
-                        playlistItemstemp = playlist.get(previousposition);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                // is userlike derevative
-
-                int lkin = Integer.parseInt(playlistItemstemp.getLikesCount());
-
-                if (lkin < Actvity_video.LikeChangedValue) {
-
-                    playlistItemstemp.setIsUserLiked("1");
-
-                } else {
-
-                    playlistItemstemp.setIsUserLiked("0");
-
-                }
-
-                int vC = Integer.parseInt(playlistItemstemp.getViewsCount());
-                vC++;
-                playlistItemstemp.setViewsCount("" + vC);
-                playlistItemstemp.setLikesCount("" + Actvity_video.LikeChangedValue);
-                playlist.remove(previousposition);
-                playlist.add(previousposition, playlistItemstemp);
-
-                adapterRcv.notifyDataSetChanged();
-            }
-
-            // upating the follow list locally
-            try {
-                for (int i = 0; i < playlist.size(); i++) {
-
-                    if (Act_user_data.fromemail.equals(playlist.get(i).getFromEmail())) {
-                        playlist.get(i).setIsUserFollowing(Act_user_data.isfollowing);
-                    }
-
-                    adapterRcv.notifyDataSetChanged();
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }*/
-
 
         if(Actvity_video.isFromFeatured){
 
@@ -1432,15 +1368,12 @@ private void mtd_contacts_reader(){
     public void CheckAndRequestPermission() {
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) { // Marshmallow+
-            /*if (checkPermission(Permission4)) {
-               // Intent2Activity();
-                return;
-            }*/
+
             requestPermission(PermissionStrings.GET_ACCOUNTS);
 
 
         } else {
-            // Intent2Activity();
+                                          // Intent2Activity();
         }
     }
 

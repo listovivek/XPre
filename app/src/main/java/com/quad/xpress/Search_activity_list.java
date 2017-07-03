@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -156,7 +157,17 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
             }
 
             public boolean onQueryTextChange(String newText) {
-                // this is your adapter that will be filtered
+
+                playlist.clear();
+                Index = 0;
+                if (NCD.isConnected(context) && newText.length() >=2) {
+                    Search_query = newText;
+                    getSearchData();
+
+                } else {
+
+                }
+
                 return true;
             }
 
@@ -186,91 +197,9 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         AppName = getResources().getString(R.string.app_name);
         StaticConfig.IsPublicActivity = true;
 
-        //top view
-        final ArrayList<String>user_name = new ArrayList<>();
-        final ArrayList<String>user_img= new ArrayList<>();
-        final ArrayList<String>thumb_url= new ArrayList<>();
-        final ArrayList<String>time= new ArrayList<>();
-        final ArrayList<String>likes= new ArrayList<>();
-        final ArrayList<String>views = new ArrayList<>();
-        final ArrayList<String>media= new ArrayList<>();
-        final ArrayList<String>reactions= new ArrayList<>();
-        final ArrayList<String>title= new ArrayList<>();
-        final ArrayList<String>file_id= new ArrayList<>();
-        final ArrayList<String>tags= new ArrayList<>();
 
+ //mtd_trendinsearch();
 
-        try {
-            RestClient.get(context).GetTrendingSearch(new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
-                    new Callback<Tsresp>() {
-                        @Override
-                        public void success(Tsresp tsresp, Response response) {
-                          int RSize =   tsresp.getData().getRecords().length ;
-                            if(tsresp.getCode().equals("200")){
-                                for (int i=0 ; i < tsresp.getData().getRecords().length;i++){
-                                    user_name.add(tsresp.getData().getRecords()[i].getFrom_email());
-                                    user_img.add(tsresp.getData().getRecords()[i].getThumbnailPath());
-                                    thumb_url.add(tsresp.getData().getRecords()[i].getThumbnailPath());
-                                    time.add(tsresp.getData().getRecords()[i].getCreated_date());
-                                    likes.add(tsresp.getData().getRecords()[i].getLikeCount());
-                                    views.add(tsresp.getData().getRecords()[i].getView_count());
-                                    media.add(tsresp.getData().getRecords()[i].getFileuploadPath());
-                                    reactions.add(tsresp.getData().getRecords()[i].getLikeCount());
-                                    title.add(tsresp.getData().getRecords()[i].getTitle());
-                                    file_id.add(tsresp.getData().getRecords()[i].get_id());
-                                    tags.add(tsresp.getData().getRecords()[i].getTags());
-
-                                    // Toast.makeText(_activity, "rved"+user_name.get(0), Toast.LENGTH_LONG).show();
-                                }
-
-                            }else {
-                                Toast.makeText(getApplicationContext(), "Featured Videos are not Available", Toast.LENGTH_LONG).show();
-
-                            }
-                            int noofsize= RSize;
-                            Adapter_vp_search adapter_vp_db = new Adapter_vp_search(Search_activity_list.this,noofsize,user_name,user_img,thumb_url,time,likes,views,media,reactions,title,file_id,tags);
-                            Vp_search.setOffscreenPageLimit(adapter_vp_db.getCount());
-                            Vp_search.setAdapter(adapter_vp_db);
-                            adapter_vp_db.notifyDataSetChanged();
-                            pb_loading.setVisibility(View.GONE);
-
-                            new CoverFlow.Builder()
-                                    .with(Vp_search)
-                                    .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
-                                    .scale(0)
-                                    .spaceSize(2f)
-                                    .rotationY(0f)
-                                    .build();
-
-
-                            Intent getSearch =  getIntent();
-
-                            try {
-                                if(getSearch.getStringExtra("searchstring") != null){
-                                    Search_query =  getSearch.getStringExtra("searchstring");
-                                    searchView_SA.setQuery(Search_query,false);
-                                    getSearchData();
-                                }
-
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-
-                            }
-
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            pb_loading.setVisibility(View.GONE);
-                        }
-                    }
-
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
       /*  RestClient.get(context).GetFeatured(new featuredReq("video"),
@@ -330,6 +259,99 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
     }
 
+    private void mtd_trendinsearch() {
+        //top view
+        final ArrayList<String>user_name = new ArrayList<>();
+        final ArrayList<String>user_img= new ArrayList<>();
+        final ArrayList<String>thumb_url= new ArrayList<>();
+        final ArrayList<String>time= new ArrayList<>();
+        final ArrayList<String>likes= new ArrayList<>();
+        final ArrayList<String>views = new ArrayList<>();
+        final ArrayList<String>media= new ArrayList<>();
+        final ArrayList<String>reactions= new ArrayList<>();
+        final ArrayList<String>title= new ArrayList<>();
+        final ArrayList<String>file_id= new ArrayList<>();
+        final ArrayList<String>tags= new ArrayList<>();
+        final ArrayList<String>isuserliked= new ArrayList<>();
+        final ArrayList<String>type= new ArrayList<>();
+
+        try {
+            RestClient.get(context).GetTrendingSearch(new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+                    new Callback<Tsresp>() {
+                        @Override
+                        public void success(Tsresp tsresp, Response response) {
+                            int RSize =   tsresp.getData().getRecords().length ;
+                            if(tsresp.getCode().equals("200")){
+                                for (int i=0 ; i < tsresp.getData().getRecords().length;i++){
+                                    user_name.add(tsresp.getData().getRecords()[i].getFrom_email());
+                                    user_img.add(tsresp.getData().getRecords()[i].getThumbnailPath());
+                                    thumb_url.add(tsresp.getData().getRecords()[i].getThumbnailPath());
+                                    time.add(tsresp.getData().getRecords()[i].getCreated_date());
+                                    likes.add(tsresp.getData().getRecords()[i].getLikeCount());
+                                    views.add(tsresp.getData().getRecords()[i].getView_count());
+                                    media.add(tsresp.getData().getRecords()[i].getFileuploadPath());
+                                    reactions.add(tsresp.getData().getRecords()[i].getLikeCount());
+                                    title.add(tsresp.getData().getRecords()[i].getTitle());
+                                    file_id.add(tsresp.getData().getRecords()[i].get_id());
+                                    tags.add(tsresp.getData().getRecords()[i].getTags());
+                                    isuserliked.add(tsresp.getData().getRecords()[i].getIsUserLiked());
+                                    type.add(tsresp.getData().getRecords()[i].getFilemimeType());
+
+                                    // Toast.makeText(_activity, "rved"+user_name.get(0), Toast.LENGTH_LONG).show();
+                                }
+
+                            }else {
+                                Toast.makeText(getApplicationContext(), "Featured Videos are not Available", Toast.LENGTH_LONG).show();
+
+                            }
+                            int noofsize= RSize;
+                            Adapter_vp_search adapter_vp_db = new Adapter_vp_search(Search_activity_list.this,noofsize,user_name,user_img,thumb_url,time,
+                                    likes,views,media,reactions,title,file_id,tags,isuserliked,type);
+                            Vp_search.setOffscreenPageLimit(adapter_vp_db.getCount());
+                            Vp_search.setAdapter(adapter_vp_db);
+                            adapter_vp_db.notifyDataSetChanged();
+                            pb_loading.setVisibility(View.GONE);
+
+                            new CoverFlow.Builder()
+                                    .with(Vp_search)
+                                    .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
+                                    .scale(0)
+                                    .spaceSize(2f)
+                                    .rotationY(0f)
+                                    .build();
+
+
+                            Intent getSearch =  getIntent();
+
+                            try {
+                                if(getSearch.getStringExtra("searchstring") != null){
+                                    Search_query =  getSearch.getStringExtra("searchstring");
+                                    searchView_SA.setQuery(Search_query,false);
+                                    getSearchData();
+                                }
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                            }
+
+
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            pb_loading.setVisibility(View.GONE);
+                        }
+                    }
+
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private void mtd_resize() {
         ViewTreeObserver observer = fl_vp_parent.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -350,7 +372,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     @Override
     protected void onResume() {
         super.onResume();
-
+        mtd_trendinsearch();
         try {
             if(Actvity_video.like_clicked && Actvity_video.LikeChangedValue == 0 && !Actvity_video.isFromFeatured){
 
@@ -437,17 +459,18 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         }
         searchView.setFocusable(true);
 
-        SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                /*if (!Search_query.equals(query)) {
+
+                if (!Search_query.equals(query)) {
                     Search_query = query;
                     playlist.clear();
                     Index = 0;
                     if (NCD.isConnected(context)) {
                         if (Search_query.length() >= 3) {
-                           *//* InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);*//*
+                            InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
                             searchView.clearFocus();
                             getSearchData();
                         } else {
@@ -456,20 +479,22 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                     } else {
                         Toast.makeText(context, "Please check your Internet Connection", Toast.LENGTH_LONG).show();
                     }
-                }*/
+                }
                 return false;
             }
 
             public boolean onQueryTextChange(String newText) {
+
+              /*  Log.d("ueryTextListener",newText);
 
                 Search_query = newText;
                 playlist.clear();
                 Index = 0;
                 searchView.clearFocus();
                 getSearchData();
+*/
 
-
-                return true;
+                return onQueryTextSubmit(newText);
             }
 
 

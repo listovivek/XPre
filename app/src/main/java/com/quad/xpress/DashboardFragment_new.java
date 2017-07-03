@@ -57,10 +57,9 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
     String selected_file_path;
     String selected_file_name;
     String selected_file_mime;
-    boolean DownloadSucess = true;
     ImageView iv_no_data;
     RecyclerView recyclerView;
-    SwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout_recent;
     adapter_dashboard recyclerAdapter;
     RecyclerView.LayoutManager layoutManager;
 
@@ -87,10 +86,19 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerView_frag_recent);
-        swipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_recent);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        iv_no_data = (ImageView) getActivity().findViewById(R.id.ll_rv_bg);
+        swipeRefreshLayout_recent = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_refresh_recent);
+        recyclerAdapter = new adapter_dashboard(playlist,context,DashboardFragment_new.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new GridLayoutManager(getActivity(),1);
+        recyclerView.setLayoutManager(layoutManager);
+
+        getData();
+
+
+        swipeRefreshLayout_recent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 playlist.clear();
@@ -100,12 +108,6 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
         });
 
 
-
-
-
-
-
-        recyclerAdapter = new adapter_dashboard(playlist,context,DashboardFragment_new.this);
         recyclerView.setAdapter(recyclerAdapter);
 
         recyclerView.addOnScrollListener(recyclerViewOnScrollListener);
@@ -116,11 +118,11 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        iv_no_data = (ImageView) getActivity().findViewById(R.id.ll_rv_bg);
 
         context = getActivity();
 
-        getData();
+
+
         return inflater.inflate(R.layout.dashboard_fragment_recent, container, false);
     }
 
@@ -220,7 +222,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
 
     private void getData() {
 
-       //swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout_recent.setRefreshing(true);
 
         String emotion = "Like";
             RestClient.get(context).Recent(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30",sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),emotion),
@@ -236,22 +238,22 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
                                 RefreshTokenMethodName = "getData";
 
                             } else if (arg0.getCode().equals("202")) {
-                                swipeRefreshLayout.setRefreshing(false);
+                                swipeRefreshLayout_recent.setRefreshing(false);
 
                             }else if(arg0.getData().getLast().equals("1")||arg0.getData().getRecords().length == 0){
-                                swipeRefreshLayout.setRefreshing(false);
+                                swipeRefreshLayout_recent.setRefreshing(false);
                             }
                             else {
 
 
                             }
-                            swipeRefreshLayout.setRefreshing(false);
+                            swipeRefreshLayout_recent.setRefreshing(false);
                         }
 
 
                         @Override
                         public void failure(RetrofitError error) {
-                            swipeRefreshLayout.setRefreshing(false);
+                            swipeRefreshLayout_recent.setRefreshing(false);
 
                         }
                     });
@@ -319,16 +321,10 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout_recent.setRefreshing(false);
         iv_no_data.setVisibility(View.INVISIBLE);
         recyclerAdapter.notifyDataSetChanged();
 
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new GridLayoutManager(getActivity(),1);
-        recyclerView.setLayoutManager(layoutManager);
 
 
         }
@@ -347,7 +343,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
             int firstVisibleItemPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
 
 
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount-10) {
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount-15 && !swipeRefreshLayout_recent.isRefreshing() ) {
 
                 // Toast.makeText(context, "exe", Toast.LENGTH_SHORT).show();
                 Index ++;

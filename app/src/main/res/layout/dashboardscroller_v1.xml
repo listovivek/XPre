@@ -197,6 +197,7 @@
                                 android:layout_height="145dp"
                                 android:layout_marginTop="-30dp"
                                 android:layout_marginBottom="4dp"
+
                                 >
 
                                 <com.quad.xpress.Utills.ViewPagerCustom

@@ -1,0 +1,294 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@color/cardview_light_background"
+    card_view:cardBackgroundColor="@color/RedAccent"
+    android:layout_marginBottom="3sp"
+    android:addStatesFromChildren="false"
+    card_view:cardUseCompatPadding="true"
+    android:descendantFocusability="afterDescendants">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:addStatesFromChildren="false"
+    android:descendantFocusability="afterDescendants">
+
+   <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/Public_list_bg">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_margin="6dp"
+            android:background="@color/Public_list_bg"
+            android:orientation="vertical"
+            android:addStatesFromChildren="true"
+            android:descendantFocusability="beforeDescendants">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/RvImage"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/ic_play"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageView_play_icon"
+                    android:layout_margin="15dp"
+                    android:padding="20dp"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/ic_play"
+                    android:layout_gravity="center"
+                    android:foregroundGravity="top"/>
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar_publiclsit"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+            android:background="@color/Public_list_bg"
+            android:orientation="vertical"
+            android:addStatesFromChildren="false"
+            android:descendantFocusability="afterDescendants">
+
+            <TextView
+                android:id="@+id/RvVideoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:layout_marginTop="5sp"
+                android:singleLine="true"
+                android:text="Title"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:addStatesFromChildren="false"
+                android:descendantFocusability="afterDescendants">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center_horizontal|center"
+                    android:textColor="@color/white"
+                    android:padding="3dp"
+                    android:layout_weight="1"
+                    android:id="@+id/textView_tag_1"
+                    android:layout_margin="2dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center_horizontal|center"
+                    android:layout_weight="1"
+
+                    android:textColor="@color/white"
+                    android:padding="3dp"
+                    android:id="@+id/textView_tag_2"
+                    android:layout_margin="2dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center_horizontal|center"
+                    android:layout_weight="1"
+
+                    android:textColor="@color/white"
+                    android:padding="3dp"
+                    android:layout_margin="2dp"
+                    android:id="@+id/textView_tag_3" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center_horizontal|center"
+                    android:layout_weight="1"
+
+                    android:textColor="@color/white"
+                    android:padding="3dp"
+                    android:layout_margin="2dp"
+                    android:id="@+id/textView_tag_4" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/RvSender"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="3sp"
+                android:layout_marginLeft="5sp"
+                android:drawableLeft="@drawable/ic_rv_mail"
+                android:drawablePadding="5sp"
+                android:drawableTint="#f06292"
+                android:singleLine="true"
+                android:text="New Text"
+                android:textColor="#f06292"
+                android:visibility="invisible"
+                android:textSize="12sp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+               >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="000 Likes"
+                    android:textColor="@color/white"
+                    android:id="@+id/textView_likes"
+                    android:layout_weight="1"
+                    android:drawablePadding="5dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="3dp"
+                    android:drawableLeft="@drawable/ic_like"/>
+
+                <TextView
+                    android:id="@+id/textView_viewsMoreTags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="000 Views"
+                    android:textColor="@color/white"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    android:drawableRight="@drawable/ic_sign"
+                    android:drawablePadding="5dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginRight="3dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/RvTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0sp"
+                android:layout_marginLeft="0sp"
+                android:drawablePadding="0sp"
+                android:singleLine="true"
+                android:text="New Text"
+                android:textColor="@color/rv_list_items"
+                android:textSize="0sp"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/RvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="0sp"
+                android:layout_marginLeft="0sp"
+                android:drawablePadding="0sp"
+                android:singleLine="true"
+                android:text="New Text"
+                android:visibility="invisible"
+
+                android:textColor="@color/rv_list_items"
+                android:textSize="0sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rv_menu_button_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:layout_margin="5dp"
+            android:background="@color/Public_list_bg">
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_marginTop="7dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:layout_gravity="center_vertical|right"
+                android:background="@color/Public_list_bg"
+                android:src="@drawable/ic_rv_options" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+     <!--   <RelativeLayout
+            android:id="@+id/RelativeLayout_moreTgas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Public_list_bg"
+            android:visibility="gone">
+           <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#"
+                android:gravity="left|center_vertical"
+                android:background="@drawable/round_corner_purple"
+                android:textColor="@color/white"
+                android:padding="3dp"
+                android:textSize="11sp"
+                android:id="@+id/textView_taglist"
+                android:layout_margin="3dp"
+                android:layout_gravity="center_horizontal" />
+
+
+            <com.quad.xpress.Utills.helpers.TagLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView_taglist"
+                android:id="@+id/TagLayoutView_Public_list"
+                android:background="@color/Public_list_bg"
+                >
+
+            </com.quad.xpress.Utills.helpers.TagLayout>
+
+        </RelativeLayout>-->
+
+</LinearLayout>
+</android.support.v7.widget.CardView>
+
+
+
+

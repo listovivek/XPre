@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary">
+<!--<include layout="@layout/contact_toolbar"
+    android:id="@+id/tb"/>-->
+
+    <TextView
+        android:id="@+id/textview_recent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tb"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:text="Ixpress Recent list"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/textview_recent"
+        android:id="@+id/rv_contact_list_recent"
+        android:layout_marginTop="5dp"
+        android:layout_height="170dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        />
+
+    <!--<TextView
+        android:id="@+id/textview_ix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:layout_below="@+id/rv_contact_list_recent"
+        android:layout_centerHorizontal="true"
+        android:text="Ixpress Contacts List"
+        />-->
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+      android:background="@android:color/transparent"
+        android:src="@drawable/ic_tb_back"
+        android:layout_alignParentTop="true"
+        android:id="@+id/btn_back_contacts"
+        android:layout_above="@+id/contact_viewpager" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout_private"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/rv_contact_list_recent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_gravity="top"
+        android:layout_toRightOf="@+id/btn_back_contacts"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/white_transparent"
+        />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/contact_viewpager"
+        android:layout_below="@+id/tabLayout_private"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
+
+    <!--<ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_drawer"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:id="@+id/tb_normal_menu"/>
+-->
+
+
+    <!--<android.support.v7.widget.SearchView
+        android:id="@+id/search"
+        android:layout_below="@+id/textview_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/search"
+        android:id="@+id/rv_contact_list"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        />-->
+
+</RelativeLayout>

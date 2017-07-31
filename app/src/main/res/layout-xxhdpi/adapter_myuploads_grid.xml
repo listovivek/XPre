@@ -1,0 +1,527 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardBackgroundColor="@color/cardview_light_background"
+    android:layout_margin="2dp"
+    card_view:cardCornerRadius="0sp"
+    card_view:contentPadding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:addStatesFromChildren="false"
+        android:descendantFocusability="afterDescendants">
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/white">
+
+           <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="300dp"
+               android:layout_weight="3"
+               android:id="@+id/rl_parent_full"
+               android:background="@color/cardview_light_background"
+               android:orientation="vertical"
+               android:addStatesFromChildren="true"
+               android:descendantFocusability="beforeDescendants">
+
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:background="@drawable/curved_edges_white_top_myuploads"
+                   >
+                   <TextView
+                       android:id="@+id/RvVideoTitle"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginBottom="3sp"
+                       android:layout_marginLeft="15sp"
+                       android:layout_marginRight="5sp"
+                       android:layout_marginTop="5sp"
+                       android:singleLine="true"
+                       android:text="Title"
+                       android:layout_centerVertical="true"
+                       android:gravity="start"
+                       android:textColor="@color/rv_list_title"
+                       android:textSize="18sp" />
+
+                   <LinearLayout
+                       android:id="@+id/rv_menu_button_ll"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:orientation="vertical"
+                       android:layout_alignParentRight="true"
+                       android:layout_centerVertical="true"
+                       android:visibility="visible"
+                       android:layout_margin="5dp"
+                       >
+
+                       <ImageButton
+                           android:id="@+id/menu_button"
+                           android:layout_weight="1"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:visibility="visible"
+                           android:background="@color/white"
+                           android:layout_margin="5sp"
+                           android:padding="5dp"
+                           android:layout_gravity="center_vertical|right"
+                           android:src="@drawable/ic_rv_options" />
+                   </LinearLayout>
+
+               </RelativeLayout>
+
+               <FrameLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent">
+
+                   <ImageView
+                       android:id="@+id/RvImage"
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:scaleType="centerInside"
+                       android:background="@color/Button_green"
+                       />
+                   <ImageView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/imageView_play_icon"
+                       android:layout_margin="15dp"
+                       android:padding="10dp"
+                       android:scaleType="fitCenter"
+                       android:background="@drawable/ic_play"
+                       android:layout_gravity="center"
+                       android:foregroundGravity="top"/>
+
+                   <ProgressBar
+                       style="?android:attr/progressBarStyleSmall"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/progressBar_publiclsit"
+                       android:layout_gravity="center" />
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:background="@color/primary_transparent"
+                       android:gravity="center"
+                       android:id="@+id/ll_action_panel"
+                       android:visibility="invisible"
+                       android:orientation="vertical"
+                       >
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Info"
+                           android:gravity="center_horizontal"
+                           android:id="@+id/amu_tv_info_show_details"
+                           android:textSize="18sp"
+                           android:padding="5dp"
+                           android:textColor="@color/white"/>
+
+                       <TextView
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:text="Delete"
+                           android:textSize="18sp"
+                           android:padding="5dp"
+                           android:gravity="center_horizontal"
+                           android:layout_below="@+id/amu_tv_info_show_details"
+                           android:id="@+id/textView_delete"
+                           android:textColor="@color/white"/>
+
+                   </LinearLayout>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:id="@+id/ll_action_panel_full"
+                       android:visibility="gone"
+                       android:gravity="center_horizontal"
+                       android:background="@color/primary"
+                       android:layout_gravity="center"
+                       android:orientation="vertical"
+                       android:weightSum="10"
+                       >
+
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:layout_weight="8"
+                           android:layout_marginLeft="25dp"
+                           android:layout_marginRight="25dp"
+                           android:paddingTop="20dp"
+                           android:paddingBottom="20dp"
+                           android:orientation="vertical"
+                           android:gravity="center"
+                           android:background="@android:color/transparent">
+
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_date_created"
+                               android:textColor="@color/white"
+                               android:alpha=".6"
+                               android:text="Date Created"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_date_created_data"
+                               android:textColor="@color/white"
+                               android:text="Date Created"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_privelage"
+                               android:textColor="@color/white"
+                               android:alpha=".6"
+                               android:layout_marginTop="5dp"
+                               android:text="Privilege"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_privelage_data"
+                               android:textColor="@color/white"
+                               android:text="Public"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_likes"
+                               android:textColor="@color/white"
+                               android:alpha=".6"
+                               android:layout_marginTop="5dp"
+                               android:text="Likes"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_likes_data"
+                               android:textColor="@color/white"
+
+                               android:text="00 Likes"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_viewes"
+                               android:textColor="@color/white"
+                               android:alpha=".6"
+                               android:layout_marginTop="5dp"
+                               android:text="Views"/>
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="wrap_content"
+                               android:id="@+id/amu_tv_info_viewes_data"
+                               android:textColor="@color/white"
+
+                               android:text="00 Views"/>
+
+
+                       </LinearLayout>
+
+                       <LinearLayout
+
+                           android:orientation="horizontal"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="1dp"
+                           android:background="@color/white"
+                           android:layout_gravity="bottom"
+                           android:visibility="gone"
+                           android:layout_weight="2"
+                           android:gravity="right"
+                           >
+
+                           <LinearLayout
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_gravity="center"
+                               android:padding="3dp"
+                               android:layout_margin="3dp"
+                               >
+                               <TextView
+                                   android:text=""
+                                   android:layout_width="0dp"
+                                   android:layout_height="wrap_content"
+                                   android:id="@+id/textView_delete_old"
+                                   android:drawableRight="@drawable/ic_delete"
+                                   android:drawablePadding="5dp"
+                                   android:textSize="12sp"
+                                   android:gravity="center_vertical|center_horizontal"
+                                   android:layout_gravity="center"
+                                   android:layout_marginBottom="3dp"
+                                   android:layout_marginRight="3dp"
+                                   android:layout_weight="1" />
+
+                           </LinearLayout>
+
+                           <TextView
+                               android:layout_width="0dp"
+                               android:layout_height="wrap_content"
+                               android:text="000 Likes"
+                               android:textColor="@color/rv_list_items"
+                               android:textSize="12sp"
+                               android:id="@+id/textView_likes"
+                               android:layout_weight="0"
+                               android:drawablePadding="5dp"
+                               android:maxLines="1"
+                               android:visibility="gone"
+                               android:gravity="center_vertical|center_horizontal"
+                               android:layout_marginBottom="3dp"
+                               android:drawableLeft="@drawable/ic_like_filled"/>
+
+
+
+                           <TextView
+                               android:id="@+id/textView_viewsMoreTags"
+                               android:layout_width="0dp"
+                               android:layout_height="wrap_content"
+                               android:layout_marginLeft="10dp"
+                               android:text="000 Views"
+                               android:textColor="@color/rv_list_items"
+                               android:textSize="12sp"
+                               android:clickable="true"
+                               android:maxLines="1"
+                               android:visibility="gone"
+                               android:focusableInTouchMode="true"
+                               android:drawableLeft="@drawable/ic_views"
+                               android:drawablePadding="5dp"
+                               android:layout_marginBottom="3dp"
+                               android:layout_marginRight="3dp"
+                               android:gravity="center_vertical|center_horizontal"
+                               android:layout_weight="0"/>
+                       </LinearLayout>
+
+                   </LinearLayout>
+
+
+               </FrameLayout>
+
+
+           </LinearLayout>
+
+           <LinearLayout
+                android:visibility="gone"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:addStatesFromChildren="false"
+                android:descendantFocusability="afterDescendants">
+
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:addStatesFromChildren="false"
+                    android:descendantFocusability="afterDescendants">
+                    <TextView
+                        android:id="@+id/RvTags_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3sp"
+                        android:layout_marginLeft="5sp"
+                        android:drawableLeft="@drawable/ic_tags"
+                        android:drawablePadding="5sp"
+                        android:singleLine="true"
+                        android:text="New Text"
+                        android:textColor="@color/rv_list_items"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:gravity="center_horizontal|center"
+                        android:padding="1dp"
+                        android:lines="1"
+                        android:layout_weight="1"
+                        android:textColor="@color/rv_list_items"
+                        android:textSize="12sp"
+                        android:id="@+id/textView_tag_1"
+                        android:layout_margin="2dp"
+                        android:visibility="invisible"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:gravity="center_horizontal|center"
+                        android:layout_weight="1"
+                        android:textColor="@color/rv_list_items"
+                        android:textSize="12sp"
+                        android:padding="1dp"
+                        android:lines="1"
+                        android:id="@+id/textView_tag_2"
+                        android:layout_margin="2dp"
+                        android:visibility="invisible"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:gravity="center_horizontal|center"
+                        android:layout_weight="1"
+                        android:textColor="@color/rv_list_items"
+                        android:textSize="12sp"
+                        android:padding="1dp"
+                        android:lines="1"
+                        android:layout_margin="2dp"
+                        android:id="@+id/textView_tag_3"
+                        android:visibility="invisible"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:gravity="center_horizontal|center"
+                        android:layout_weight="1"
+                        android:textColor="@color/rv_list_items"
+                        android:textSize="12sp"
+                        android:padding="1dp"
+                        android:lines="1"
+                        android:layout_margin="2dp"
+                        android:id="@+id/textView_tag_4"
+                        android:visibility="invisible"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/RvSender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="3sp"
+                    android:layout_marginLeft="5sp"
+                    android:drawableLeft="@drawable/ic_rv_mail"
+                    android:drawablePadding="5sp"
+                    android:drawableTint="#f06292"
+                    android:singleLine="true"
+                    android:text="New Text"
+                    android:textColor="#f06292"
+                    android:visibility="invisible"
+                    android:textSize="12sp" />
+
+
+
+                <TextView
+                    android:id="@+id/RvTags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0sp"
+                    android:layout_marginLeft="0sp"
+                    android:drawablePadding="0sp"
+                    android:singleLine="true"
+                    android:text="New Text"
+                    android:textColor="@color/rv_list_items"
+                    android:textSize="0sp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/RvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="0sp"
+                    android:layout_marginLeft="0sp"
+                    android:drawablePadding="0sp"
+                    android:singleLine="true"
+                    android:text="New Text"
+                    android:visibility="invisible"
+
+                    android:textColor="@color/rv_list_items"
+                    android:textSize="0sp" />
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="10dp"
+            android:addStatesFromChildren="false"
+            android:descendantFocusability="afterDescendants"
+            android:background="#E7E7E7"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="center_horizontal|center"
+                android:padding="3dp"
+                android:lines="1"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:id="@+id/textView_comment_1"
+                android:layout_margin="2dp"
+                android:visibility="visible"
+                android:background="@drawable/round_corner_tv_comments"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="center_horizontal|center"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:padding="3dp"
+                android:lines="1"
+                android:id="@+id/textView_comment_2"
+                android:layout_margin="2dp"
+                android:visibility="visible"
+                android:background="@drawable/round_corner_tv_comments"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="center_horizontal|center"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:padding="3dp"
+                android:lines="1"
+                android:layout_margin="2dp"
+                android:id="@+id/textView_comment_3"
+                android:visibility="visible"
+                android:background="@drawable/round_corner_tv_comments"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="center_horizontal|center"
+                android:layout_weight="1"
+                android:background="@drawable/round_corner_tv_comments"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:padding="3dp"
+                android:lines="1"
+                android:layout_margin="2dp"
+                android:id="@+id/textView_comment_4"
+                android:visibility="visible"/>
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
+
+
+
+

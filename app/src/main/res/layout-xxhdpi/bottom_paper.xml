@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:autolabel="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/popup_window"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_gravity="bottom|center"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary_transparent">
+    <com.dpizarro.autolabel.library.AutoLabelUI
+        android:id="@+id/vv_tag_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        autolabel:max_labels="4"
+        autolabel:show_cross="false"
+        android:layout_alignParentTop="true"
+        autolabel:text_color="@android:color/white"
+        autolabel:text_size="@dimen/label_title_size"
+        autolabel:icon_cross="@drawable/ic_search_btm"
+        autolabel:label_background_res="@drawable/abuse_editext_curve"
+        autolabel:label_padding="3dp"
+        android:visibility="gone"
+        autolabel:label_clickable="true"/>
+<android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/Rv_tags">
+
+</android.support.v7.widget.RecyclerView>
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/rl_top">
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@android:drawable/arrow_down_float"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:id="@+id/btnm_bar_dismiss"
+        android:layout_margin="10dp"/>
+    <Button
+        android:id="@+id/abuse_btn"
+        android:text="Report abuse"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:textAllCaps="false"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:textSize="10sp"
+        style="@android:style/Widget.Button"
+        android:background="@drawable/abuse_editext_curve"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/rl_top"
+
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        >
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/Rv_tags_list"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_above="@+id/linearLayout_btm"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+</RelativeLayout>

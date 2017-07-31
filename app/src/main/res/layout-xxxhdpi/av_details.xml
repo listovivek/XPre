@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/translucent_black"
+    android:orientation="vertical">
+    <include layout="@layout/toolbar_normal"
+
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="45dp">
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:id="@+id/ll_shareas_paren"
+            android:padding="2sp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:text="@string/share_as"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white"
+                android:id="@+id/tv_share_ass"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <RelativeLayout
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_alignLeft="@+id/tv_share_ass"
+                android:layout_marginLeft="0dp">
+
+                <Spinner
+                    android:id="@+id/av_share_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginLeft="3dp"
+                    android:entries="@array/share_type"
+                    style="@style/spinner_av"
+                    />
+
+
+            </RelativeLayout>
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Private"
+                android:textSize="22sp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@color/orange"
+                android:background="@android:color/transparent"
+                android:id="@+id/tv_avd_spinner_holder"
+                android:layout_marginBottom="3dp"
+                android:textAlignment="center"
+                android:layout_alignTop="@+id/tv_share_ass"
+                android:layout_toLeftOf="@+id/btn_avd_help"
+                android:layout_toEndOf="@+id/tv_share_ass"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/Bg_divider"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/tv_share_ass"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_avd_help"
+                android:background="@android:color/transparent"
+                android:padding="2dp"
+                android:alpha=".4"
+                android:layout_marginBottom="2dp"
+                android:src="@drawable/ic_dialog_info"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/av_tags_til"
+            android:layout_below="@+id/ll_shareas_paren"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/str"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="5sp"
+                    android:textSize="18sp"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/Entertag"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/str"
+                    android:layout_marginLeft="0dp">
+                    <MultiAutoCompleteTextView
+                        android:id="@+id/av_tags"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="13"
+                        android:layout_marginTop="5sp"
+                        android:textSize="14sp"
+                        android:hint="@string/av_tags"
+
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:textColorHint="@color/orange"
+                        android:inputType="textCapWords"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/orange"
+                        android:freezesText="true"
+                        android:padding="10sp"
+                        android:singleLine="true" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@color/Bg_divider"
+                        android:layout_below="@+id/av_tags"
+                        android:orientation="vertical" />
+
+                </RelativeLayout>
+
+
+
+
+
+
+
+            </RelativeLayout>
+
+
+
+
+        </android.support.design.widget.TextInputLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_share_target_parent"
+            android:layout_below="@+id/av_tags_til"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/str1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+               android:layout_alignParentTop="true"
+                android:text="@string/av_email_hint"
+                android:textSize="18sp"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:layout_marginRight="5dp"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/btn_contacts"
+                android:background="@android:color/transparent"
+                android:alpha=".4"
+                android:layout_gravity="right|center_vertical"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_contact"
+                 />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/str1"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="0dp"
+                android:id="@+id/fl_emcn"
+                android:layout_toLeftOf="@+id/btn_contacts"
+                android:layout_toStartOf="@+id/btn_contacts">
+                <AutoCompleteTextView
+                    android:id="@+id/av_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="13"
+                    android:hint=" Email"
+
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/orange"
+
+                    android:textColorHint="@color/orange"
+                    android:inputType="textEmailAddress"
+                    android:longClickable="false"
+                    android:singleLine="true"
+                    android:freezesText="true"
+                    android:padding="10sp"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionNext"
+                    android:textSize="14sp"/>
+
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_gravity="bottom"
+                android:background="@color/Bg_divider"
+                android:orientation="vertical"
+                android:layout_below="@+id/fl_emcn"/>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_share_target_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:id="@+id/ll_field_contianer"
+          >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_gravity="top"
+                android:text="@string/Have_a_name"
+                android:textSize="18sp"
+                android:id="@+id/textView2" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/textView2"
+                android:layout_marginLeft="0dp"
+
+                android:gravity="bottom"
+                >
+
+                <EditText
+                    android:id="@+id/av_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="13"
+                    android:hint="@string/feelings"
+
+                    android:layout_marginTop="1dp"
+                    android:textSize="14sp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/Button_green"
+                    android:textColorHint="@color/Button_green"
+                    android:inputType="textCapWords"
+                    android:maxLength="25"
+                    android:textStyle="italic"
+                    android:freezesText="true"
+                    android:padding="10sp"
+                    android:imeOptions="actionGo"
+                    android:singleLine="true" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/Bg_divider"
+                    android:orientation="vertical"
+                    android:layout_below="@id/av_name"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_field_contianer">
+
+            <pl.bclogic.pulsator4droid.library.PulsatorLayout
+                android:id="@+id/pulsator"
+                android:layout_width="match_parent"
+                android:layout_height="420dp"
+                app:pulse_count="4"
+                app:pulse_duration="7000"
+                app:pulse_repeat="0"
+                android:layout_gravity="center"
+                app:pulse_color="@color/white_transparent"
+                app:pulse_startFromScratch="true"
+                app:pulse_interpolator="Linear"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-70dp">
+
+                <ImageButton
+                    android:layout_weight="1"
+                    android:id="@+id/btn_start_recording"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:scaleType="fitCenter"
+                    android:padding="10dp"
+                    android:paddingLeft="16dp"
+                    android:src="@drawable/ic_video_next"
+                    android:background="@drawable/circle_bg_red"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true" />
+
+            </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+
+        </FrameLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/button_cancel_recording"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:background="@drawable/btn_round_red_pop"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/bg_round_corner_toast"
+    android:padding="25dp">
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to reject it?"
+        android:textAlignment="center"
+        android:id="@+id/tv_pvt_alert_reject_msg"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30sp"
+        android:background="@android:color/transparent">
+        <Button
+            android:id="@+id/pvt_alert_dismiss"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Cancel"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/btn_round_corner"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/pvt_alert_proceed"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="  Confirm Rejection  "
+            android:padding="8dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/btn_round_orange"
+            android:textColor="@color/white" />
+
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/pvt_add_contact"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_margin="5dp"
+
+        android:padding="8dp"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        android:layout_gravity="right"
+        android:hapticFeedbackEnabled="true"
+        android:background="@drawable/btn_round_blue_border"
+        android:text="Add Contact"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/pvt_alert_spam"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+       android:layout_weight="1"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:layout_margin="5dp"
+        android:textColor="@color/white"
+        android:layout_gravity="right"
+        android:hapticFeedbackEnabled="true"
+        android:background="@drawable/btn_round_red_border"
+        android:text="Report SPAM" />
+
+</LinearLayout>
+
+</LinearLayout>

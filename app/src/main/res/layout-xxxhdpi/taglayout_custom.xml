@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="40dp"
+    android:background="@color/Public_list_bg">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relative_tagview">
+        <com.quad.xpress.utills.helpers.TagLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/TagLayoutView_tagView"
+            >
+
+        </com.quad.xpress.utills.helpers.TagLayout>
+    </RelativeLayout>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Abuse"
+        android:id="@+id/button_report_abuse"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:padding="7dp"
+        android:background="@drawable/bg_round_grey"
+        android:layout_above="@+id/button_report_feedback"
+        android:layout_alignLeft="@+id/button_report_feedback"
+        android:layout_alignStart="@+id/button_report_feedback" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Report Feedback"
+        android:padding="7dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/button_report_feedback"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_round_grey"
+        android:layout_alignRight="@+id/relative_tagview"
+        android:layout_alignEnd="@+id/relative_tagview" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@+id/button_report_abuse"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:id="@+id/button_taglayout_cancel"
+            android:background="@drawable/btn_round_red"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post"
+            android:id="@+id/button_taglayout_Post"
+            android:background="@drawable/btn_round_red"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+             />
+    </LinearLayout>
+
+
+</RelativeLayout>

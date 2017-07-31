@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/translucent_black_dark"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:id="@+id/rl_dd">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/intro_heart"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                android:id="@+id/imageview_heart_toast"
+                android:layout_gravity="center_vertical"
+              />
+
+
+            <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/toast_db_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:nbBackground="@drawable/ic_toast_animation"
+            app:nbMaxTextLength="97"
+            app:nbAnimationDuration="1000"
+            app:nbAnimationEnabled="true"
+                android:scaleY="1"
+                android:scaleX="1"
+            app:nbTextSize="25sp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:maxLines="3"
+                    android:layout_gravity="bottom|end"
+                    android:textSize="16sp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:textStyle="italic"
+                    android:textAlignment="textEnd"
+                    android:id="@+id/tv_toast_msg"
+                    android:layout_below="@id/toast_db_badge"
+                    />
+
+
+            </com.nex3z.notificationbadge.NotificationBadge>
+
+</RelativeLayout>
+
+
+    <!--    android:background="@drawable/bg_round_corner_toast"-->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="8"
+        android:visibility="invisible">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ixprez"
+            android:textStyle="italic"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/tv_toast_title"/>
+
+
+    </RelativeLayout>
+
+   <!-- <ImageButton
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_margin="1dp"
+        android:layout_gravity="center_vertical"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_tick"/>-->
+</RelativeLayout>

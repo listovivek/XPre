@@ -1,0 +1,253 @@
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:swipe="http://schemas.android.com/tools"
+    android:id="@+id/swipe"
+    swipe:leftEdgeSwipeOffset="0dp"
+    swipe:rightEdgeSwipeOffset="0dp"
+    android:layout_gravity="center"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    swipe:cardBackgroundColor="@color/curved_dark">
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="240dp"
+        android:padding="2dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/private_recycle_view"
+        android:weightSum="3">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_accept"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_accept_or"
+            android:text="Accept"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/blue_"
+            android:alpha=".3">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_reject"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_reject"
+            android:text="Reject"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/blue_"
+            android:alpha=".3">
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_block"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_block_red"
+            android:text="Block"
+            android:textSize="12sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/curved_dark"
+        android:id="@+id/pvt_relative_foreground"
+  >
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fl_img">
+
+            <ImageView
+                android:id="@+id/RvImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="5sp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_play">
+
+        </ImageView>
+        <ImageView
+            android:id="@+id/RvImage_overlay"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5sp"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play"
+            android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/RvImage_overlay_audio"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="5sp"
+                android:visibility="invisible"
+                android:layout_gravity="left|top"
+                android:src="@drawable/ic_mic"
+                android:scaleType="centerCrop"/>
+        </FrameLayout>
+
+            <TextView
+                android:id="@+id/RvVideoTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/fl_img"
+                android:singleLine="true"
+                android:text="New Text"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5sp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/Button_green"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/RvSender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/fl_img"
+                android:layout_below="@+id/RvVideoTitle"
+                android:layout_marginBottom="3sp"
+                android:layout_marginLeft="5sp"
+                android:layout_margin="5dp"
+                android:drawableLeft="@drawable/ic_rv_mail"
+                android:drawablePadding="5sp"
+                android:drawableTint="#f06292"
+                android:singleLine="true"
+                android:text="New Text"
+                android:textColor="#f06292"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/RvTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3sp"
+                android:layout_marginLeft="5sp"
+                android:layout_margin="5dp"
+                android:drawableLeft="@drawable/ic_tags"
+                android:layout_toRightOf="@+id/RvSender"
+                android:layout_below="@+id/RvVideoTitle"
+                android:drawablePadding="5sp"
+                android:singleLine="true"
+                android:text="New Text"
+                android:textColor="@color/rv_list_items"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/rv_menu_button_ll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/menu_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:background="@android:color/white"
+                android:src="@drawable/ic_rv_options" />
+        </LinearLayout>
+
+        <!--<TextView
+            android:id="@+id/RvTime"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_rv_time"
+            android:drawablePadding="5sp"
+            android:singleLine="true"
+            android:text="New Text"
+            android:textColor="@color/rv_list_items"
+            android:textSize="12sp"
+            android:layout_below="@+id/RvSender"
+            android:layout_alignLeft="@+id/RvSender"
+            android:layout_alignStart="@+id/RvSender" />-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+
+            android:layout_alignLeft="@+id/RvSender"
+            android:layout_alignStart="@+id/RvSender"
+            android:layout_below="@+id/RvSender">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/ns_adp_tv_time"
+                android:text="00H"
+                android:drawableLeft="@drawable/ic_calander_white"
+
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/ns_adp_tv_date"
+                android:text="DD/MM/yyyy"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:gravity="center_vertical"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/ic_clock_white"
+
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+<ImageButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:background="@android:color/transparent"
+    android:scaleX="1.2"
+    android:scaleY="1.2"
+    android:padding="1sp"
+    android:src="@drawable/ic_reviel"/>
+
+    </RelativeLayout>
+</com.daimajia.swipe.SwipeLayout>

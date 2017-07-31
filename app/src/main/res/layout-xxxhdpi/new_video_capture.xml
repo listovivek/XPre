@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/primary"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<include layout="@layout/toolbar_normal"
+    android:id="@+id/tb_top"
+    android:layout_marginTop="25dp"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"/>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/tb_top">
+    <Button
+        android:id="@+id/ivFlipCam1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_flip_cam"
+        android:visibility="visible"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="25dp"
+       android:layout_gravity="right" />
+
+    <org.wysaid.view.CameraRecordGLSurfaceView
+        android:id="@+id/myGLSurfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
+
+
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@color/translucent_black"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:id="@+id/act_video_capture_btn_linerar">
+
+        <TextView
+            android:id="@+id/timerValue"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="top"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="5dp"
+            android:text="@string/timerVal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff"
+            android:textSize="28sp"
+            android:layout_weight="1"/>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/linear_discard_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="3"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageButton
+                android:id="@+id/button_discard_capture"
+                android:layout_width="70dp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="70dp"
+                android:background="@drawable/circle_with_stop"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+
+
+            <Button
+                android:id="@+id/sd_discard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_round_purple"
+                android:text="@string/discard"
+                android:textColor="@color/white"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp" />
+
+            <Button
+                android:id="@+id/sd_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_round_orange"
+                android:text="@string/send"
+                android:textColor="@color/white"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_alignBaseline="@+id/sd_discard"
+                android:layout_alignBottom="@+id/sd_discard"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
+        </RelativeLayout>
+
+
+
+
+
+        </LinearLayout>
+
+
+
+
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/scroll_filter"
+            android:background="@android:color/transparent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/menuLinearLayout"
+                android:orientation="horizontal"
+                >
+
+
+                </LinearLayout>
+
+
+        </HorizontalScrollView>
+
+
+
+        <LinearLayout
+            android:id="@+id/linear_camera_capture"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:layout_weight="3"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center_vertical">
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:id="@+id/customFilterBtn3"
+                android:textAllCaps="false"
+                android:text="Reset"
+                android:textColor="@color/red"
+                android:background="@drawable/btn_selector_filter"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/button_capture"
+                android:layout_toRightOf="@+id/button_capture"
+                android:layout_marginStart="0dp"
+                android:layout_margin="2dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="0dp"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:id="@+id/customFilterBtn4"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@+id/customFilterBtn3"
+                android:textAllCaps="false"
+                android:text="Instant"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_selector_filter"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_margin="2dp"
+                android:layout_marginLeft="0dp"/>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2">
+                <pl.bclogic.pulsator4droid.library.PulsatorLayout
+                    android:id="@+id/pulsator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:pulse_count="5"
+                    app:pulse_duration="12000"
+                    app:pulse_repeat="0"
+                    android:layout_gravity="center"
+                    app:pulse_color="@color/white"
+                    app:pulse_startFromScratch="true"
+                    app:pulse_interpolator="Linear"
+                    android:layout_marginBottom="-15dp">
+                    <ImageButton
+                        android:id="@+id/button_capture"
+                        android:layout_width="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_with_cemara"
+                        android:layout_centerInParent="true" />
+
+                    </pl.bclogic.pulsator4droid.library.PulsatorLayout>
+
+            </RelativeLayout>
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:id="@+id/customFilterBtn1"
+                android:textAllCaps="false"
+                android:text="Invert"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="2dp"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_selector_filter"
+                android:layout_alignParentBottom="true"
+                />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="40dp"
+                android:id="@+id/customFilterBtn2"
+                android:textAllCaps="false"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentBottom="true"
+                android:text="Texture"
+                android:layout_margin="2dp"
+                android:textColor="@color/black"
+                android:background="@drawable/btn_selector_filter"
+                android:layout_toRightOf="@+id/customFilterBtn1"
+                />
+        </LinearLayout>
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

@@ -332,6 +332,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
             }*/
             mCameraView.setFilterWithConfig(btn.filterConfig);
             mCurrentConfig = btn.filterConfig;
+            //cc
         }
     };
 

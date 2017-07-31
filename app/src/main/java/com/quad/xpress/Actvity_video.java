@@ -47,9 +47,9 @@ import android.widget.VideoView;
 import com.bumptech.glide.Glide;
 import com.dpizarro.autolabel.library.AutoLabelUI;
 import com.dpizarro.autolabel.library.AutoLabelUISettings;
-import com.quad.xpress.Utills.audio_visulizer;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.audio_visulizer;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.models.abuse_resp.Abuse_Req;
 import com.quad.xpress.models.abuse_resp.Abuse_response;
 import com.quad.xpress.models.clickResponce.Like_Req;
@@ -1093,5 +1093,7 @@ public class Actvity_video extends AppCompatActivity{
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+
     }
+
 }

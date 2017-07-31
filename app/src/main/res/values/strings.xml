@@ -8,12 +8,12 @@
     <string name="save">Save</string>
     <string name="join_xpress">Join xPress</string>
     <string name="verification">Verification Code</string>
-    <string name="verify_desc">Please enter the verification code that you received to your registered email below</string>
+    <string name="verify_desc">Please enter the verification code that you received to your registered email or phone below</string>
     <string name="enter_otp">Code</string>
     <string name="resend_code"><u>Resend Code</u></string>
-    <string name="change_email">Change Email</string>
+    <string name="change_email">Change Email or Phone</string>
     <string name="Language">Language</string>
-
+    <string name="default_notification_channel_id">personalreceiver</string>
     <!--changed by vivek-->
 
     <string name="done">Done</string>

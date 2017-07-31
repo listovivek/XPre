@@ -37,13 +37,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.quad.xpress.Utills.StatiConstants;
-import com.quad.xpress.Utills.helpers.FieldsValidator;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.PermissionStrings;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.quad.xpress.utills.StatiConstants;
+import com.quad.xpress.utills.helpers.FieldsValidator;
+import com.quad.xpress.utills.helpers.LoadingDialog;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.PermissionStrings;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.profile_pic.profilepicResp;
 import com.quad.xpress.models.receivedFiles.register.LanguageResp;
 import com.quad.xpress.models.receivedFiles.register.ReqCL;
@@ -137,8 +139,23 @@ public class SettingsActivity extends AppCompatActivity implements
         tv_help = (TextView) findViewById(R.id.tv_settings_help);
         tv_about = (TextView) findViewById(R.id.tv_settings_about);
         tv_support = (TextView) findViewById(R.id.tv_settings_support);
-
+        tv_mobile.setFocusable(false);
+        tv_mobile.setFocusableInTouchMode(false);
         NDC = new NetConnectionDetector();
+
+        String   GCMToken = null;
+        try {
+         GCMToken =   FirebaseInstanceId.getInstance().getToken();
+            FirebaseMessaging.getInstance().subscribeToTopic("personalreceiver");
+            // Toast.makeText(_activity, ""+GCMToken, Toast.LENGTH_SHORT).show();
+            editor.putString(SharedPrefUtils.SpGcmToken, StatiConstants.Gcm);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.v("GCM id", "firebase"+" "+GCMToken);
+
 
         tv_about.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,7 +296,10 @@ public class SettingsActivity extends AppCompatActivity implements
 
                 //setContentView(R.layout.cropping_image);
 
-                CheckAndRequestPermission();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                    CheckAndRequestPermission();
+                else
+                    permissionGranted();
 
 
 
@@ -495,7 +515,7 @@ public class SettingsActivity extends AppCompatActivity implements
         final ArrayAdapter<String> adapter_country = new ArrayAdapter<String>(this,R.layout.spinner_custom_settings, country_list);
 
 
-        RestClient.get(this).GetCountry(new ReqCL("country"), new Callback<RespCountry>() {
+        RestClient.get(this).GetCountry(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ReqCL("country"), new Callback<RespCountry>() {
             @Override
             public void success(RespCountry respCountry, Response response) {
                 if(respCountry.getCode().equals("200")) {
@@ -532,7 +552,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         final ArrayAdapter<String> adapter_lanugage = new ArrayAdapter<String>(this,R.layout.spinner_custom_settings, lang_list);
 
-        RestClient.get(this).GetLanguage(new ReqCL("language"), new Callback<LanguageResp>() {
+        RestClient.get(this).GetLanguage(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ReqCL("language"), new Callback<LanguageResp>() {
 
 
             @Override
@@ -664,7 +684,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         typed_profile_pic = new TypedFile("image/jpg", new File(filePath));
 
-        RestClient.get(context).UploadProfilePic(typed_profile_pic, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), new Callback<profilepicResp>() {
+        RestClient.get(context).UploadProfilePic(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),typed_profile_pic, sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), new Callback<profilepicResp>() {
             @Override
             public void success(profilepicResp profilepicRes, Response response) {
                 if(profilepicRes.getCode().equals("200")){
@@ -672,7 +692,10 @@ public class SettingsActivity extends AppCompatActivity implements
                     String imgUrl= profilepicRes.getData().getFilepath();
                     if (imgUrl.contains(StaticConfig.ROOT_URL_Media)) {
                         imgUrl = StaticConfig.ROOT_URL + imgUrl.replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }else if  (imgUrl.contains("https")){
+
+                    }
+                    else {
                         imgUrl = StaticConfig.ROOT_URL + "/" +imgUrl;
                     }
 

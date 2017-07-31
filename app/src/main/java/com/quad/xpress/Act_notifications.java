@@ -25,10 +25,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.quad.xpress.Utills.helpers.LoadingDialog;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.LoadingDialog;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.AlertStream.AdapterAlertStream;
 import com.quad.xpress.models.AlertStream.AlertStreamModelList;
 import com.quad.xpress.models.AlertStream.AlertStreamReq;
@@ -227,7 +227,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         if(Index> 0)
             PreviousNotificOUNT = 0+"";
 
-        RestClient.get(context).AlertStream( new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"100","0"),
+        RestClient.get(context).AlertStream( sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new AlertStreamReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Integer.toString(Index),"100","0"),
                 new Callback<AlertStreamResp>() {
 
 
@@ -343,7 +343,10 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         String Selected_file_url="";
         if (selected_file_path.contains(StaticConfig.ROOT_URL_Media)) {
             Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
-        } else {
+        } else if  (selected_file_path.contains("https")){
+            Selected_file_url =selected_file_path;
+        }
+        else {
             //Local server
             Selected_file_url = StaticConfig.ROOT_URL + "/" + selected_file_path;
         }
@@ -354,7 +357,11 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
             img_thumb = list.get(position).getTBPath();
             if (img_thumb.contains(StaticConfig.ROOT_URL_Media)) {
                 img_url = StaticConfig.ROOT_URL + img_thumb.replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            }
+            else if  (img_thumb.contains("https")){
+
+                img_url = img_thumb;
+            }else {
                 //Local server
                 img_url = StaticConfig.ROOT_URL + "/" + img_thumb;
 
@@ -420,7 +427,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         editor = sharedpreferences.edit();
         editor.putBoolean(SharedPrefUtils.SpSlideViewusedOnce,false );
         editor.commit();
-        RestClient.get(context).UnFollowRequest(new FollowReq(list.get(position).getFromEmail(),sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(context).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(list.get(position).getFromEmail(),sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
@@ -741,11 +748,6 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         });
 
     }
-
-
-
-
-
 
 
 }

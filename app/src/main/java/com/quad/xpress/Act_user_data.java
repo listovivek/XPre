@@ -17,10 +17,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Adapters_horizontal.adapter_user_data;
-import com.quad.xpress.Utills.EndlessRecyclerOnScrollListener;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.EndlessRecyclerOnScrollListener;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
@@ -197,7 +197,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     public void Subcribed(String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).FollowRequest(new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
@@ -218,7 +218,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     public void UnSubcribed(String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).UnFollowRequest(new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {

@@ -57,7 +57,7 @@
 
 
             />
-<com.quad.xpress.Utills.audio_visulizer
+<com.quad.xpress.utills.audio_visulizer
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:id="@+id/audio_visulizer_videoview"

@@ -117,17 +117,17 @@ public interface RxApi {
     void TagCloudApi(@Header("authtoken") String authToken, @Body TagListReq body, Callback<TagListResp> callback);
 
     @POST("/commandService/likeAudioVideo")
-    void  Liked(@Header("authtoken")String authToken, @Body Like_Req body, Callback<Like_Resp> callback);
+    void  Liked(@Header("authtoken") String authToken, @Body Like_Req body, Callback<Like_Resp> callback);
 
     @POST("/commandService/deleteAudioVideo")
-            void  Delete(@Header("authtoken")String authToken, @Body DeleteReq body, Callback<Like_Resp> callback);
+            void  Delete(@Header("authtoken") String authToken, @Body DeleteReq body, Callback<Like_Resp> callback);
 
     @POST("/commandService/updateAudioView")
-    void  Viewd(@Header("authtoken")String authToken, @Body Viewed_Req body, Callback<Like_Resp> callback);
+    void  Viewd(@Header("authtoken") String authToken, @Body Viewed_Req body, Callback<Like_Resp> callback);
 
 
     @POST("/commandService/audioVideoReportAbuse")
-    void  Post_abuse(@Header("authtoken")String authToken, @Body Abuse_Req body, Callback<Abuse_response> callback);
+    void  Post_abuse(@Header("authtoken") String authToken, @Body Abuse_Req body, Callback<Abuse_response> callback);
 
     @POST("/queryService/getAudioVideoListByLike")
     void PublicLists_Emotion(@Header("authtoken") String authToken, @Body PublicPlayListReq body, Callback<PlayListResp_emotion> callback);
@@ -142,57 +142,57 @@ public interface RxApi {
      void MyUploads_API(@Header("authtoken") String authToken, @Body PublicPlayListReq body, Callback<PlayListResp_emotion> callback);
 
     @POST("/queryService/getIsoList")
-    void  GetCountry(@Body ReqCL body, Callback<RespCountry> callback);
+    void  GetCountry(@Header("authtoken") String authToken, @Body ReqCL body, Callback<RespCountry> callback);
 
     @POST("/queryService/getIsoList")
-    void  GetLanguage(@Body ReqCL body, Callback<LanguageResp> callback);
+    void  GetLanguage(@Header("authtoken") String authToken, @Body ReqCL body, Callback<LanguageResp> callback);
 
     @POST("/queryService/getPrivateAcceptRejectCount")
-    void  GetPvateCount(@Body ReqPvateCount body, Callback<AcceptRejectCount> callback);
+    void  GetPvateCount(@Header("authtoken") String authToken, @Body ReqPvateCount body, Callback<AcceptRejectCount> callback);
 
     @POST("/queryService/promotions")
-    void  GetGuide(@Body ReqGuide body, Callback<guide_status> callback);
+    void  GetGuide(@Header("authtoken") String authToken, @Body ReqGuide body, Callback<guide_status> callback);
 
     @POST("/commandService/getFeaturedVideoList")
-    void  GetFeatured(@Body featuredReq body, Callback<featuredResp> callback);
+    void  GetFeatured(@Header("authtoken") String authToken, @Body featuredReq body, Callback<featuredResp> callback);
 
     @POST("/queryService/getPopularVideosByHash")
-    void  GetTrendingSearch(@Body featuredReq body, Callback<featuredResp> callback);
+    void  GetTrendingSearch(@Header("authtoken") String authToken, @Body featuredReq body, Callback<featuredResp> callback);
 
 
     @POST("/queryService/getPrivateFollowCount")
-    void  CounterFeelings(@Body CounterReq body, Callback<CounterResp> callback);
+    void  CounterFeelings(@Header("authtoken") String authToken, @Body CounterReq body, Callback<CounterResp> callback);
 
     @POST("/commandService/getProfileImage")
-    void  GetProfilePic(@Body GetPicReq body, Callback<GetPicResp> callback);
+    void  GetProfilePic(@Header("authtoken") String authToken, @Body GetPicReq body, Callback<GetPicResp> callback);
 
     @Multipart
     @POST("/commandService/profileImage")
-    void  UploadProfilePic( @Part("profileImage") TypedFile file,@Part("user_email") String user_email, Callback<profilepicResp> callback);
+    void  UploadProfilePic(@Header("authtoken") String authToken, @Part("profileImage") TypedFile file, @Part("user_email") String user_email, Callback<profilepicResp> callback);
 
     @POST("/commandService/followers")
-    void  FollowRequest(@Body FollowReq body, Callback<FollowRep> callback);
+    void  FollowRequest(@Header("authtoken") String authToken, @Body FollowReq body, Callback<FollowRep> callback);
 
     @POST("/commandService/unfollowers")
-    void  UnFollowRequest(@Body FollowReq body, Callback<FollowRep> callback);
+    void  UnFollowRequest(@Header("authtoken") String authToken, @Body FollowReq body, Callback<FollowRep> callback);
 
     @POST("/queryService/getFollowersVideos")
-    void  NotificationStream(@Body NotificationStreamReq body, Callback<NotificationStreamResp> callback);
+    void  NotificationStream(@Header("authtoken") String authToken, @Body NotificationStreamReq body, Callback<NotificationStreamResp> callback);
 
     @POST("/queryService/getPrivateFollowList")
-    void  AlertStream(@Body AlertStreamReq body, Callback<AlertStreamResp> callback);
+    void  AlertStream(@Header("authtoken") String authToken, @Body AlertStreamReq body, Callback<AlertStreamResp> callback);
 
     @POST("/queryService/getIxpressContactList")
-    void  PostContacts(@Body ContactsReq body, Callback<ContactsResp> callback);
+    void  PostContacts(@Header("authtoken") String authToken, @Body ContactsReq body, Callback<ContactsResp> callback);
 
     @POST("/queryService/getPopularVideosByHash")
-    void  GetTrendingSearch(@Body TsReq body, Callback<Tsresp> callback);
+    void  GetTrendingSearch(@Header("authtoken") String authToken, @Body TsReq body, Callback<Tsresp> callback);
 
     @POST("/commandService/spam")
-    void  ReportSpam(@Body spam_req body, Callback<spamresp> callback);
+    void  ReportSpam(@Header("authtoken") String authToken, @Body spam_req body, Callback<spamresp> callback);
 
     @POST("/commandService/del_status")
-    void  DeletePrivate(@Header("authtoken")String authToken, @Body DeleteReq body, Callback<Like_Resp> callback);
+    void  DeletePrivate(@Header("authtoken") String authToken, @Body DeleteReq body, Callback<Like_Resp> callback);
 
 
 

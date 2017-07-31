@@ -12,7 +12,7 @@
         android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
-        android:smallScreens="true"
+        android:smallScreens="false"
         android:xlargeScreens="true" />
 
 
@@ -25,7 +25,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
@@ -34,15 +33,10 @@
     used to check app background / foreground status -->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
-    <!-- START Added for GCM -->
-    <permission
-        android:name="com.quad.xpressed.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
 
 
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="com.quad.xpressed.permission.C2D_MESSAGE" />
-    <!-- END Added for GCM -->
+
+
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -51,7 +45,7 @@
         android:required="false" />
 
     <application
-        android:name=".Utills.pushnotification.MyApplication"
+        android:name=".utills.pushnotification.myapplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:fullBackupContent="false"
@@ -59,16 +53,52 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
 
-
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_gcm_notification" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary_transparent" />
+        <!-- [END fcm_default_icon] -->
+        <!-- [START fcm_default_channel] -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel"
+            android:value="@string/default_notification_channel_id"/>
+        <!-- [END fcm_default_channel] -->
+
+
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".utills.firebase.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+        <!-- [START firebase_iid_service] -->
+        <service
+            android:name=".utills.firebase.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- [END firebase_iid_service] -->
+        <service android:name=".utills.firebase.MyJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
 
 
 
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-             />
+            />
         <activity
             android:name=".RegistrationActivity"
             android:screenOrientation="portrait"
@@ -76,17 +106,13 @@
             android:windowSoftInputMode="adjustPan"
             >
 
-            </activity>
+        </activity>
         <activity
             android:name=".IntroActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:launchMode="singleTop"/>
-        <activity
-            android:name=".viewPagers.actSwipePlayback"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTop"/>
+
         <activity
             android:name=".viewPagers.actSwipePlaybackJava"
             android:screenOrientation="portrait"
@@ -127,7 +153,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".Contacts.ContactMainActivity"
+            android:name=".contacts.ContactMainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
@@ -205,52 +231,48 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
-        <activity
-            android:name=".Exit_Actvity"
-            android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTop"/>
+
+        <!--  <receiver
+
+      <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+      <permission
+          android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"
+          android:protectionLevel="signature" />
+
+      <uses-permission
+          android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE" />
 
 
 
+              android:name="com.google.android.gms.gcm.GcmReceiver"
+              android:permission="com.google.android.c2dm.permission.SEND" >
+              <intent-filter>
+                  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                  &lt;!&ndash; for Gingerbread GSF backward compat &ndash;&gt;
+                  <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                  <category android:name="com.google.android.gcm.demo" />
+              </intent-filter>
+          </receiver>
 
+                <service
+              android:name=".Utills.pushnotification.MyGcmPushReceiver"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+              </intent-filter>
+          </service>
 
+          <service
+              android:name=".Utills.pushnotification.GcmIntentService"
+              android:exported="false">
+              <intent-filter>
+                  <action android:name="com.google.android.gms.iid.InstanceID" />
+              </intent-filter>
+          </service>
+       &lt;!&ndash;    END Added for GCM&ndash;&gt;
+  -->
 
-        <!-- START Added for GCM -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.quad.xpressed" />
-            </intent-filter>
-        </receiver>
-
-
-
-
-        <service
-            android:name=".Utills.pushnotification.MyGcmPushReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name=".Utills.pushnotification.GcmIntentService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-         END Added for GCM
-
-
-         local notification
+        <!--      local notification-->
         <receiver android:name=".CameraRecordActivity$NotificationRetry">
             <intent-filter>
                 <action android:name="Retry"/>

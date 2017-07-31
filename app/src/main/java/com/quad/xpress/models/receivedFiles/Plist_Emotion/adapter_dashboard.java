@@ -20,8 +20,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
@@ -163,6 +163,8 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 if (list.getMydp().contains(StaticConfig.ROOT_URL_Media)) {
                     getMydp = StaticConfig.ROOT_URL + list.getMydp().replace(StaticConfig.ROOT_URL_Media, "");
 
+                }else if  (list.getMydp().contains("https")){
+                    getMydp = list.getMydp();
                 } else {
                     getMydp = StaticConfig.ROOT_URL + "/" + list.getMydp();
                 }
@@ -291,7 +293,10 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
                 if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
 
-                } else {
+                }else if  (list.getTBPath().contains("https")){
+                    TBPath = list.getTBPath();
+                }
+                else {
                     TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                 }
                // Log.v("", "TBPath " + TBPath);
@@ -306,7 +311,10 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }
+                    else if  (list.getTBPath().contains("https")){
+                        TBPath = list.getTBPath();
+                    }else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
 
@@ -319,7 +327,10 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }
+                    else if  (list.getTBPath().contains("https")){
+                        TBPath = list.getTBPath();
+                    }else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
 

@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
 import com.quad.xpress.webservice.RestClient;
@@ -108,7 +108,12 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 
         if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
             TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-        } else {
+        }
+		else if  (thumb_img_vpdp.get(position).contains("https")){
+			TBPath = thumb_img_vpdp.get(position);
+
+
+		}else {
             TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
         }
 	//	Glide.with(context).load(TBPath).placeholder(R.mipmap.ic_launcher).centerCrop().into(iv_thumb);
@@ -119,7 +124,12 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 		String TBPathu = "";
 		if (user_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
 			TBPathu = StaticConfig.ROOT_URL + user_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-		} else {
+		} else if  (user_img_vpdp.get(position).contains("https")){
+			TBPathu = user_img_vpdp.get(position);
+
+
+		}
+		else {
 			TBPathu = StaticConfig.ROOT_URL + "/" + user_img_vpdp.get(position);
 		}
 		Glide.with(context).load(TBPathu).placeholder(R.mipmap.ic_user_icon).dontAnimate().fitCenter().into(iv_uimg);
@@ -160,12 +170,17 @@ public class Adapter_vp_horizontal extends PagerAdapter {
 				try {
 					if (media_url_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                         MediaPath = StaticConfig.ROOT_URL + media_url_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }else if  (media_url_vpdp.get(position).contains("https")){
+						MediaPath = media_url_vpdp.get(position);
+					} else {
                         MediaPath = StaticConfig.ROOT_URL + "/" + media_url_vpdp.get(position);
                     }
 					if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }else if  (thumb_img_vpdp.get(position).contains("https")){
+						TBPath = thumb_img_vpdp.get(position);
+					}
+                    else {
                         TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
                     }
 				} catch (Exception e) {

@@ -40,8 +40,8 @@ import android.widget.VideoView;
 
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.models.privateAcceptReject.PrivARreq;
 import com.quad.xpress.models.privateAcceptReject.PrivARresp;
 import com.quad.xpress.models.tagList.Tag_cloud_activity_new;

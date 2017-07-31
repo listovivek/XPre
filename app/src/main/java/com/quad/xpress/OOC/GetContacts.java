@@ -2,11 +2,12 @@ package com.quad.xpress.OOC;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.content.SharedPreferences;
 
-import com.quad.xpress.Contacts.Contact;
+import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.webservice.RestClient;
 
 import java.util.ArrayList;
@@ -69,11 +70,11 @@ public class GetContacts {
 
 
 
-        Log.d("email contactttss", Contact.getInstance().email_list.toString());
+        //Log.d("email contactttss", Contact.getInstance().email_list.toString());
 
         if (Contact.getInstance().email_list != null) {
-
-            RestClient.get(activity).PostContacts(new ContactsReq(Contact.getInstance().email_list),
+            SharedPreferences sharedpreferences = activity.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+            RestClient.get(activity).PostContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
                     new Callback<ContactsResp>() {
                         @Override
                         public void success(ContactsResp contactsResp, Response response) {

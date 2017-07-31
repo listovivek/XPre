@@ -3,6 +3,7 @@ package com.quad.xpress;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,13 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.models.clickResponce.Like_Resp;
+import com.quad.xpress.models.clickResponce.Viewed_Req;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.webservice.RestClient;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class Adapter_vp_search extends PagerAdapter {
 	int size;
@@ -100,7 +108,10 @@ public class Adapter_vp_search extends PagerAdapter {
 		try {
 			if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                 TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            }else if  (thumb_img_vpdp.get(position).contains("https")){
+				TBPath = thumb_img_vpdp.get(position);
+			}
+            else {
                 TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
             }
 			Glide.with(context).load(TBPath).fitCenter().into(iv_thumb);
@@ -110,7 +121,9 @@ public class Adapter_vp_search extends PagerAdapter {
 			String TBPathu = "";
 			if (user_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                 TBPathu = StaticConfig.ROOT_URL + user_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            } else if  (user_img_vpdp.get(position).contains("https")){
+				TBPathu = user_img_vpdp.get(position);
+			}else {
                 TBPathu = StaticConfig.ROOT_URL + "/" + user_img_vpdp.get(position);
             }
 			Glide.with(context).load(TBPathu).placeholder(R.drawable.ic_user_icon).dontAnimate().fitCenter().into(iv_uimg);
@@ -147,12 +160,16 @@ public class Adapter_vp_search extends PagerAdapter {
 				try {
 					if (media_url_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                         MediaPath = StaticConfig.ROOT_URL + media_url_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    }else if  (media_url_vpdp.get(position).contains("https")){
+						MediaPath = media_url_vpdp.get(position);
+					} else {
                         MediaPath = StaticConfig.ROOT_URL + "/" + media_url_vpdp.get(position);
                     }
 					if (thumb_img_vpdp.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + thumb_img_vpdp.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    } else if  (thumb_img_vpdp.get(position).contains("https")){
+						TBPath = thumb_img_vpdp.get(position);
+					}else {
                         TBPath = StaticConfig.ROOT_URL + "/" + thumb_img_vpdp.get(position);
                     }
 				} catch (Exception e) {
@@ -174,6 +191,49 @@ public class Adapter_vp_search extends PagerAdapter {
 				video_act.putExtra("img_url",TBPath);
 				video_act.putExtra("isPrivate","false");
 				v.getContext().startActivity(video_act);
+
+				SharedPreferences sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+				sharedpreferences = context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+				String viewed = "1";
+
+				//"id":"57318bd6db923d57643edd59","viewed":"1","video_type":"video"}
+				RestClient.get(context).Viewd(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Viewed_Req(file_id_vpdp.get(position),viewed,type_vpdp.get(position)),
+						new Callback<Like_Resp>() {
+							@Override
+							public void success(final Like_Resp arg0, Response arg1) {
+								// LD.DismissTheDialog();
+								if (arg0.getCode().equals("200")) {
+
+									String Post_status = arg0.getStatus();
+									//     Log.d("Mes-views",Post_status);
+									if(Post_status.equals("")){
+										// Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
+									}else {
+										// Toast.makeText(_context, "Failed ", Toast.LENGTH_LONG).show();
+									}
+									// LD.DismissTheDialog();
+									//  Populate();
+								} else if (arg0.getCode().equals("601")) {
+									//Toast.makeText(_context, "Please, try again", Toast.LENGTH_LONG).show();
+									//  RefreshToken();
+								} else if (arg0.getCode().equals("202")) {
+									//Toast.makeText(_context, "No Records ", Toast.LENGTH_LONG).show();
+
+								} else {
+									//Toast.makeText(_context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
+
+								}
+								//Populate();
+							}
+
+							@Override
+							public void failure(RetrofitError error) {
+								// LD.DismissTheDialog();
+
+								//Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
+							}
+						});
+
 
 
 			}

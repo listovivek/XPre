@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "713579479800",
-    "firebase_url": "https://xpress-b52d9.firebaseio.com",
-    "project_id": "xpress-b52d9",
-    "storage_bucket": "xpress-b52d9.appspot.com"
+    "project_number": "171772001326",
+    "firebase_url": "https://ixprez-173306.firebaseio.com",
+    "project_id": "ixprez-173306",
+    "storage_bucket": "ixprez-173306.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:713579479800:android:d8708f08add18efc",
+        "mobilesdk_app_id": "1:171772001326:android:15c96f9ec1979c02",
         "android_client_info": {
-          "package_name": "com.quad.xpressed"
+          "package_name": "com.claritaz.ixprez"
         }
       },
       "oauth_client": [
         {
-          "client_id": "713579479800-3h6buv5li36n1cag9nuh696g87mvdcqv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.quad.xpressed",
-            "certificate_hash": "A9883F98EE9A7CF7ADDB82EA360D88677475AD6C"
-          }
+          "client_id": "171772001326-1hvn2s1194fsjt3ps0pudu4hs12h2f4v.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
-          "client_id": "713579479800-pg8fnsve8uge408p03mgfcr6m0sa3e08.apps.googleusercontent.com",
-          "client_type": 3
+          "client_id": "171772001326-vfssccjhaqhs20tbjars990evald0q9s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.claritaz.ixprez",
+            "certificate_hash": "4c10168880440f4282861c08d6a65eebea9fc4b3"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCagSHsgwrTX4U4IeNlxM51h-zdl2CCWd4"
+          "current_key": "AIzaSyCUX3XX0FCaHZfIAlatv3oKS1XJvNw1IDY"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "713579479800-pg8fnsve8uge408p03mgfcr6m0sa3e08.apps.googleusercontent.com",
+              "client_id": "171772001326-1hvn2s1194fsjt3ps0pudu4hs12h2f4v.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

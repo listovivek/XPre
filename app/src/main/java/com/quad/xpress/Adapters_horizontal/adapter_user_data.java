@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
@@ -182,6 +182,8 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                 if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
 
+                }else if  (list.getTBPath().contains("https")){
+                    TBPath = list.getTBPath();
                 } else {
                     TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                 }
@@ -198,7 +200,9 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
                     String TBPath;
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                    } else {
+                    } else if  (list.getTBPath().contains("https")){
+                        TBPath = list.getTBPath();
+                    }else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }
                  //   Log.v("", "TBPath " + TBPath);
@@ -214,6 +218,8 @@ public class adapter_user_data extends RecyclerView.Adapter<adapter_user_data.My
 
                     if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                         TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
+                    }else if  (list.getTBPath().contains("https")){
+                        TBPath = list.getTBPath();
                     } else {
                         TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                     }

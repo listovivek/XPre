@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,12 +25,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -51,16 +53,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.nex3z.notificationbadge.NotificationBadge;
-import com.quad.xpress.Contacts.Contact;
-import com.quad.xpress.Contacts.ContactMainActivity;
-import com.quad.xpress.Contacts.DatabaseHandler;
 import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.Utills.StatiConstants;
-import com.quad.xpress.Utills.ViewPagerCustom;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.PermissionStrings;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.contacts.Contact;
+import com.quad.xpress.contacts.ContactMainActivity;
+import com.quad.xpress.contacts.DatabaseHandler;
 import com.quad.xpress.models.acceptRejectCount.AcceptRejectCount;
 import com.quad.xpress.models.acceptRejectCount.ReqPvateCount;
 import com.quad.xpress.models.contacts.ContactsReq;
@@ -69,7 +65,12 @@ import com.quad.xpress.models.counter.CounterReq;
 import com.quad.xpress.models.counter.CounterResp;
 import com.quad.xpress.models.featuredVideos.featuredReq;
 import com.quad.xpress.models.featuredVideos.featuredResp;
-import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
+import com.quad.xpress.utills.StatiConstants;
+import com.quad.xpress.utills.ViewPagerCustom;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.PermissionStrings;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -117,7 +118,7 @@ public class DashBoard extends AppCompatActivity {
     Activity _activity;
     ImageButton dash_receive;
     ImageButton DashPublicPlaylist;
-    String RefreshTokenMethodName = "";
+
 
     ImageButton AudioFab;
     ImageButton VideoFab;
@@ -126,20 +127,7 @@ public class DashBoard extends AppCompatActivity {
     ImageButton btn_nb_exit,btn_nb_settings;
      SlidingMenu Smenu;
     Adapter_vp_horizontal adapter_vp_db;
-
-    String EndOfRecords = "0";
-    int Index = 0;
-    Boolean last = false;
-    private List<PlayListitems_emotion> playlist = new ArrayList<>();
-    PlayListitems_emotion playlistItems;
-    private LinearLayoutManager layoutManager;
-    private RecyclerView.Adapter adapterRcv;
-    String Selected_file_url = "";
-    String selected_file_path;
-    String selected_file_name;
-    String selected_file_mime;
     FrameLayout fl_counter;
-    static int previousposition;
     NetConnectionDetector CD;
     Toast NoInternet = null;
     ViewPagerAdapter vp_frga_adapter;
@@ -152,7 +140,7 @@ public class DashBoard extends AppCompatActivity {
     CoordinatorLayout cl;
 
    /* Intent slider_intent;*/
-    int noofsize = 5;
+    int noofsize = 0;
     int noofsizeguide = 3,currentPage;
     ViewPagerCustom myPager = null;
     PagerContainer mPagerContainer;
@@ -176,8 +164,8 @@ public class DashBoard extends AppCompatActivity {
     TextView tv_counter,tv_counter_nb;
  //   SwipeRefreshLayout swipeRefreshLayout;
     static Boolean iSnotificationClicked =false;
-    Cursor cur;
-    private int mNameColIdx, mIdColIdx;
+
+
     public static int ixemailcount;
 
     public static ArrayList<String> ixprez_email = new ArrayList<>();
@@ -275,34 +263,31 @@ public class DashBoard extends AppCompatActivity {
                 }, 1000, 1000);
 
 
-
-
-
-
                         //top
                customtoastx.setGravity(Gravity.FILL,0,0);
                customtoastx.setDuration(Toast.LENGTH_LONG);
                customtoastx.show();
-
-
-
-
-
-
-
             }
         });
 
-
-
-
         try {
-            mtd_contacts_reader();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+                CheckAndRequestPermission();
+            }
+            else{
+
+                new ContactsReaderClass().execute();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mtd_getFeatured();
-        CheckAndRequestPermission();
+
+
+
+        new asyncFeatured().execute();
+
         Smenu = new SlidingMenu(this);
         Smenu.setMode(SlidingMenu.RIGHT);
         Smenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
@@ -420,10 +405,10 @@ public class DashBoard extends AppCompatActivity {
                 startActivity(ItemParent);*/
 
                 String shareBody = "Hi, iam using this Xpressive app, iXprez to send my emotions.";
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Ixprez");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Ixprez");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
 
 
@@ -433,13 +418,20 @@ public class DashBoard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(!NoPermisson) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(!NoPermisson) {
+                        Intent in_contact = new Intent(DashBoard.this, ContactMainActivity.class);
+                        startActivity(in_contact);
+
+                    }else {
+                        CheckAndRequestPermission();
+                    }
+                }else {
                     Intent in_contact = new Intent(DashBoard.this, ContactMainActivity.class);
                     startActivity(in_contact);
-
-               }else {
-                    CheckAndRequestPermission();
                 }
+
+
             }
         });
 
@@ -490,11 +482,16 @@ public class DashBoard extends AppCompatActivity {
                         String MediaPath, TBPath;
                         if (media.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                             MediaPath = StaticConfig.ROOT_URL + media.get(position).replace(StaticConfig.ROOT_URL_Media, "");
-                        } else {
+                        }  else if  (media.get(position).contains("https")){
+                            MediaPath = media.get(position);
+                          //  Toast.makeText(context, ""+MediaPath, Toast.LENGTH_SHORT).show();
+                        }else {
                             MediaPath = StaticConfig.ROOT_URL + "/" + media.get(position);
                         }
                         if (media.get(position).contains(StaticConfig.ROOT_URL_Media)) {
                             TBPath = StaticConfig.ROOT_URL + media.get(position).replace(StaticConfig.ROOT_URL_Media, "");
+                        } else if  (media.get(position).contains("https")){
+                            TBPath = media.get(position);
                         } else {
                             TBPath = StaticConfig.ROOT_URL + "/" + media.get(position);
                         }
@@ -648,7 +645,7 @@ public class DashBoard extends AppCompatActivity {
 
         vp_frga_adapter.addFragment(new DashboardFragment_pop(), "Trending");
         vp_frga_adapter.addFragment(new DashboardFragment_new(), "Recent");
-        vp_frga_adapter.addFragment(new DashboardFragment_pop_autoplay(), "Autoplay");
+       // vp_frga_adapter.addFragment(new DashboardFragment_pop_autoplay(), "Autoplay");
         viewPager_dash_lists.setAdapter(vp_frga_adapter);
 
 
@@ -656,6 +653,7 @@ public class DashBoard extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
 
             }
 
@@ -822,6 +820,9 @@ public class DashBoard extends AppCompatActivity {
 
     private void callwebForContacts() {
 
+
+      //  Toast.makeText(context, "called", Toast.LENGTH_SHORT).show();
+
         Contact.getInstance().ixpressemail.clear();
         Contact.getInstance().ixpressname.clear();
         Contact.getInstance().ixpress_user_pic.clear();
@@ -836,11 +837,11 @@ public class DashBoard extends AppCompatActivity {
         appendProfilePic.clear();
 
 
-       // Log.d("email contactttss", Contact.getInstance().email_list.toString());
+      //  Log.d("emailcons", Contact.getInstance().email_list.toString());
 
         if (Contact.getInstance().email_list != null) {
 
-            RestClient.get(DashBoard.this).PostContacts(new ContactsReq(Contact.getInstance().email_list),
+            RestClient.get(DashBoard.this).PostContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
                     new Callback<ContactsResp>() {
                         @Override
                         public void success(ContactsResp contactsResp, Response response) {
@@ -908,6 +909,27 @@ public class DashBoard extends AppCompatActivity {
         }
     }
 
+    private class asyncFeatured extends AsyncTask<Void,Void,Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mtd_getFeatured();
+            return null;
+        }
+    }
+
+
+    private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mtd_contacts_readera();
+            return null;
+        }
+    }
+
     private void mtd_getFeatured() {
 
         user_name.clear();
@@ -924,7 +946,7 @@ public class DashBoard extends AppCompatActivity {
      //   adapter_vp_db.notifyDataSetChanged();
 
 
-        RestClient.get(context).GetFeatured(new featuredReq("video",sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(context).GetFeatured(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new featuredReq("video",sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<featuredResp>() {
 
                     @Override
@@ -1007,7 +1029,7 @@ public class DashBoard extends AppCompatActivity {
             iSnotificationClicked=false;
         }
 
-        RestClient.get(context).CounterFeelings(new CounterReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),PreviousNotificOUNT),
+        RestClient.get(context).CounterFeelings(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new CounterReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),PreviousNotificOUNT),
                 new Callback<CounterResp>() {
                     @Override
                     public void success(CounterResp counterResp, Response response) {
@@ -1104,7 +1126,11 @@ public class DashBoard extends AppCompatActivity {
                             }
                             if (imgUrl.contains(StaticConfig.ROOT_URL_Media)) {
                                 imgUrl = StaticConfig.ROOT_URL + imgUrl.replace(StaticConfig.ROOT_URL_Media, "");
-                            } else {
+                            }
+                            else if  (imgUrl.contains("https")){
+                                imgUrl = counterResp.getData().getProfileImage();
+                            }
+                            else {
                                 imgUrl = StaticConfig.ROOT_URL + "/" +imgUrl;
                             }
 
@@ -1130,7 +1156,7 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void mtd_guide_view_pager() {
-       final Dialog GuideDialog = new Dialog(DashBoard.this,R.style.guideDiaoluge);
+       final Dialog GuideDialog = new Dialog(DashBoard.this, R.style.guideDiaoluge);
 
        GuideDialog.setContentView(R.layout.guide_dashboard_new);
        GuideDialog.show();
@@ -1185,16 +1211,46 @@ public class DashBoard extends AppCompatActivity {
         }
     }
 
-
+    public ArrayList<String> getNameEmailDetails(){
+        ArrayList<String> names = new ArrayList<String>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                Cursor cur1 = cr.query(
+                        ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        new String[]{id}, null);
+                while (cur1.moveToNext()) {
+                    //to get the contact names
+                    String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    Log.e("Name :", name);
+                    String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    Log.e("Email", email);
+                    if(email!=null){
+                        names.add(name);
+                    }
+                }
+                cur1.close();
+            }
+        }
+        return names;
+    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
 
+
+     //   Toast.makeText(context, ""+getNameEmailDetails(), Toast.LENGTH_SHORT).show();
+
+
+
         if(Actvity_video.isFromFeatured){
 
-            mtd_getFeatured();
+            new asyncFeatured().execute();
 
              }else{
 
@@ -1215,7 +1271,7 @@ public class DashBoard extends AppCompatActivity {
 
     }
 
-private void mtd_contacts_reader(){
+private void mtd_contacts_readera(){
 
     Contact.getInstance().contact_namelist.clear();
     Contact.getInstance().email_list.clear();
@@ -1225,6 +1281,52 @@ private void mtd_contacts_reader(){
     Contact.getInstance().ixpressname.clear();
     Contact.getInstance().ixpress_user_pic.clear();
 
+
+    if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1){
+
+    ContentResolver cer = getContentResolver();
+
+    Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null,null, null, null);
+
+    if (cur.getCount() > 0) {
+
+        while (cur.moveToNext()) {
+            String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+            Cursor cur1 = cer.query(
+                    ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                    new String[]{id}, null);
+            while (cur1.moveToNext()) {
+                //to get the contact names
+              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
+                        DISPLAY_NAME_PRIMARY);
+                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
+                String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+             //   Log.e("Name :", name);
+                String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+              //  Log.e("Email", email);
+             /*   long contactId = cur.getLong(mIdColIdx);
+                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                        contactId).toString();*/
+                if(email!=null){
+                   // names.add(name);
+                    Contact.getInstance().contact_namelist.add(name);
+                    Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+                    Contact.getInstance().email_list.add(email);
+                }
+            }
+            cur1.close();
+        }
+
+      //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
+    }
+
+        cur.close();
+
+    }
+    else {
+        Cursor cur;
+        int mNameColIdx, mIdColIdx;
     ContentResolver cr = this.getContentResolver();
     String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
             ContactsContract.Contacts.DISPLAY_NAME,
@@ -1259,23 +1361,48 @@ private void mtd_contacts_reader(){
         Contact.getInstance().contact_urilist.add(contact_uri);
         Contact.getInstance().email_list.add(email);
 
-        ArrayList<String> e = Contact.getInstance().email_list;
-        ArrayList<String> n = Contact.getInstance().contact_namelist;
 
 
-           /* Contact.getInstance().contactusername = contact_namelist;
-            Contact.getInstance().contactuseremail = email_list;
-            Contact.getInstance().contact_user_pic = contact_urilist;*/
-        //      Log.d("email", email);
+       // Log.e("Emailx", email);
     }
-    callwebForContacts();
+
+         cur.close();
+
+
+
 }
 
+  /*  HashSet<String> hashSet = new HashSet<String>();
+    HashSet<String> hashSet1 = new HashSet<String>();
+    HashSet<String> hashSet2 = new HashSet<String>();
+
+    hashSet.addAll(Contact.getInstance().email_list);
+    hashSet.addAll(Contact.getInstance().contact_namelist);
+    hashSet.addAll(Contact.getInstance().contact_urilist);
+    Contact.getInstance().contact_namelist.clear();
+    Contact.getInstance().email_list.clear();
+    Contact.getInstance().contact_urilist.clear();
+
+    Contact.getInstance().ixpressemail.clear();
+    Contact.getInstance().ixpressname.clear();
+    Contact.getInstance().ixpress_user_pic.clear();
+    Contact.getInstance().email_list.addAll(hashSet);
+    Contact.getInstance().contact_namelist.addAll(hashSet1);
+    Contact.getInstance().contact_urilist.addAll(hashSet2);*/
+
+   // Toast.makeText(context, ""+Contact.getInstance().email_list.toString(), Toast.LENGTH_SHORT).show();
+    callwebForContacts();
+}
+    public Uri getContactPhotoUri(long contactId) {
+        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
+        photoUri = Uri.withAppendedPath(photoUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+        return photoUri;
+    }
 
 
     private void mtd_pvtCount() {
 
-        RestClient.get(this).GetPvateCount(new ReqPvateCount(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")), new Callback<AcceptRejectCount>() {
+        RestClient.get(this).GetPvateCount(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ReqPvateCount(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")), new Callback<AcceptRejectCount>() {
             @Override
             public void success(AcceptRejectCount acceptRejectCount, Response response) {
                 for (int i = 0; i < acceptRejectCount.getData().length; i++) {
@@ -1350,12 +1477,14 @@ private void mtd_contacts_reader(){
 
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.GET_ACCOUNTS}, 93);
 
-                    NoPermisson =false;
-                    mtd_contacts_reader();
+                    NoPermisson = false;
+
+                    new ContactsReaderClass().execute();
 
                 } else {
 
                     NoPermisson = true;
+
                     Toast.makeText(_activity, "This Permission is Required for the application to perform all basic functions, Kindly accept. For more information kindly vist our website.", Toast.LENGTH_LONG).show();
 
 
@@ -1380,7 +1509,6 @@ private void mtd_contacts_reader(){
     private void requestPermission(String Permission) {
         ActivityCompat.requestPermissions(_activity, new String[]{Permission}, PERMISSION_REQUEST_CODE);
     }
-
 
 
 }

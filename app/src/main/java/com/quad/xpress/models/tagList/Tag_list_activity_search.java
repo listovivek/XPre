@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.quad.xpress.R;
 import com.quad.xpress.models.abuse_resp.Abuse_Req;
 import com.quad.xpress.models.abuse_resp.Abuse_response;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.LoadingDialog;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.webservice.RestClient;
 
 import java.util.ArrayList;

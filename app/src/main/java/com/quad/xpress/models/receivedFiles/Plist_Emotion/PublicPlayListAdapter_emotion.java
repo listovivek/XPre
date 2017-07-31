@@ -25,10 +25,10 @@ import com.quad.xpress.R;
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
-import com.quad.xpress.Utills.helpers.ErrorReporting;
-import com.quad.xpress.Utills.helpers.RoundedCornersGlideImage;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.ErrorReporting;
+import com.quad.xpress.utills.helpers.RoundedCornersGlideImage;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.tagList.Tag_cloud_activity_new;
 import com.quad.xpress.webservice.RestClient;
 

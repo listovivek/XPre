@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.webservice.RestClient;

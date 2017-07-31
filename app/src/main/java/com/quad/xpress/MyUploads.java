@@ -26,14 +26,12 @@ import android.widget.Toast;
 
 import com.quad.xpress.Myuploads.DeleteReq;
 import com.quad.xpress.Myuploads.MyUploadsAdapter;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SaveResponseForOffline;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.clickResponce.Like_Resp;
-import com.quad.xpress.models.receivedFiles.EndlessRecyclerOnScrollListener;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
@@ -300,7 +298,11 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
         String Selected_file_url="";
         if (selected_file_path.contains(StaticConfig.ROOT_URL_Media)) {
             Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
-        } else {
+        }
+        else if  (selected_file_path.contains("https")){
+            Selected_file_url = selected_file_path;
+        }
+        else {
             //Local server
             Selected_file_url = StaticConfig.ROOT_URL + "/" + selected_file_path;
         }
@@ -311,7 +313,11 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
             img_thumb = playlist.get(position).getTBPath();
             if (img_thumb.contains(StaticConfig.ROOT_URL_Media)) {
                 img_url = StaticConfig.ROOT_URL + img_thumb.replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            }
+            else if  (img_thumb.contains("https")){
+                img_url = img_thumb;
+            }
+            else {
                 //Local server
                 img_url = StaticConfig.ROOT_URL + "/" + img_thumb;
 

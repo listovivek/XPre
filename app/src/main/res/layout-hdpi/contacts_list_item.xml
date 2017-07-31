@@ -32,6 +32,7 @@
     android:layout_centerVertical="true"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="40dp"
+    android:addStatesFromChildren="true"
     android:layout_toRightOf="@+id/rounded_iv_profile"
     android:layout_toEndOf="@+id/rounded_iv_profile">
 
@@ -41,7 +42,7 @@
         android:layout_marginTop="12dp"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:text="User Name"
+        android:text="Name"
         android:layout_marginLeft="0dp"
         android:textColor="@color/white"
        />
@@ -51,8 +52,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="User Name"
+        android:text="Email"
         android:ellipsize="end"
+        android:focusable="false"
         android:layout_marginLeft="0dp"
         android:layout_below="@+id/tv_label"
         android:layout_marginTop="5dp"
@@ -70,7 +72,7 @@
         android:adjustViewBounds="true"
         android:background="@drawable/circle_with_plus"
         android:layout_gravity="right"
-
+        android:focusable="false"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"

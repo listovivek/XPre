@@ -9,13 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/relative_tagview">
-        <com.quad.xpress.Utills.helpers.TagLayout
+        <com.quad.xpress.utills.helpers.TagLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/TagLayoutView_tagView"
             >
 
-        </com.quad.xpress.Utills.helpers.TagLayout>
+        </com.quad.xpress.utills.helpers.TagLayout>
     </RelativeLayout>
 
 

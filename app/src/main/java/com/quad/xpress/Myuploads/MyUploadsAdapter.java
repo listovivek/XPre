@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 
 import org.apache.commons.lang3.StringUtils;
@@ -239,7 +239,10 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
                 String TBPath;
                 if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                } else {
+                }
+                else if  (list.getTBPath().contains("https")){
+                    TBPath = list.getTBPath();
+                }else {
                     TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
                 }
             //    Log.v("", "TBPath " + TBPath);

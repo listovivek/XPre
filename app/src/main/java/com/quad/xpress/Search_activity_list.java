@@ -33,9 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.Follow.FollowRep;
 import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.TrendingSearch.TsReq;
@@ -158,7 +158,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
             public boolean onQueryTextChange(String newText) {
 
-                playlist.clear();
+              /*  playlist.clear();
                 Index = 0;
                 if (NCD.isConnected(context) && newText.length() >=2) {
                     Search_query = newText;
@@ -166,7 +166,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
                 } else {
 
-                }
+                }*/
 
                 return true;
             }
@@ -276,7 +276,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         final ArrayList<String>type= new ArrayList<>();
 
         try {
-            RestClient.get(context).GetTrendingSearch(new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+            RestClient.get(context).GetTrendingSearch(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new TsReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                     new Callback<Tsresp>() {
                         @Override
                         public void success(Tsresp tsresp, Response response) {
@@ -578,6 +578,8 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
         String Selected_file_url="";
         if (selected_file_path.contains(StaticConfig.ROOT_URL_Media)) {
             Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
+        }else if  (selected_file_path.contains("https")){
+            Selected_file_url = selected_file_path;
         } else {
             //Local server
             Selected_file_url = StaticConfig.ROOT_URL + "/" + selected_file_path;
@@ -589,7 +591,10 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
             img_thumb = playlist.get(position).getTBPath();
             if (img_thumb.contains(StaticConfig.ROOT_URL_Media)) {
                 img_url = StaticConfig.ROOT_URL + img_thumb.replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            }
+            else if  (img_thumb.contains("https")){
+                img_url = img_thumb;
+            }else {
                 //Local server
                 img_url = StaticConfig.ROOT_URL + "/" + img_thumb;
 
@@ -621,7 +626,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     public void Subcribed(int position, final String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).FollowRequest(new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
@@ -644,7 +649,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
     public void UnSubcribed(int position, final String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).UnFollowRequest(new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {

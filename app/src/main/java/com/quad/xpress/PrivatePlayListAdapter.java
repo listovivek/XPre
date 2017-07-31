@@ -24,9 +24,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
-import com.quad.xpress.Contacts.Contact;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.contacts.Contact;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.PlayListitems;
 
 import org.apache.commons.lang3.StringUtils;
@@ -226,7 +226,10 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
 
             if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                 TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-            } else {
+            }
+         else if  (list.getTBPath().contains("https")){
+            TBPath = list.getTBPath();
+        }else {
                 TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
             }
 

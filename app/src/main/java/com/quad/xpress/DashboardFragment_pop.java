@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Emotion;
@@ -70,6 +70,7 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
         partThreeFragment.setArguments(bundle);
         return partThreeFragment;
     }*/
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,7 +184,12 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
                 Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
 
                 // Toast.makeText(DashBoard.this, "url --"+Selected_file_url, Toast.LENGTH_SHORT).show();
-            } else {
+
+        } else if  (selected_file_path.contains("https")){
+            Selected_file_url = selected_file_path;
+        }
+
+            else {
                 //Local server
                 //  Toast.makeText(DashBoard.this, "else --"+Selected_file_url, Toast.LENGTH_SHORT).show();
                 Selected_file_url = StaticConfig.ROOT_URL + "/" + selected_file_path;
@@ -198,9 +204,10 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
                 if (playlistItems.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + playlistItems.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
 
-                    // Toast.makeText(DashBoard.this, "url"+Selected_file_url, Toast.LENGTH_SHORT).show();
 
-                } else {
+                } else if  (playlistItems.getTBPath().contains("https")){
+                    TBPath = playlistItems.getTBPath();
+                }else {
                     TBPath = StaticConfig.ROOT_URL + "/" + playlistItems.getTBPath();
                 }
 
@@ -208,12 +215,13 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
             }
             else if ( playlistItems.getFileMimeType().equalsIgnoreCase("audio/mp3") ){
 
-
-
-                if (playlistItems.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
+                if (playlistItems.getMydp().contains(StaticConfig.ROOT_URL_Media)) {
                     TBPath = StaticConfig.ROOT_URL + playlistItems.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                } else {
-                    TBPath = StaticConfig.ROOT_URL + "/" + playlistItems.getTBPath();
+                }
+                else if  (playlistItems.getTBPath().contains("https")){
+                    TBPath = playlistItems.getMydp();
+                }else {
+                    TBPath = StaticConfig.ROOT_URL + "/" + playlistItems.getMydp();
                 }
 
             }else {
@@ -368,10 +376,14 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
 
 
 
-
-
         }
 
+  /*  @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        RefWatcher refWatcher = MyApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
+    }*/
 
     @Override
     public void onResume() {

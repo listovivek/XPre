@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:local="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:background="@drawable/bg_tile">
     <include layout="@layout/toolbar_normal"
@@ -36,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:id="@+id/scrollView"
+        android:scrollbarStyle="insideOverlay"
 
         >
 
@@ -56,7 +56,7 @@
             <ImageView
                 android:id="@+id/dash_imv_bg"
                 android:layout_width="match_parent"
-                android:layout_height="165dp"
+                android:layout_height="135dp"
                 android:layout_gravity="top"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"
@@ -70,7 +70,7 @@
                 android:layout_gravity="bottom|right"
                 android:layout_margin="5dp"
                 android:id="@+id/btn_settings_edit_pic"
-                android:background="@android:color/transparent"/>
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
             <ImageView
                 android:id="@+id/imageView_profie_pic"
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:text="User Name"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:id="@+id/settings_tv_username"
                     android:textStyle="bold"/>
                 <TextView
@@ -100,14 +100,14 @@
                     android:id="@+id/settings_tv_status"
                     android:text="000 Folowers - 000 Following"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"/>
 
 
             </LinearLayout>
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center_horizontal|top"
                 app:civ_border_width="3dp"
                 android:layout_marginTop="15dp"
@@ -122,7 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             >
 
 
@@ -428,19 +428,27 @@
 
 
         </LinearLayout>
-        <Button
-            android:id="@+id/btn_save_settings"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/btn_round_orange"
-            android:text="SAVE"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
+            android:addStatesFromChildren="true">
+            <Button
+                android:id="@+id/btn_save_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_round_orange"
+                android:text="SAVE"
+                android:layout_gravity="center_horizontal|bottom"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

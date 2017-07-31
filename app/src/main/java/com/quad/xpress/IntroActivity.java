@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.quad.xpress.Utills.StatiConstants;
+import com.quad.xpress.utills.StatiConstants;
 import com.tsengvn.typekit.TypekitContextWrapper;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -46,10 +46,10 @@ public class IntroActivity extends AppCompatActivity {
         btn_done = (ImageButton) findViewById(R.id.intro_btn_done);
         btn_Proceed = (Button) findViewById(R.id.intro_btn_done_final);
         images = new int[]{R.drawable.abuse_shape,R.drawable.intro_heart, R.drawable.intro_video, R.drawable.intro_audio};
-        text1 = new String[]{"\n\n", "HOLA!\nWELCOME", "HOLA!\nWELCOME","HOLA!\nWELCOME"};
-        text2 = new String[]{"\n","Connect With Your Friends.","Share Your Video & Sound Bytes With",
+        text1 = new String[]{"\n Library of", "HOLA!\nWELCOME", "HOLA!\nWELCOME","HOLA!\nWELCOME"};
+        text2 = new String[]{"","Connect With Your Friends.","Share Your Video & Sound Bytes With",
                 "Give a Shout Out to Your Loved Ones."};
-        text3 = new String[]{"Library of Human Expressions","Or Foes.","the World.","Literally."};
+        text3 = new String[]{"Human Expressions","Or Foes.","the World.","Literally."};
 
 
         viewPager = (ViewPager) findViewById(R.id.pager);

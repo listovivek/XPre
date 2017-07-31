@@ -92,6 +92,8 @@
                 android:background="@android:color/transparent"
                 android:id="@+id/tv_avd_spinner_holder"
                 android:layout_marginBottom="3dp"
+                android:textAlignment="center"
+                android:layout_marginLeft="15dp"
                 android:layout_alignTop="@+id/tv_share_ass"
                 android:layout_toRightOf="@+id/btn_avd_help"
                 android:layout_toLeftOf="@+id/btn_avd_help"

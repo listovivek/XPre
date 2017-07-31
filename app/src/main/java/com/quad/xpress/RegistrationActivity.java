@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -44,17 +43,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.quad.xpress.Utills.StatiConstants;
-import com.quad.xpress.Utills.helpers.FieldsValidator;
-import com.quad.xpress.Utills.helpers.LoadingDialog;
-import com.quad.xpress.Utills.helpers.NetConnectionDetector;
-import com.quad.xpress.Utills.helpers.PermissionStrings;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.pushnotification.GcmIntentService;
-import com.quad.xpress.Utills.pushnotification.NotifyConfig;
 import com.quad.xpress.models.registration.RegRequest;
 import com.quad.xpress.models.registration.RegResp;
+import com.quad.xpress.utills.StatiConstants;
+import com.quad.xpress.utills.helpers.FieldsValidator;
+import com.quad.xpress.utills.helpers.LoadingDialog;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.PermissionStrings;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.pushnotification.NotifyConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -97,6 +97,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     Dialog OutOFStore;
 
+
   /*  Spanned sp_text;*/
 
     String TAG = "RegistrationActivity",PhoneNumberWithCode ="unavailable";
@@ -121,10 +122,10 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.act_registration);
 
 
-
         if (checkPlayServices()) {
            // Log.v(TAG, "checkPlayServices");
             registerGCM();
+
         }
         Permission4 = PermissionStrings.WRITE_EXTERNAL_STORAGE;
 
@@ -142,6 +143,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
 
+        atv_uemail = (AutoCompleteTextView) findViewById(R.id.uemail);
+        atv_uemail.setDropDownBackgroundResource(R.color.black);
 
         //for transparent  status bar
         getWindow().getDecorView()
@@ -158,9 +161,13 @@ public class RegistrationActivity extends AppCompatActivity {
         context = getApplicationContext();
         _activity = RegistrationActivity.this;
         ChangeEmail = i.getBooleanExtra("ChangeEmail", false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            CheckAndRequestPermission();
+        }else {
+            getUserEmails();
+        }
 
 
-        CheckAndRequestPermission();
         NDC = new NetConnectionDetector();
         if (NDC.isConnected(context)) {
 
@@ -191,8 +198,6 @@ public class RegistrationActivity extends AppCompatActivity {
         et_uname = (EditText) findViewById(R.id.uname);
         et_uname.requestFocus();
 
-        atv_uemail = (AutoCompleteTextView) findViewById(R.id.uemail);
-        atv_uemail.setDropDownBackgroundResource(R.color.black);
 
         spinner_ucountry = (Spinner) findViewById(R.id.ucountry);
         spinner_ulang = (Spinner) findViewById(R.id.ulang);
@@ -371,7 +376,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                et_umob_no.setText("+"+Sorted_Pnlist.get(Sorted_Clist.indexOf(atv_country.getText().toString()))+" ");
+                et_umob_no.setText("+"+Sorted_Pnlist.get(Sorted_Clist.indexOf(atv_country.getText().toString()))+"");
                 atv_languadge.requestFocus();
 
             }
@@ -399,7 +404,7 @@ public class RegistrationActivity extends AppCompatActivity {
         spinner_ucountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                et_umob_no.setText("+"+Sorted_Pnlist.get(position)+" ");
+                et_umob_no.setText("+"+Sorted_Pnlist.get(position)+"");
                 et_umob_no.setFocusableInTouchMode(true);
             }
 
@@ -471,7 +476,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
                     else
                     {
-                        Toast.makeText(_activity, "Validation Failed...", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(_activity, "Validation Failed...", Toast.LENGTH_SHORT).show();
                     }
 
 
@@ -500,7 +505,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-
+        //et_umob_no.setText("+91 8072876069");
     }
 
     public static float dpToPx(Context context, float valueInDp) {
@@ -594,6 +599,8 @@ public class RegistrationActivity extends AppCompatActivity {
         return result;
     }
     private void StartRegistration() {
+         // OnVerificationStateChangedCallbacks
+
         final LoadingDialog LD;
         LD = new LoadingDialog(RegistrationActivity.this);
         LD.ShowTheDialog("Setting up your account...", "Please wait..", true);
@@ -627,6 +634,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     ChangeEmail=true;
                     LD.DismissTheDialog();
 
+
                     OTPVerificationIntent();
 
                 } else {
@@ -648,11 +656,16 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+
+
     private void OTPVerificationIntent() {
+
 
         Intent OtpVerify = new Intent(RegistrationActivity.this, OTPverification.class);
 
         OtpVerify.putExtra("email",atv_uemail.getText().toString());
+        OtpVerify.putExtra("phnumber",PhoneNumberWithCode.trim());
+
         OtpVerify.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(OtpVerify);
 
@@ -694,10 +707,17 @@ public class RegistrationActivity extends AppCompatActivity {
 
     // starting the service to register with GCM
     private void registerGCM() {
-        Log.v(TAG, "registerGCM");
-        Intent intent = new Intent(this, GcmIntentService.class);
-        intent.putExtra("key", "register");
-        startService(intent);
+
+        try {
+            GCMToken =   FirebaseInstanceId.getInstance().getToken();
+            FirebaseMessaging.getInstance().subscribeToTopic("personalreceiver");
+            // Toast.makeText(_activity, ""+GCMToken, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "firebase"+" "+GCMToken);
+
     }
 
     private boolean checkPlayServices() {
@@ -724,18 +744,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
             registerGCM();
 
-            //  Toast.makeText(getApplicationContext(), "Something went wrong. Try Again ", Toast.LENGTH_LONG).show();
+                   }
 
-        }
-
-        // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(NotifyConfig.REGISTRATION_COMPLETE));
-
-        // register new push message receiver
-        // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(NotifyConfig.PUSH_NOTIFICATION));
 
         if(ChangeEmail){
             atv_uemail.requestFocus();

@@ -3,6 +3,8 @@ package com.quad.xpress.Adapters_horizontal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +23,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
-import com.quad.xpress.Utills.helpers.StaticConfig;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
@@ -33,26 +35,32 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import im.ene.toro.ToroPlayer;
+import im.ene.toro.helper.SimpleExoPlayerViewHelper;
+import im.ene.toro.media.PlaybackInfo;
+import im.ene.toro.widget.Container;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyViewHolder> {
-    private List<PlayListitems_emotion> rvListitems;
+    List<PlayListitems_emotion> rvListitems;
     Context _context;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
-    public OnRecyclerListener recyclerListener;
-    public String file_id_;
-
+    OnRecyclerListener recyclerListener;
+    String file_id_;
+    SimpleExoPlayerViewHelper Playerhelper;
     String video_type;
     String Status = "";
     String TBPath;
     VideoView vv;
+    //SimpleExoPlayerView playerView;
+    String selected_file_path,Selected_file_url;
     int finalHeight, finalWidth;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements ToroPlayer {
         public TextView RvVideoTitle;
         public TextView RvSender;
         public TextView RvTags,RvTags_full;
@@ -67,6 +75,8 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
 
         public ProgressBar pbar;
         TextView  tv_follow,tv_emotion_count;
+
+
 
         public MyViewHolder(View view, final Context context, OnRecyclerListener recyclerListeners) {
             super(view);
@@ -89,20 +99,57 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             pbar = (ProgressBar) itemView.findViewById(R.id.progressBar_publiclsit);
             popupWindow = new PopupWindow(context);
             ll_follow_user = (LinearLayout) itemView.findViewById(R.id.ll_followuser);
-            vv = (VideoView) itemView.findViewById(R.id.videoView_auto);
+
 
         }
 
+
+        @NonNull
+        @Override
+        public View getPlayerView() {
+            return null;
+        }
+
+        @NonNull
+        @Override
+        public PlaybackInfo getCurrentPlaybackInfo() {
+            return null;
+        }
 
         @Override
-        public void onClick(View v) {
-
-
-
+        public void initialize(@NonNull Container container, @Nullable PlaybackInfo playbackInfo) {
 
         }
 
+        @Override
+        public void play() {
 
+        }
+
+        @Override
+        public void pause() {
+
+        }
+
+        @Override
+        public boolean isPlaying() {
+            return false;
+        }
+
+        @Override
+        public void release() {
+
+        }
+
+        @Override
+        public boolean wantsToPlay() {
+            return false;
+        }
+
+        @Override
+        public int getPlayerOrder() {
+            return 0;
+        }
     }
 
 
@@ -114,7 +161,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
 
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder (ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter_autoplay_list, parent, false);
 
@@ -136,6 +183,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 
         int emotionCount  =  Integer.parseInt(list.getEmotion_count());
@@ -207,54 +255,6 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow_user ,0,0,0);
 
         }
-
-
-
-       /* if (list.getIsUserFollowing().equalsIgnoreCase("1")){
-
-            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfollow,0,0,0);
-            holder.tv_follow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.UnSubcribed(position,list.getFromEmail());
-
-
-                }});
-
-
-            holder.ll_follow_user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.UnSubcribed(position,list.getFromEmail());
-
-                }
-            });
-
-
-                }else {
-                holder.tv_follow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.Subcribed(position,list.getFromEmail());
-
-
-                }});
-
-            holder.ll_follow_user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    recyclerListener.Subcribed(position,list.getFromEmail());
-
-                }
-            });
-
-
-
-        }
-*/
 
 
 
@@ -346,7 +346,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             public void onClick(View v) {
                 holder.pbar.setVisibility(View.INVISIBLE);
 
-                recyclerListener.onItemClicked(holder.position);
+            //    recyclerListener.onItemClicked(holder.position);
 
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
@@ -390,7 +390,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             public void onClick(View v) {
                 holder.pbar.setVisibility(View.INVISIBLE);
 
-                recyclerListener.onItemClicked(holder.position);
+               // recyclerListener.onItemClicked(holder.position);
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
@@ -428,7 +428,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             public void onClick(View v) {
                 holder.pbar.setVisibility(View.INVISIBLE);
 
-                recyclerListener.onItemClicked(holder.position);
+             //   recyclerListener.onItemClicked(holder.position);
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
                 views_count++;
@@ -466,7 +466,7 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
             public void onClick(View v) {
                 holder.pbar.setVisibility(View.INVISIBLE);
 
-                recyclerListener.onItemClicked(holder.position);
+             //   recyclerListener.onItemClicked(holder.position);
 
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
@@ -503,9 +503,25 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                selected_file_path = list.getFileuploadPath();
+
+                if (selected_file_path.contains(StaticConfig.ROOT_URL_Media)) {
+
+                    Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
+
+                    // Toast.makeText(DashBoard.this, "url --"+Selected_file_url, Toast.LENGTH_SHORT).show();
+                } else {
+                    //Local server
+                    //  Toast.makeText(DashBoard.this, "else --"+Selected_file_url, Toast.LENGTH_SHORT).show();
+                    Selected_file_url = StaticConfig.ROOT_URL + "/" + selected_file_path;
+
+                }
+
+
                 holder.pbar.setVisibility(View.INVISIBLE);
 
-                recyclerListener.onItemClicked(holder.position);
+              //  recyclerListener.onItemClicked(holder.position);
 
                 int views_count;
                 views_count=Integer.parseInt(list.getViewsCount());
@@ -582,7 +598,6 @@ public class adapter_autoplay extends RecyclerView.Adapter<adapter_autoplay.MyVi
 
 
     }
-
 
 
 

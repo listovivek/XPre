@@ -13,8 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.quad.xpress.Utills.helpers.PermissionStrings;
-import com.quad.xpress.Utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.PermissionStrings;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
 
 /**
  * Created by Venkatesh on 28-04-16.

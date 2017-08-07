@@ -41,7 +41,6 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -67,6 +66,7 @@ import com.quad.xpress.models.featuredVideos.featuredReq;
 import com.quad.xpress.models.featuredVideos.featuredResp;
 import com.quad.xpress.utills.StatiConstants;
 import com.quad.xpress.utills.ViewPagerCustom;
+import com.quad.xpress.utills.helpers.FieldsValidator;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
@@ -103,7 +103,9 @@ public class DashBoard extends AppCompatActivity {
     Boolean is_vp_Touched = false;
     private static final int PERMISSION_REQUEST_CODE = 1;
     int rl_ht;
-
+    ArrayList<String> phonecontactList;
+    Cursor cursorPhone;
+    int counter;
     public static String FileNameWithMimeType;
     RecyclerView Rv_lists;
 
@@ -270,23 +272,27 @@ public class DashBoard extends AppCompatActivity {
             }
         });
 
-        try {
+        getContacts();
+
+       /* try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
 
                 CheckAndRequestPermission();
+                getContacts();
             }
             else{
 
-                new ContactsReaderClass().execute();
+             //   new ContactsReaderClass().execute();
+                getContacts();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 
-        new asyncFeatured().execute();
+     //   new asyncFeatured().execute();
 
         Smenu = new SlidingMenu(this);
         Smenu.setMode(SlidingMenu.RIGHT);
@@ -586,8 +592,8 @@ public class DashBoard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-              //  finish();
-                final Dialog proceedDiscardDialog = new Dialog(DashBoard.this,
+                finish();
+               /* final Dialog proceedDiscardDialog = new Dialog(DashBoard.this,
                         R.style.Theme_Transparent);
                 String a = "Are you sure you want to logout ?.\n\nYou will still receive notifications if haven't turned it off in your settings.";
                // String a = "Are you sure you want to logout ?";
@@ -609,12 +615,12 @@ public class DashBoard extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                      /*  editor.clear();
-                        editor.commit();*/
+                      *//*  editor.clear();
+                        editor.commit();*//*
                         finish();
-                      /*  Intent intent = new Intent(DashBoard.this, GcmIntentService.class);
+                      *//*  Intent intent = new Intent(DashBoard.this, GcmIntentService.class);
                         intent.putExtra("key", "UNSUBSCRIBE");
-                        startService(intent);*/
+                        startService(intent);*//*
                         proceedDiscardDialog.dismiss();
 
 
@@ -629,7 +635,7 @@ public class DashBoard extends AppCompatActivity {
                         proceedDiscardDialog.dismiss();
 
                     }
-                });
+                });*/
             }
         });
         btn_nb_settings.setOnClickListener(new View.OnClickListener() {
@@ -921,14 +927,30 @@ public class DashBoard extends AppCompatActivity {
 
 
     private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
-
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            AudioFab.setEnabled(false);
+            VideoFab.setEnabled(false);
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
-            mtd_contacts_readera();
+           // mtd_contacts_readera();
+          //  getContacts();
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            AudioFab.setEnabled(true);
+            VideoFab.setEnabled(true);
+        }
     }
+
+
+
 
     private void mtd_getFeatured() {
 
@@ -1211,32 +1233,6 @@ public class DashBoard extends AppCompatActivity {
         }
     }
 
-    public ArrayList<String> getNameEmailDetails(){
-        ArrayList<String> names = new ArrayList<String>();
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,null, null, null, null);
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                Cursor cur1 = cr.query(
-                        ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                        new String[]{id}, null);
-                while (cur1.moveToNext()) {
-                    //to get the contact names
-                    String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    Log.e("Name :", name);
-                    String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    Log.e("Email", email);
-                    if(email!=null){
-                        names.add(name);
-                    }
-                }
-                cur1.close();
-            }
-        }
-        return names;
-    }
 
 
     @Override
@@ -1267,12 +1263,198 @@ public class DashBoard extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-
     }
 
+
+    public void getContacts() {
+
+        Contact.getInstance().contact_namelist.clear();
+        Contact.getInstance().email_list.clear();
+        Contact.getInstance().contact_urilist.clear();
+
+        Contact.getInstance().ixpressemail.clear();
+        Contact.getInstance().ixpressname.clear();
+        Contact.getInstance().ixpress_user_pic.clear();
+
+        phonecontactList = new ArrayList<String>();
+      ArrayList<String>  phonecontactListName = new ArrayList<String>();
+
+        String phoneNumber = null;
+        String email = null;
+        Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
+        String _ID = ContactsContract.Contacts._ID;
+        String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME;
+        String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+        Uri PhoneCONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String Phone_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+        String NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
+        Uri EmailCONTENT_URI =  ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+        String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
+        String DATA = ContactsContract.CommonDataKinds.Email.DATA;
+        StringBuffer output;
+        ContentResolver contentResolver = getContentResolver();
+        cursorPhone = contentResolver.query(CONTENT_URI, null,null, null, null);
+        // Iterate every contact in the phone
+        if (cursorPhone.getCount() > 0) {
+            counter = 0;
+            while (cursorPhone.moveToNext()) {
+                output = new StringBuffer();
+                // Update the progress message
+               /* updateBarHandler.post(new Runnable() {
+                    public void run() {
+                        pDialog.setMessage("Reading contacts : "+ counter++ +"/"+cursorPhone.getCount());
+                    }
+                });*/
+                String contact_id = cursorPhone.getString(cursorPhone.getColumnIndex( _ID ));
+                String name = cursorPhone.getString(cursorPhone.getColumnIndex( DISPLAY_NAME ));
+                int hasPhoneNumber = Integer.parseInt(cursorPhone.getString(cursorPhone.getColumnIndex( HAS_PHONE_NUMBER )));
+                if (hasPhoneNumber > 0) {
+                    output.append("\n First Name:" + name);
+                    //This is to read multiple phone numbers associated with the same contact
+                    Cursor phoneCursor = contentResolver.query(PhoneCONTENT_URI, null, Phone_CONTACT_ID + " = ?", new String[] { contact_id }, null);
+                    while (phoneCursor.moveToNext()) {
+                        phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
+                        output.append("\n Phone number:" + phoneNumber);
+                        Log.d("pno",output.toString());
+                       // phonecontactList.add(phoneNumber);
+                    }
+                    phoneCursor.close();
+                    // Read every email id associated with the contact
+                    Cursor emailCursor = contentResolver.query(EmailCONTENT_URI,    null, EmailCONTACT_ID+ " = ?", new String[] { contact_id }, null);
+                    while (emailCursor.moveToNext()) {
+                        email = emailCursor.getString(emailCursor.getColumnIndex(DATA));
+                        output.append("\n Email:" + email);
+                    }
+                    emailCursor.close();
+                }
+                // Add the contact to the ArrayList
+              //  phonecontactList.add(output.toString());
+                if(name!=null && phoneNumber!=null &&  FieldsValidator.isPhoneNumberString(phoneNumber,true)){
+
+                    //phonecontactList.add(output.toString());
+                    Contact.getInstance().contact_namelist.add(name);
+                    Contact.getInstance().email_list.add(phoneNumber);
+                    Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+
+                }
+
+                }
+
+          //  Contact.getInstance().contact_urilist.add(contact_uri);
+            ///Toast.makeText(context, ""+Contact.getInstance().contact_namelist.size()+"pn"+Contact.getInstance().email_list.size(), Toast.LENGTH_LONG).show();
+            callwebForContacts();
+          // Toast.makeText(context, ""+ phonecontactList.add(output.toString()), Toast.LENGTH_LONG).show();
+
+
+        }
+    }
+
+    private void mtd_contacts_phone_reader(){
+
+        Contact.getInstance().contact_namelist.clear();
+        Contact.getInstance().email_list.clear();
+        Contact.getInstance().contact_urilist.clear();
+
+        Contact.getInstance().ixpressemail.clear();
+        Contact.getInstance().ixpressname.clear();
+        Contact.getInstance().ixpress_user_pic.clear();
+       ContentResolver cer = getContentResolver();
+
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1){
+
+
+            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null,null, null, null);
+
+            if (cur.getCount() > 0) {
+
+                while (cur.moveToNext()) {
+                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                    Cursor cur1 = cer.query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (cur1.moveToNext()) {
+                        //to get the contact names
+              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
+                        DISPLAY_NAME_PRIMARY);
+                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
+                        String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        //   Log.e("Name :", name);
+                        String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        //  Log.e("Email", email);
+             /*   long contactId = cur.getLong(mIdColIdx);
+                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                        contactId).toString();*/
+                        if(email!=null){
+                            // names.add(name);
+                            Contact.getInstance().contact_namelist.add(name);
+                            Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+                            Contact.getInstance().email_list.add(email);
+                        }
+                    }
+                    cur1.close();
+                }
+
+                //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
+            }
+
+            cur.close();
+
+        }
+        else {
+            Cursor cur;
+            int mNameColIdx, mIdColIdx;
+
+            String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.Contacts.PHOTO_ID,
+                    ContactsContract.CommonDataKinds.Email.DATA,
+                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
+            String order = "CASE WHEN "
+                    + ContactsContract.Contacts.DISPLAY_NAME
+                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+                    + ContactsContract.Contacts.DISPLAY_NAME
+                    + ", "
+                    + ContactsContract.CommonDataKinds.Email.DATA
+                    + " COLLATE NOCASE";
+            String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
+            cur = cer.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
+                    filter, null, order);
+
+            mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
+                    DISPLAY_NAME_PRIMARY);
+            mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
+
+            for (int t = 0; t < cur.getCount(); t++) {
+                cur.moveToPosition(t);
+                String contactName = cur.getString(mNameColIdx);
+                long contactId = cur.getLong(mIdColIdx);
+                String email = cur.getString(cur.getColumnIndex
+                        (ContactsContract.CommonDataKinds.Email.DATA));
+                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                        contactId).toString();
+
+                Contact.getInstance().contact_namelist.add(contactName);
+                Contact.getInstance().contact_urilist.add(contact_uri);
+                Contact.getInstance().email_list.add(email);
+
+
+
+                // Log.e("Emailx", email);
+            }
+
+            cur.close();
+
+
+
+        }
+
+
+        callwebForContacts();
+    }
 private void mtd_contacts_readera(){
 
+  //  Toast.makeText(context, "cz", Toast.LENGTH_SHORT).show();
     Contact.getInstance().contact_namelist.clear();
     Contact.getInstance().email_list.clear();
     Contact.getInstance().contact_urilist.clear();
@@ -1304,14 +1486,14 @@ private void mtd_contacts_readera(){
                 String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
              //   Log.e("Name :", name);
                 String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-              //  Log.e("Email", email);
+                Log.e("Email lp", email);
              /*   long contactId = cur.getLong(mIdColIdx);
                 String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
                         contactId).toString();*/
                 if(email!=null){
                    // names.add(name);
                     Contact.getInstance().contact_namelist.add(name);
-                    Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+                  //  Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
                     Contact.getInstance().email_list.add(email);
                 }
             }
@@ -1372,32 +1554,9 @@ private void mtd_contacts_readera(){
 
 }
 
-  /*  HashSet<String> hashSet = new HashSet<String>();
-    HashSet<String> hashSet1 = new HashSet<String>();
-    HashSet<String> hashSet2 = new HashSet<String>();
-
-    hashSet.addAll(Contact.getInstance().email_list);
-    hashSet.addAll(Contact.getInstance().contact_namelist);
-    hashSet.addAll(Contact.getInstance().contact_urilist);
-    Contact.getInstance().contact_namelist.clear();
-    Contact.getInstance().email_list.clear();
-    Contact.getInstance().contact_urilist.clear();
-
-    Contact.getInstance().ixpressemail.clear();
-    Contact.getInstance().ixpressname.clear();
-    Contact.getInstance().ixpress_user_pic.clear();
-    Contact.getInstance().email_list.addAll(hashSet);
-    Contact.getInstance().contact_namelist.addAll(hashSet1);
-    Contact.getInstance().contact_urilist.addAll(hashSet2);*/
-
-   // Toast.makeText(context, ""+Contact.getInstance().email_list.toString(), Toast.LENGTH_SHORT).show();
     callwebForContacts();
 }
-    public Uri getContactPhotoUri(long contactId) {
-        Uri photoUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-        photoUri = Uri.withAppendedPath(photoUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-        return photoUri;
-    }
+
 
 
     private void mtd_pvtCount() {
@@ -1458,7 +1617,7 @@ private void mtd_contacts_readera(){
             }
 
             exit = true;
-            Toast.makeText(getApplicationContext(),"Press Back Again to exit",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Press Back Again to Exit",Toast.LENGTH_LONG).show();
         }
 
 

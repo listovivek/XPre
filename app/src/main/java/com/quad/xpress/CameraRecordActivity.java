@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -27,6 +28,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.widget.AppCompatButton;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -55,22 +57,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.ContactMainActivity;
 import com.quad.xpress.contacts.DatabaseHandler;
-import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.utills.StatiConstants;
-import com.quad.xpress.utills.helpers.FieldsValidator;
-import com.quad.xpress.utills.helpers.NetConnectionDetector;
-import com.quad.xpress.utills.helpers.PermissionStrings;
-import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.localNotification.LocalNotify;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
 import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.models.videocapture.MediaHelper;
+import com.quad.xpress.utills.StatiConstants;
+import com.quad.xpress.utills.helpers.FieldsValidator;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.PermissionStrings;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.localNotification.LocalNotify;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -100,7 +102,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
     ArrayList<String> EmailTemp = new ArrayList<>();
-
+    AutoSuggestAdapter adapter_email;
     CounterClass timer;
     Animation animBlink;
     //private Context myContext;
@@ -115,7 +117,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     Button  customFilter1, customFilter2, customFilter3, customFilter4;
    // MyCameraProperty myCameraProperty;
     boolean FrontCamAvailable = false;
-
+    ArrayList<String> contatx = new ArrayList<>();
     ImageButton recordBtn;
     TextView tv_spinner_mode;
     Button SdDiscard, SdSend;
@@ -307,7 +309,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
-    public static class MyButtons extends Button {
+    public static class MyButtons extends AppCompatButton {
 
         public String filterConfig;
 
@@ -343,7 +345,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         setContentView(R.layout.new_video_capture);
         toolBar = (RelativeLayout) findViewById(R.id.tb_top);
         Hs_filter = (HorizontalScrollView) findViewById(R.id.scroll_filter);
-
+      //  new async_contacts().execute();
          typedValue = new TypedValue();
          getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
 
@@ -896,9 +898,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
         try {
-            AutoSuggestAdapter adapter = new AutoSuggestAdapter(this,
-                    R.layout.spinner_autofill_av_dialouge, mtd_conts());
-            av_email.setAdapter(adapter);
+            HashSet<String> hashSet = new HashSet<String>();
+            hashSet.addAll(Contact.getInstance().email_list);
+
+            contatx.addAll(hashSet);
+            adapter_email = new AutoSuggestAdapter(this,
+                    R.layout.spinner_autofill_av_dialouge,contatx );
+            av_email.setAdapter(adapter_email);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1553,96 +1560,122 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         }
 
     }
-public  ArrayList<String>mtd_conts() {
-    HashSet<String> hashSet = new HashSet<String>();
 
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
 
-        ContentResolver cer = getContentResolver();
+    class async_contacts extends AsyncTask<Void, Void, Void> {
 
-        Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-        if (cur.getCount() > 0) {
+        @Override
+        protected Void doInBackground(Void... voids) {
 
-            while (cur.moveToNext()) {
-                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                Cursor cur1 = cer.query(
-                        ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                        new String[]{id}, null);
-                while (cur1.moveToNext()) {
-                    //to get the contact names
+            contatx =   mtd_conts();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+           // Toast.makeText(_activity, ""+x, Toast.LENGTH_SHORT).show();
+           // emlRecs.addAll(x);
+            adapter_email.notifyDataSetChanged();
+        }
+    }
+
+    public  ArrayList<String>mtd_conts() {
+        HashSet<String> hashSet = new HashSet<String>();
+        hashSet.addAll(emlRecs);
+        emlRecs.clear();
+        emlRecs.addAll(hashSet);
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+
+            ContentResolver cer = getContentResolver();
+
+            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+            if (cur.getCount() > 0) {
+
+                while (cur.moveToNext()) {
+                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                    Cursor cur1 = cer.query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (cur1.moveToNext()) {
+                        //to get the contact names
               /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
                         DISPLAY_NAME_PRIMARY);
                 mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
-                    String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    //   Log.e("Name :", name);
-                    String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    //  Log.e("Email", email);
+                        String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        //   Log.e("Name :", name);
+                        String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        //  Log.e("Email", email);
              /*   long contactId = cur.getLong(mIdColIdx);
                 String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
                         contactId).toString();*/
-                    if (email != null) {
-                        // names.add(name);
+                        if (email != null) {
+                            // names.add(name);
 
-                        emlRecs.add(email);
+                            emlRecs.add(email);
+                        }
                     }
+                    cur1.close();
                 }
-                cur1.close();
+
+                //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
             }
 
-            //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
+            cur.close();
+
+
+        } else {
+            Cursor cur;
+            int mNameColIdx, mIdColIdx;
+            ContentResolver cr = this.getContentResolver();
+            String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
+                    ContactsContract.Contacts.DISPLAY_NAME,
+                    ContactsContract.Contacts.PHOTO_ID,
+                    ContactsContract.CommonDataKinds.Email.DATA,
+                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
+            String order = "CASE WHEN "
+                    + ContactsContract.Contacts.DISPLAY_NAME
+                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+                    + ContactsContract.Contacts.DISPLAY_NAME
+                    + ", "
+                    + ContactsContract.CommonDataKinds.Email.DATA
+                    + " COLLATE NOCASE";
+            String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
+            cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
+                    filter, null, order);
+
+            mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
+                    DISPLAY_NAME_PRIMARY);
+            mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
+
+            for (int t = 0; t < cur.getCount(); t++) {
+                cur.moveToPosition(t);
+                String contactName = cur.getString(mNameColIdx);
+                long contactId = cur.getLong(mIdColIdx);
+                String email = cur.getString(cur.getColumnIndex
+                        (ContactsContract.CommonDataKinds.Email.DATA));
+                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                        contactId).toString();
+
+                emlRecs.add(email);
+                // Log.e("Emailx", email);
+            }
+
+            cur.close();
+
         }
 
-        cur.close();
-
-
-    } else {
-        Cursor cur;
-        int mNameColIdx, mIdColIdx;
-        ContentResolver cr = this.getContentResolver();
-        String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.PHOTO_ID,
-                ContactsContract.CommonDataKinds.Email.DATA,
-                ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-        String order = "CASE WHEN "
-                + ContactsContract.Contacts.DISPLAY_NAME
-                + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                + ContactsContract.Contacts.DISPLAY_NAME
-                + ", "
-                + ContactsContract.CommonDataKinds.Email.DATA
-                + " COLLATE NOCASE";
-        String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-        cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-                filter, null, order);
-
-        mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                DISPLAY_NAME_PRIMARY);
-        mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-        for (int t = 0; t < cur.getCount(); t++) {
-            cur.moveToPosition(t);
-            String contactName = cur.getString(mNameColIdx);
-            long contactId = cur.getLong(mIdColIdx);
-            String email = cur.getString(cur.getColumnIndex
-                    (ContactsContract.CommonDataKinds.Email.DATA));
-            String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                    contactId).toString();
-
-            emlRecs.add(email);
-            // Log.e("Emailx", email);
-        }
-
-        cur.close();
-
+        hashSet.addAll(emlRecs);
+        emlRecs.clear();
+        emlRecs.addAll(hashSet);
+        return emlRecs;
     }
 
-    hashSet.addAll(emlRecs);
-    emlRecs.clear();
-    emlRecs.addAll(hashSet);
-    return emlRecs;
-}
 
 
   public class NotificationRetry extends BroadcastReceiver{

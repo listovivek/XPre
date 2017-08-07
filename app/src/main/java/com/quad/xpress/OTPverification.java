@@ -109,7 +109,7 @@ public class OTPverification extends AppCompatActivity {
                 ss.setSpan(new RelativeSizeSpan(1.5f),a1.length(), a1.length()+atv_phnumber.length(), 0);
                 toastCustom.ShowToast("iXprez ",ss,1);
 
-                editor.putString(SharedPrefUtils.SpToken, "phonev");
+
                 editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
                 editor.commit();
 
@@ -337,7 +337,7 @@ public class OTPverification extends AppCompatActivity {
 
                 if (OtpMresp.getStatus().equals("OK")) {
 
-                    editor.putString(SharedPrefUtils.SpToken, OtpMresp.getData()[0].getToken());
+                  //  editor.putString(SharedPrefUtils.SpToken, OtpMresp.getData()[0].getToken());
                     editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
                     editor.commit();
 
@@ -381,7 +381,8 @@ public class OTPverification extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
 
                             FirebaseUser user = task.getResult().getUser();
-                            editor.putString(SharedPrefUtils.SpToken, "sms");
+                          //  editor.putString(SharedPrefUtils.SpToken, "sms");
+
                             editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
                             editor.commit();
 

@@ -9,24 +9,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.quad.xpress.utills.helpers.NetConnectionDetector;
-import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
-import com.quad.xpress.models.authToken.AuthTokenReq;
-import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.adapter_dashboard;
 import com.quad.xpress.models.receivedFiles.PublicPlayListReq;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 
 import java.util.ArrayList;
@@ -304,7 +301,7 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
 
         }
 
-    public void RefreshToken_publicList() {
+   /* public void RefreshToken_publicList() {
         // LD.ShowTheDialog("Please Wait", "Loading..", true);
         RestClient.get(context).RefreshTokenWS(new AuthTokenReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<AuthTokenResp>() {
             @Override
@@ -330,7 +327,7 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
 
             }
         });
-    }
+    }*/
 
     private void ParsePublicFiles(PlayListResp_emotion arg0) {
         int RLength = arg0.getData().getRecords().length;
@@ -363,18 +360,13 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),
                     iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),iii.getMydp());
             playlist.add(playlistItems);
-            recyclerAdapter.notifyDataSetChanged();
+
         }
 
-
-        EndOfRecords = arg0.getData().getLast();
+        recyclerAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
+        EndOfRecords = arg0.getData().getLast();
         iv_no_data.setVisibility(View.INVISIBLE);
-
-
-
-
-
 
         }
 

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -96,6 +97,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private static final int CONTACT_PERMISSION_REQUEST_CODE = 93;
     private static final int PERMISSION_REQUEST_CODE = 1;
     Dialog OutOFStore;
+    Boolean GcmtryAgain = false;
 
 
   /*  Spanned sp_text;*/
@@ -176,10 +178,7 @@ public class RegistrationActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Check internet Connectivity",Toast.LENGTH_LONG).show();
         }
 
-        if (checkPlayServices()) {
-            Log.v(TAG, "checkPlayServices");
-            registerGCM();
-        }
+
         if(isStoreVersion(context)){
             //  Toast.makeText(SplashActivity.this, "PStore", Toast.LENGTH_SHORT).show();
         }else {
@@ -269,8 +268,15 @@ public class RegistrationActivity extends AppCompatActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Toast.makeText(getApplicationContext(), "Terms of services Clicked",
-                        Toast.LENGTH_SHORT).show();
+              /*  Toast.makeText(getApplicationContext(), "Terms of services Clicked",
+                        Toast.LENGTH_SHORT).show();*/
+
+                String url = "http://www.quadrupleindia.com/ixprez/page/terms_conditions.html";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+
             }
         }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
         spanTxt.append(" and ");
@@ -279,8 +285,14 @@ public class RegistrationActivity extends AppCompatActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Toast.makeText(getApplicationContext(), "Privacy Policy Clicked",
-                        Toast.LENGTH_SHORT).show();
+                /*Toast.makeText(getApplicationContext(), "Privacy Policy Clicked",
+                        Toast.LENGTH_SHORT).show();*/
+                String url = "http://www.quadrupleindia.com/ixprez/page/privacy_policy.html";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+
             }
         }, spanTxt.length() - "Privacy Policy".length(), spanTxt.length(), 0);
         spanTxt.setSpan(new ForegroundColorSpan(Color.WHITE), 36, spanTxt.length(), 0);
@@ -445,6 +457,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                // Toast.makeText(getApplicationContext(), "clicked ", Toast.LENGTH_LONG).show();
                 FieldsTextWatcher();
+
                 if (checkValidation()) {
                     //GCMToken = "xcx";
                       if( !Sorted_Clist.contains(atv_country.getText().toString().trim()) ){
@@ -453,11 +466,15 @@ public class RegistrationActivity extends AppCompatActivity {
                         atv_languadge.setError("Please select from list");
                     }
 
-                    if (GCMToken == null) {
+                    if (GCMToken == null && ! GcmtryAgain) {
 
-                        registerGCM();
-
+                        registerGCM();//
+                        GcmtryAgain =true;
                         //  Toast.makeText(getApplicationContext(), "Something went wrong. Try Again ", Toast.LENGTH_LONG).show();
+
+                    } else if (GCMToken == null && GcmtryAgain) {
+
+                       finish();
 
                     }else{
 
@@ -505,7 +522,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        //et_umob_no.setText("+91 8072876069");
+
     }
 
     public static float dpToPx(Context context, float valueInDp) {
@@ -624,18 +641,19 @@ public class RegistrationActivity extends AppCompatActivity {
                     editor.putString(SharedPrefUtils.SpPhone, PhoneNumberWithCode);
                     editor.putString(SharedPrefUtils.SpCountry, atv_country.getText().toString());
                     editor.putString(SharedPrefUtils.SpPhoneCode, CountryPhoneText);
-                    editor.putString(SharedPrefUtils.SpGcmToken, StatiConstants.Gcm);
+                    editor.putString(SharedPrefUtils.SpGcmToken, GCMToken);
                     editor.putString(SharedPrefUtils.SpCountryFullName, atv_country.getText().toString());
+                    editor.putString(SharedPrefUtils.SpToken, arg0.getData()[0].getToken());
                     editor.commit();
 
 
-
+                   // Toast.makeText(RegistrationActivity.this, "tok " +  arg0.getData()[0].getToken(), Toast.LENGTH_LONG).show();
 
                     ChangeEmail=true;
                     LD.DismissTheDialog();
 
 
-                    OTPVerificationIntent();
+                   OTPVerificationIntent();
 
                 } else {
                     Log.v("", "Try again later " + arg0.getStatus());

@@ -69,6 +69,7 @@ dependencies {
     // additional dependencies.
     //compile 'com.google.android.exoplayer:exoplayer:r2.4.0'
     //Firebase stuff
+    compile 'com.google.firebase:firebase-core:11.0.1'
     compile 'com.google.firebase:firebase-auth:11.0.1'
     compile 'com.firebase:firebase-jobdispatcher:0.6.0'
     compile 'com.google.firebase:firebase-messaging:11.0.1'

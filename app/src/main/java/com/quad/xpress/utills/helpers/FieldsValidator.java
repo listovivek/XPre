@@ -68,6 +68,26 @@ public class FieldsValidator {
         return true;
     }
 
+    public static boolean isPhoneNumberString(String editText, boolean required) {
+        return isValidPhoneString(editText, PHONE_REGEX, PHONE_MSG, required);
+    }
+    public static boolean isValidPhoneString(String editText, String regex, String errMsg, boolean required) {
+
+        String text = editText;
+        // clearing the error, if it was previously set by some other values
+
+        // text required and editText is blank, so return false
+        if ( required && !hasTextPhoneString(editText) ) return false;
+
+        // pattern doesn't match so returning false
+        if (required && !Pattern.matches(regex, text)) {
+
+            return false;
+        };
+
+        return true;
+    }
+
     // check the input field has any text or not
     // return true if it contains text otherwise false
     public static boolean hasTextEmail(EditText editText) {
@@ -158,5 +178,20 @@ public class FieldsValidator {
 
         return true;
     }
+    public static boolean hasTextPhoneString(String editText) {
 
+        String text = editText;
+
+        // length 0 means there is no text
+        if (text.length() <= 8) {
+
+            return false;
+        }
+        if (text.length() >= 14) {
+
+            return false;
+        }
+
+        return true;
+    }
 }

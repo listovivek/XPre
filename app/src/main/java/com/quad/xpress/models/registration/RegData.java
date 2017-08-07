@@ -2,13 +2,31 @@ package com.quad.xpress.models.registration;
 
 public class RegData
 {
+    private String gcm_id;
+
+    private String phone_number;
+
+    private String mobile_modelname;
+
+    private String device_id;
+
+    private String mobile_os;
+
+    private String country;
+
     private String id;
 
     private String user_name;
 
-    private String phone_number;
+    private String mobile_version;
 
-    private String device_id;
+    private String remainder;
+
+    private String DocumentRoot;
+
+    private String token;
+
+    private String notification;
 
     private String language;
 
@@ -18,7 +36,67 @@ public class RegData
 
     private String email_id;
 
-    private String country;
+    private String is_edit;
+
+    public String getGcm_id ()
+    {
+        return gcm_id;
+    }
+
+    public void setGcm_id (String gcm_id)
+    {
+        this.gcm_id = gcm_id;
+    }
+
+    public String getPhone_number ()
+    {
+        return phone_number;
+    }
+
+    public void setPhone_number (String phone_number)
+    {
+        this.phone_number = phone_number;
+    }
+
+    public String getMobile_modelname ()
+    {
+        return mobile_modelname;
+    }
+
+    public void setMobile_modelname (String mobile_modelname)
+    {
+        this.mobile_modelname = mobile_modelname;
+    }
+
+    public String getDevice_id ()
+    {
+        return device_id;
+    }
+
+    public void setDevice_id (String device_id)
+    {
+        this.device_id = device_id;
+    }
+
+    public String getMobile_os ()
+    {
+        return mobile_os;
+    }
+
+    public void setMobile_os (String mobile_os)
+    {
+        this.mobile_os = mobile_os;
+    }
+
+    public String getCountry ()
+    {
+        return country;
+    }
+
+    public void setCountry (String country)
+    {
+        this.country = country;
+    }
 
     public String getId ()
     {
@@ -40,24 +118,54 @@ public class RegData
         this.user_name = user_name;
     }
 
-    public String getPhone_number ()
+    public String getMobile_version ()
     {
-        return phone_number;
+        return mobile_version;
     }
 
-    public void setPhone_number (String phone_number)
+    public void setMobile_version (String mobile_version)
     {
-        this.phone_number = phone_number;
+        this.mobile_version = mobile_version;
     }
 
-    public String getDevice_id ()
+    public String getRemainder ()
     {
-        return device_id;
+        return remainder;
     }
 
-    public void setDevice_id (String device_id)
+    public void setRemainder (String remainder)
     {
-        this.device_id = device_id;
+        this.remainder = remainder;
+    }
+
+    public String getDocumentRoot ()
+    {
+        return DocumentRoot;
+    }
+
+    public void setDocumentRoot (String DocumentRoot)
+    {
+        this.DocumentRoot = DocumentRoot;
+    }
+
+    public String getToken ()
+    {
+        return token;
+    }
+
+    public void setToken (String token)
+    {
+        this.token = token;
+    }
+
+    public String getNotification ()
+    {
+        return notification;
+    }
+
+    public void setNotification (String notification)
+    {
+        this.notification = notification;
     }
 
     public String getLanguage ()
@@ -100,19 +208,19 @@ public class RegData
         this.email_id = email_id;
     }
 
-    public String getCountry ()
+    public String getIs_edit ()
     {
-        return country;
+        return is_edit;
     }
 
-    public void setCountry (String country)
+    public void setIs_edit (String is_edit)
     {
-        this.country = country;
+        this.is_edit = is_edit;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [id = "+id+", user_name = "+user_name+", phone_number = "+phone_number+", device_id = "+device_id+", language = "+language+", expiry_otp = "+expiry_otp+", otp = "+otp+", email_id = "+email_id+", country = "+country+"]";
+        return "ClassPojo [gcm_id = "+gcm_id+", phone_number = "+phone_number+", mobile_modelname = "+mobile_modelname+", device_id = "+device_id+", mobile_os = "+mobile_os+", country = "+country+", id = "+id+", user_name = "+user_name+", mobile_version = "+mobile_version+", remainder = "+remainder+", DocumentRoot = "+DocumentRoot+", token = "+token+", notification = "+notification+", language = "+language+", expiry_otp = "+expiry_otp+", otp = "+otp+", email_id = "+email_id+", is_edit = "+is_edit+"]";
     }
 }

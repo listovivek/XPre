@@ -39,6 +39,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.quad.xpress.models.profile_pic.profilepicResp;
+import com.quad.xpress.models.receivedFiles.register.LanguageResp;
+import com.quad.xpress.models.receivedFiles.register.ReqCL;
+import com.quad.xpress.models.receivedFiles.register.RespCountry;
+import com.quad.xpress.models.registration.RegRequest;
+import com.quad.xpress.models.registration.RegResp;
 import com.quad.xpress.utills.StatiConstants;
 import com.quad.xpress.utills.helpers.FieldsValidator;
 import com.quad.xpress.utills.helpers.LoadingDialog;
@@ -46,12 +52,6 @@ import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.utills.helpers.StaticConfig;
-import com.quad.xpress.models.profile_pic.profilepicResp;
-import com.quad.xpress.models.receivedFiles.register.LanguageResp;
-import com.quad.xpress.models.receivedFiles.register.ReqCL;
-import com.quad.xpress.models.receivedFiles.register.RespCountry;
-import com.quad.xpress.models.registration.RegRequest;
-import com.quad.xpress.models.registration.RegResp;
 import com.quad.xpress.webservice.RestClient;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -143,18 +143,21 @@ public class SettingsActivity extends AppCompatActivity implements
         tv_mobile.setFocusableInTouchMode(false);
         NDC = new NetConnectionDetector();
 
-        String   GCMToken = null;
+
+
+        if(sharedpreferences.getString(SharedPrefUtils.SpGcmToken, "").isEmpty()){
         try {
-         GCMToken =   FirebaseInstanceId.getInstance().getToken();
+            String gcmID =   FirebaseInstanceId.getInstance().getToken();
             FirebaseMessaging.getInstance().subscribeToTopic("personalreceiver");
             // Toast.makeText(_activity, ""+GCMToken, Toast.LENGTH_SHORT).show();
-            editor.putString(SharedPrefUtils.SpGcmToken, StatiConstants.Gcm);
+            editor.putString(SharedPrefUtils.SpGcmToken, gcmID);
             editor.commit();
+          //  Toast.makeText(context, "nn --"+sharedpreferences.getString(SharedPrefUtils.SpGcmToken, ""), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }}
 
-        Log.v("GCM id", "firebase"+" "+GCMToken);
+      //  Toast.makeText(context, ""+sharedpreferences.getString(SharedPrefUtils.SpGcmToken, ""), Toast.LENGTH_SHORT).show();
 
 
         tv_about.setOnClickListener(new View.OnClickListener() {

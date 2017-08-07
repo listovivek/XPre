@@ -26,7 +26,7 @@ public class Act_HelpSupportAbout extends Activity {
     WebView mWebView;
     String p1 = "http://www.quadrupleindia.com/ixprez/page/about.html",
 
-    p2 = "http://www.quadrupleindia.com/ixprez/page/help.html",
+    p2 = "http://www.quadrupleindia.com/ixprez/page/faq.html",
 
      p3 = "http://www.quadrupleindia.com/ixprez/page/support.html";
 

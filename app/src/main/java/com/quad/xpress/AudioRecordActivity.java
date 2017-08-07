@@ -495,8 +495,13 @@ public class AudioRecordActivity extends Activity {
 
         AutoSuggestAdapter adapter = null;
         try {
+            ArrayList<String>contatx = new ArrayList<>();
+            HashSet<String> hashSet = new HashSet<String>();
+            hashSet.addAll(Contact.getInstance().email_list);
+
+            contatx.addAll(hashSet);
             adapter = new AutoSuggestAdapter(this,
-                    R.layout.spinner_autofill_av_dialouge, mtd_conts());
+                    R.layout.spinner_autofill_av_dialouge, contatx);
             av_email.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();

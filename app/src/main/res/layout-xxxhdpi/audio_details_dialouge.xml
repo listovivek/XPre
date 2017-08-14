@@ -228,18 +228,17 @@
                 android:id="@+id/fl_emcn"
                 android:layout_toLeftOf="@+id/btn_contacts"
                 android:layout_toStartOf="@+id/btn_contacts">
+
                 <AutoCompleteTextView
                     android:id="@+id/av_email"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="13"
-                    android:hint=" Email"
-
+                    android:hint="@string/av_email_auto"
                     android:layout_centerVertical="true"
                     android:textColor="@color/orange"
-
                     android:textColorHint="@color/orange"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textAutoComplete"
                     android:longClickable="false"
                     android:singleLine="true"
                     android:freezesText="true"

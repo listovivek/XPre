@@ -4,7 +4,6 @@ import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +29,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,7 +37,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -56,8 +53,6 @@ import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.ContactMainActivity;
 import com.quad.xpress.contacts.DatabaseHandler;
-import com.quad.xpress.models.acceptRejectCount.AcceptRejectCount;
-import com.quad.xpress.models.acceptRejectCount.ReqPvateCount;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
 import com.quad.xpress.models.counter.CounterReq;
@@ -108,7 +103,7 @@ public class DashBoard extends AppCompatActivity {
     int counter;
     public static String FileNameWithMimeType;
     RecyclerView Rv_lists;
-
+    public static Boolean isLoadingContacts = true;
 
 
     SharedPreferences sharedpreferences;
@@ -170,7 +165,7 @@ public class DashBoard extends AppCompatActivity {
 
     public static int ixemailcount;
 
-    public static ArrayList<String> ixprez_email = new ArrayList<>();
+    public static    ArrayList<String> ixprez_email = new ArrayList<>();
     ArrayList<String> ixprez_username = new ArrayList<>();
     ArrayList<String> ixprez_profilepic = new ArrayList<>();
 
@@ -185,6 +180,69 @@ public class DashBoard extends AppCompatActivity {
     NotificationBadge TopBadge,tv_PvtCount,tv_notifi_count;;
     private boolean NoPermisson  = true;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+
+        vp_frga_adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        vp_frga_adapter.addFragment(new DashboardFragment_pop(), "Trending");
+        vp_frga_adapter.addFragment(new DashboardFragment_new(), "Recent");
+        // vp_frga_adapter.addFragment(new DashboardFragment_pop_autoplay(), "Autoplay");
+        viewPager_dash_lists.setAdapter(vp_frga_adapter);
+
+
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                try {
+                    Fragment f = vp_frga_adapter.getItem(tab.getPosition());
+                    if (f != null) {
+                        View fragmentView = f.getView();
+                        RecyclerView mRecyclerView;
+                        if(tab.getPosition() == 0) {
+
+                            mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recyclerView_frag_pop);
+                        }else {
+                            mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recyclerView_frag_recent);
+                        }
+
+                        if (mRecyclerView != null)
+                            mRecyclerView.scrollToPosition(0);
+                    }
+                } catch (NullPointerException npe) {
+                }
+
+
+            }
+        });
+
+
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager_dash_lists);
+            }
+        });
+
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,7 +284,7 @@ public class DashBoard extends AppCompatActivity {
                 ss.setSpan(new RelativeSizeSpan(0f), 0, tc.length(), 0);
 
                // toastCustom.ShowToast("Ixprez",ss,1);
-
+            new ContactsReaderClass().execute();
 
 
                 LayoutInflater inflater=_activity.getLayoutInflater();
@@ -272,27 +330,30 @@ public class DashBoard extends AppCompatActivity {
             }
         });
 
-        getContacts();
 
-       /* try {
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
 
                 CheckAndRequestPermission();
-                getContacts();
+                // getContacts();
             }
             else{
-
-             //   new ContactsReaderClass().execute();
-                getContacts();
+                //  Toast.makeText(context, "ec", Toast.LENGTH_SHORT).show();
+                new ContactsReaderClass().execute();
+                // new ContactsReaderClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                // getContacts();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
 
 
-     //   new asyncFeatured().execute();
+
+
+
+
 
         Smenu = new SlidingMenu(this);
         Smenu.setMode(SlidingMenu.RIGHT);
@@ -524,7 +585,7 @@ public class DashBoard extends AppCompatActivity {
                 }
             });
 
-
+        mtd_getFeatured_bkp();
         myPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -536,45 +597,6 @@ public class DashBoard extends AppCompatActivity {
 
             }
         });
-
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-                if (currentPage == noofsize-1) {
-                    currentPage = 0;
-                }
-                if(!is_vp_Touched){
-                    myPager.setScrollDuration(1500);
-                myPager.setCurrentItem(currentPage++, true);
-
-                    try {
-                        mtd_counter();
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-               LayoutTransition lt = new LayoutTransition();
-               lt.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
-               myPager.setLayoutTransition(lt);
-
-
-
-            }
-        };
-
-        Timer   timer = new Timer(); // This will create a new Thread
-        timer .schedule(new TimerTask() { // task to be scheduled
-
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 2000, 4000);
-
-
 
         // Verifying guide
         Boolean guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
@@ -647,58 +669,45 @@ public class DashBoard extends AppCompatActivity {
         });
 
 
-        vp_frga_adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        vp_frga_adapter.addFragment(new DashboardFragment_pop(), "Trending");
-        vp_frga_adapter.addFragment(new DashboardFragment_new(), "Recent");
-       // vp_frga_adapter.addFragment(new DashboardFragment_pop_autoplay(), "Autoplay");
-        viewPager_dash_lists.setAdapter(vp_frga_adapter);
-
-
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+                if (currentPage == noofsize-1) {
+                    currentPage = 0;
+                }
+                if(!is_vp_Touched){
+                    myPager.setScrollDuration(1500);
+                    myPager.setCurrentItem(currentPage++, true);
 
 
-            }
+                    try {
+                        mtd_counter();
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                try {
-                    Fragment f = vp_frga_adapter.getItem(tab.getPosition());
-                    if (f != null) {
-                        View fragmentView = f.getView();
-                        RecyclerView mRecyclerView;
-                        if(tab.getPosition() == 0) {
-
-                             mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recyclerView_frag_pop);
-                        }else {
-                             mRecyclerView = (RecyclerView) fragmentView.findViewById(R.id.recyclerView_frag_recent);
-                        }
-
-                        if (mRecyclerView != null)
-                            mRecyclerView.scrollToPosition(0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (NullPointerException npe) {
                 }
 
+                LayoutTransition lt = new LayoutTransition();
+                lt.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+                myPager.setLayoutTransition(lt);
+
+
 
             }
-        });
+        };
 
+        Timer   timer = new Timer(); // This will create a new Thread
+        timer .schedule(new TimerTask() { // task to be scheduled
 
-        tabLayout.post(new Runnable() {
             @Override
             public void run() {
-                tabLayout.setupWithViewPager(viewPager_dash_lists);
+                handler.post(Update);
             }
-        });
+        }, 2000, 4000);
+
+
+
 
         iv_no_data = (ImageView) findViewById(R.id.ll_rv_bg);
         btn_btm_settings= (ImageButton) findViewById(R.id.btn_dash_post_audio);
@@ -719,7 +728,8 @@ public class DashBoard extends AppCompatActivity {
             iv_no_data.setVisibility(View.VISIBLE);
 
         }else {
-            mtd_pvtCount();
+
+
         }
         mtd_resize();
 
@@ -802,22 +812,7 @@ public class DashBoard extends AppCompatActivity {
         GuideDialouge.requestWindowFeature(Window.FEATURE_NO_TITLE);
         GuideDialouge.setContentView(R.layout.guide);
 
-        AVDialog = new Dialog(DashBoard.this, R.style.DialogMaxwidth);
-        AudioRecordDialog = new Dialog(DashBoard.this, R.style.DialogMaxwidth);
-        SendDiscardDialog = new Dialog(DashBoard.this, R.style.DialogMaxwidth);
 
-        AVDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        AudioRecordDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        SendDiscardDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        AudioRecordDialog.setContentView(R.layout.record_audio);
-        AVDialog.setContentView(R.layout.av_details);
-        SendDiscardDialog.setContentView(R.layout.send_discard_dialog);
-
-        av_email = (AutoCompleteTextView) AVDialog.findViewById(R.id.av_email);
-
-
-        animBlink = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.blink);
 
 
     }
@@ -832,6 +827,9 @@ public class DashBoard extends AppCompatActivity {
         Contact.getInstance().ixpressemail.clear();
         Contact.getInstance().ixpressname.clear();
         Contact.getInstance().ixpress_user_pic.clear();
+/*        Contact.getInstance().ixpressemail.add(" ");
+        Contact.getInstance().ixpressname.add(" ");
+        Contact.getInstance().ixpress_user_pic.add(" ");*/
 
 
         ixprez_email.clear();
@@ -846,8 +844,9 @@ public class DashBoard extends AppCompatActivity {
       //  Log.d("emailcons", Contact.getInstance().email_list.toString());
 
         if (Contact.getInstance().email_list != null) {
+            Toast.makeText(context, ""+Contact.getInstance().email_list.size(), Toast.LENGTH_SHORT).show();
 
-            RestClient.get(DashBoard.this).PostContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
+            RestClient.get(DashBoard.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
                     new Callback<ContactsResp>() {
                         @Override
                         public void success(ContactsResp contactsResp, Response response) {
@@ -859,6 +858,8 @@ public class DashBoard extends AppCompatActivity {
                                     ixprez_email.add(contactsResp.getData()[i].getEmail_id());
                                     ixprez_username.add(contactsResp.getData()[i].getUser_name());
                                     ixprez_profilepic.add(contactsResp.getData()[i].getProfile_image());
+
+                                    Contact.getInstance().ixpressemail_DB.add(contactsResp.getData()[i].getEmail_id());
 
                                     //count=i++;
                                 }
@@ -891,7 +892,7 @@ public class DashBoard extends AppCompatActivity {
                                 Contact.getInstance().ixpressemail = appendEmail;
                                 Contact.getInstance().ixpress_user_pic = appendProfilePic;
                                 Contact.getInstance().xpressUser = "iXpressUser";
-
+                                isLoadingContacts = false;
 
                             } else if (contactsResp.getCode().equals("202")) {
                               /*  Toast.makeText(DashBoard.this, "ixpress users...found " +
@@ -915,44 +916,148 @@ public class DashBoard extends AppCompatActivity {
         }
     }
 
-    private class asyncFeatured extends AsyncTask<Void,Void,Void> {
 
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            mtd_getFeatured();
-            return null;
-        }
-    }
 
 
     private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            AudioFab.setEnabled(false);
-            VideoFab.setEnabled(false);
+            isLoadingContacts = true;
         }
 
         @Override
         protected Void doInBackground(Void... params) {
            // mtd_contacts_readera();
-          //  getContacts();
+            String phoneNumber = null;
+            String email = null;
+            Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
+            String _ID = ContactsContract.Contacts._ID;
+            String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME;
+            String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+            Uri PhoneCONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String Phone_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+            String NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
+            Uri EmailCONTENT_URI =  ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+            String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
+            String DATA = ContactsContract.CommonDataKinds.Email.DATA;
+
+            ContentResolver contentResolver = getContentResolver();
+            cursorPhone = contentResolver.query(CONTENT_URI, null,null, null, null);
+
+            // Iterate every contact in the phone
+            if (cursorPhone.getCount() > 0) {
+                counter = 0;
+                while (cursorPhone.moveToNext()) {
+
+                    String contact_id = cursorPhone.getString(cursorPhone.getColumnIndex(_ID));
+                    String name = cursorPhone.getString(cursorPhone.getColumnIndex(DISPLAY_NAME));
+                    int hasPhoneNumber = Integer.parseInt(cursorPhone.getString(cursorPhone.getColumnIndex(HAS_PHONE_NUMBER)));
+                    if (hasPhoneNumber > 0) {
+
+                        //This is to read multiple phone numbers associated with the same contact
+                        Cursor phoneCursor = contentResolver.query(PhoneCONTENT_URI, null, Phone_CONTACT_ID + " = ?", new String[]{contact_id}, null);
+                        while (phoneCursor.moveToNext()) {
+                            phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
+
+                            // Log.d("pno",output.toString());
+
+                        }
+                        phoneCursor.close();
+                        // Read every email id associated with the contact
+                       /* Cursor emailCursor = contentResolver.query(EmailCONTENT_URI, null, EmailCONTACT_ID + " = ?", new String[]{contact_id}, null);
+                        while (emailCursor.moveToNext()) {
+                            email = emailCursor.getString(emailCursor.getColumnIndex(DATA));
+
+
+
+                        }
+                        emailCursor.close();*/
+                    }
+                    // Add the contact to the ArrayList
+                   /* if(name !=null && email != null){
+                        Contact.getInstance().email_primary.add(email);
+                    }*/
+
+
+
+
+                    if (name != null && phoneNumber != null && FieldsValidator.isPhoneNumberString(phoneNumber, true)) {
+
+                        //phonecontactList.add(output.toString());
+
+                        Contact.getInstance().email_list.add(phoneNumber);
+                        Contact.getInstance().contact_namelist.add(name);
+                        Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+                        Contact.getInstance().ContactPairs.put(phoneNumber, name);
+
+
+                        phoneNumber = null;
+
+
+
+                    }
+
+                }
+            }
+
+            ContentResolver cer = getContentResolver();
+
+            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+            if (cur.getCount() > 0) {
+
+                while (cur.moveToNext()) {
+                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                    Cursor cur1 = cer.query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (cur1.moveToNext()) {
+
+                        String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        //   Log.e("Name :", name);
+                        String emails = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+                            // names.add(name);
+                            if(emails != null && emails.length() >5 ){
+
+                               /* Contact.getInstance().email_primary.add(emails.trim());
+                                Contact.getInstance().phone_list.add("kuralms@gmail.com".trim());*/
+                                if(name!=null && !name.contains("@")){
+
+                                Contact.getInstance().email_primary.add(name.trim()+" - "+emails.trim());}
+
+                                else {
+                                    String val [] =  name.split("@");
+                                    Contact.getInstance().email_primary.add(val[0]+" - "+emails.trim());
+                                }
+                            }
+
+
+                    }
+                    cur1.close();
+                }
+
+
+            }
+
+            cur.close();
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            AudioFab.setEnabled(true);
-            VideoFab.setEnabled(true);
+           //Toast.makeText(context, ""+ Contact.getInstance().email_primary, Toast.LENGTH_LONG).show();
+            callwebForContacts();
         }
     }
 
 
-
-
-    private void mtd_getFeatured() {
+    private void mtd_getFeatured_bkp() {
 
         user_name.clear();
         user_img.clear();
@@ -965,7 +1070,7 @@ public class DashBoard extends AppCompatActivity {
         isUserLiked.clear();
 
 
-     //   adapter_vp_db.notifyDataSetChanged();
+        //   adapter_vp_db.notifyDataSetChanged();
 
 
         RestClient.get(context).GetFeatured(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new featuredReq("video",sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
@@ -1001,23 +1106,18 @@ public class DashBoard extends AppCompatActivity {
                         myPager.setOffscreenPageLimit(adapter_vp_db.getCount());
                         mPagerContainer.setVisibility(View.VISIBLE);
 
-                        // myPager.setOffscreenPageLimit(2);
-                        // myPager.setCurrentItem(0,true);
+                    //    myPager.setOffscreenPageLimit(2);
+
                         new CoverFlow.Builder()
                                 .with(myPager)
                                 .pagerMargin(getResources().getDimensionPixelSize(R.dimen.db_vp_margin))
                                 .scale(0.01f)
                                 .spaceSize(1f)
                                 .rotationY(14f)
-
                                 .build();
 
-                        //  Toast.makeText(_activity, ""+media.size(), Toast.LENGTH_LONG).show();
-
                         adapter_vp_db.notifyDataSetChanged();
-                      //  Toast.makeText(context, ""+file_id.size(), Toast.LENGTH_SHORT).show();
-                        mtd_counter();
-                        //  mtd_getProfilePic();
+
 
                     }
 
@@ -1033,6 +1133,8 @@ public class DashBoard extends AppCompatActivity {
                     }});
 
     }
+
+
 
 
 
@@ -1238,15 +1340,12 @@ public class DashBoard extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(Contact.getInstance().ixpressemail.size()<= 0){
+            new ContactsReaderClass().execute();
+        }
+      if(Actvity_video.isFromFeatured){
 
-
-     //   Toast.makeText(context, ""+getNameEmailDetails(), Toast.LENGTH_SHORT).show();
-
-
-
-        if(Actvity_video.isFromFeatured){
-
-            new asyncFeatured().execute();
+           mtd_getFeatured_bkp();
 
              }else{
 
@@ -1264,323 +1363,6 @@ public class DashBoard extends AppCompatActivity {
         }
 
     }
-
-
-    public void getContacts() {
-
-        Contact.getInstance().contact_namelist.clear();
-        Contact.getInstance().email_list.clear();
-        Contact.getInstance().contact_urilist.clear();
-
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
-
-        phonecontactList = new ArrayList<String>();
-      ArrayList<String>  phonecontactListName = new ArrayList<String>();
-
-        String phoneNumber = null;
-        String email = null;
-        Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
-        String _ID = ContactsContract.Contacts._ID;
-        String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME;
-        String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
-        Uri PhoneCONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String Phone_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
-        String NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
-        Uri EmailCONTENT_URI =  ContactsContract.CommonDataKinds.Email.CONTENT_URI;
-        String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
-        String DATA = ContactsContract.CommonDataKinds.Email.DATA;
-        StringBuffer output;
-        ContentResolver contentResolver = getContentResolver();
-        cursorPhone = contentResolver.query(CONTENT_URI, null,null, null, null);
-        // Iterate every contact in the phone
-        if (cursorPhone.getCount() > 0) {
-            counter = 0;
-            while (cursorPhone.moveToNext()) {
-                output = new StringBuffer();
-                // Update the progress message
-               /* updateBarHandler.post(new Runnable() {
-                    public void run() {
-                        pDialog.setMessage("Reading contacts : "+ counter++ +"/"+cursorPhone.getCount());
-                    }
-                });*/
-                String contact_id = cursorPhone.getString(cursorPhone.getColumnIndex( _ID ));
-                String name = cursorPhone.getString(cursorPhone.getColumnIndex( DISPLAY_NAME ));
-                int hasPhoneNumber = Integer.parseInt(cursorPhone.getString(cursorPhone.getColumnIndex( HAS_PHONE_NUMBER )));
-                if (hasPhoneNumber > 0) {
-                    output.append("\n First Name:" + name);
-                    //This is to read multiple phone numbers associated with the same contact
-                    Cursor phoneCursor = contentResolver.query(PhoneCONTENT_URI, null, Phone_CONTACT_ID + " = ?", new String[] { contact_id }, null);
-                    while (phoneCursor.moveToNext()) {
-                        phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
-                        output.append("\n Phone number:" + phoneNumber);
-                        Log.d("pno",output.toString());
-                       // phonecontactList.add(phoneNumber);
-                    }
-                    phoneCursor.close();
-                    // Read every email id associated with the contact
-                    Cursor emailCursor = contentResolver.query(EmailCONTENT_URI,    null, EmailCONTACT_ID+ " = ?", new String[] { contact_id }, null);
-                    while (emailCursor.moveToNext()) {
-                        email = emailCursor.getString(emailCursor.getColumnIndex(DATA));
-                        output.append("\n Email:" + email);
-                    }
-                    emailCursor.close();
-                }
-                // Add the contact to the ArrayList
-              //  phonecontactList.add(output.toString());
-                if(name!=null && phoneNumber!=null &&  FieldsValidator.isPhoneNumberString(phoneNumber,true)){
-
-                    //phonecontactList.add(output.toString());
-                    Contact.getInstance().contact_namelist.add(name);
-                    Contact.getInstance().email_list.add(phoneNumber);
-                    Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
-
-                }
-
-                }
-
-          //  Contact.getInstance().contact_urilist.add(contact_uri);
-            ///Toast.makeText(context, ""+Contact.getInstance().contact_namelist.size()+"pn"+Contact.getInstance().email_list.size(), Toast.LENGTH_LONG).show();
-            callwebForContacts();
-          // Toast.makeText(context, ""+ phonecontactList.add(output.toString()), Toast.LENGTH_LONG).show();
-
-
-        }
-    }
-
-    private void mtd_contacts_phone_reader(){
-
-        Contact.getInstance().contact_namelist.clear();
-        Contact.getInstance().email_list.clear();
-        Contact.getInstance().contact_urilist.clear();
-
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
-       ContentResolver cer = getContentResolver();
-
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1){
-
-
-            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null,null, null, null);
-
-            if (cur.getCount() > 0) {
-
-                while (cur.moveToNext()) {
-                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    Cursor cur1 = cer.query(
-                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (cur1.moveToNext()) {
-                        //to get the contact names
-              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                        DISPLAY_NAME_PRIMARY);
-                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
-                        String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                        //   Log.e("Name :", name);
-                        String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        //  Log.e("Email", email);
-             /*   long contactId = cur.getLong(mIdColIdx);
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();*/
-                        if(email!=null){
-                            // names.add(name);
-                            Contact.getInstance().contact_namelist.add(name);
-                            Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
-                            Contact.getInstance().email_list.add(email);
-                        }
-                    }
-                    cur1.close();
-                }
-
-                //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
-            }
-
-            cur.close();
-
-        }
-        else {
-            Cursor cur;
-            int mNameColIdx, mIdColIdx;
-
-            String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.Contacts.PHOTO_ID,
-                    ContactsContract.CommonDataKinds.Email.DATA,
-                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-            String order = "CASE WHEN "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + ", "
-                    + ContactsContract.CommonDataKinds.Email.DATA
-                    + " COLLATE NOCASE";
-            String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-            cur = cer.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-                    filter, null, order);
-
-            mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                    DISPLAY_NAME_PRIMARY);
-            mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-            for (int t = 0; t < cur.getCount(); t++) {
-                cur.moveToPosition(t);
-                String contactName = cur.getString(mNameColIdx);
-                long contactId = cur.getLong(mIdColIdx);
-                String email = cur.getString(cur.getColumnIndex
-                        (ContactsContract.CommonDataKinds.Email.DATA));
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();
-
-                Contact.getInstance().contact_namelist.add(contactName);
-                Contact.getInstance().contact_urilist.add(contact_uri);
-                Contact.getInstance().email_list.add(email);
-
-
-
-                // Log.e("Emailx", email);
-            }
-
-            cur.close();
-
-
-
-        }
-
-
-        callwebForContacts();
-    }
-private void mtd_contacts_readera(){
-
-  //  Toast.makeText(context, "cz", Toast.LENGTH_SHORT).show();
-    Contact.getInstance().contact_namelist.clear();
-    Contact.getInstance().email_list.clear();
-    Contact.getInstance().contact_urilist.clear();
-
-    Contact.getInstance().ixpressemail.clear();
-    Contact.getInstance().ixpressname.clear();
-    Contact.getInstance().ixpress_user_pic.clear();
-
-
-    if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1){
-
-    ContentResolver cer = getContentResolver();
-
-    Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null,null, null, null);
-
-    if (cur.getCount() > 0) {
-
-        while (cur.moveToNext()) {
-            String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-            Cursor cur1 = cer.query(
-                    ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                    new String[]{id}, null);
-            while (cur1.moveToNext()) {
-                //to get the contact names
-              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                        DISPLAY_NAME_PRIMARY);
-                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
-                String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-             //   Log.e("Name :", name);
-                String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                Log.e("Email lp", email);
-             /*   long contactId = cur.getLong(mIdColIdx);
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();*/
-                if(email!=null){
-                   // names.add(name);
-                    Contact.getInstance().contact_namelist.add(name);
-                  //  Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
-                    Contact.getInstance().email_list.add(email);
-                }
-            }
-            cur1.close();
-        }
-
-      //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
-    }
-
-        cur.close();
-
-    }
-    else {
-        Cursor cur;
-        int mNameColIdx, mIdColIdx;
-    ContentResolver cr = this.getContentResolver();
-    String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-            ContactsContract.Contacts.DISPLAY_NAME,
-            ContactsContract.Contacts.PHOTO_ID,
-            ContactsContract.CommonDataKinds.Email.DATA,
-            ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-    String order = "CASE WHEN "
-            + ContactsContract.Contacts.DISPLAY_NAME
-            + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-            + ContactsContract.Contacts.DISPLAY_NAME
-            + ", "
-            + ContactsContract.CommonDataKinds.Email.DATA
-            + " COLLATE NOCASE";
-    String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-    cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-            filter, null, order);
-
-    mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-            DISPLAY_NAME_PRIMARY);
-    mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-    for (int t = 0; t < cur.getCount(); t++) {
-        cur.moveToPosition(t);
-        String contactName = cur.getString(mNameColIdx);
-        long contactId = cur.getLong(mIdColIdx);
-        String email = cur.getString(cur.getColumnIndex
-                (ContactsContract.CommonDataKinds.Email.DATA));
-        String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                contactId).toString();
-
-        Contact.getInstance().contact_namelist.add(contactName);
-        Contact.getInstance().contact_urilist.add(contact_uri);
-        Contact.getInstance().email_list.add(email);
-
-
-
-       // Log.e("Emailx", email);
-    }
-
-         cur.close();
-
-
-
-}
-
-    callwebForContacts();
-}
-
-
-
-    private void mtd_pvtCount() {
-
-        RestClient.get(this).GetPvateCount(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ReqPvateCount(sharedpreferences.getString(SharedPrefUtils.SpEmail, "")), new Callback<AcceptRejectCount>() {
-            @Override
-            public void success(AcceptRejectCount acceptRejectCount, Response response) {
-                for (int i = 0; i < acceptRejectCount.getData().length; i++) {
-                   count = acceptRejectCount.getData()[i].getCount();
-
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-                count="";
-
-            }
-        });
-        tv_PvtCount.setText(count);
-
-    }
-
 
 
 
@@ -1639,6 +1421,7 @@ private void mtd_contacts_readera(){
                     NoPermisson = false;
 
                     new ContactsReaderClass().execute();
+                   // new ContactsReaderClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                 } else {
 

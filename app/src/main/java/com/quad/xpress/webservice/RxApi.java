@@ -185,6 +185,9 @@ public interface RxApi {
     @POST("/queryService/getIxpressContactList")
     void  PostContacts(@Header("authtoken") String authToken, @Body ContactsReq body, Callback<ContactsResp> callback);
 
+    @POST("/queryService/getIxpressMobileList")
+    void  PostPhoneContacts(@Header("authtoken") String authToken, @Body ContactsReq body, Callback<ContactsResp> callback);
+
     @POST("/queryService/getPopularVideosByHash")
     void  GetTrendingSearch(@Header("authtoken") String authToken, @Body TsReq body, Callback<Tsresp> callback);
 

@@ -270,25 +270,27 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
-
+                            swipeRefreshLayout.setRefreshing(false);
                             if (arg0.getCode().equals("200")) {
 
                                 ParsePublicFiles(arg0);
 
+
                             } else if (arg0.getCode().equals("601")) {
                                 RefreshTokenMethodName = "getData";
 
+
                             } else if (arg0.getCode().equals("202")) {
-                                swipeRefreshLayout.setRefreshing(false);
+
 
                             }else if(arg0.getData().getLast().equals("1")||arg0.getData().getRecords().length == 0){
-                                swipeRefreshLayout.setRefreshing(false);
+
                             }
                             else {
 
 
                             }
-                            swipeRefreshLayout.setRefreshing(false);
+
                         }
 
 
@@ -298,6 +300,7 @@ public class DashboardFragment_pop extends Fragment implements adapter_dashboard
 
                         }
                     });
+      //  swipeRefreshLayout.setRefreshing(false);
 
         }
 

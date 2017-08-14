@@ -232,45 +232,12 @@
             android:theme="@style/AppTheme" />
 
 
-        <!--  <receiver
-
-      <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-      <permission
-          android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"
-          android:protectionLevel="signature" />
-
-      <uses-permission
-          android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE" />
-
-
-
-              android:name="com.google.android.gms.gcm.GcmReceiver"
-              android:permission="com.google.android.c2dm.permission.SEND" >
-              <intent-filter>
-                  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                  &lt;!&ndash; for Gingerbread GSF backward compat &ndash;&gt;
-                  <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                  <category android:name="com.google.android.gcm.demo" />
-              </intent-filter>
-          </receiver>
-
-                <service
-              android:name=".Utills.pushnotification.MyGcmPushReceiver"
-              android:exported="false">
-              <intent-filter>
-                  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-              </intent-filter>
-          </service>
-
-          <service
-              android:name=".Utills.pushnotification.GcmIntentService"
-              android:exported="false">
-              <intent-filter>
-                  <action android:name="com.google.android.gms.iid.InstanceID" />
-              </intent-filter>
-          </service>
-       &lt;!&ndash;    END Added for GCM&ndash;&gt;
-  -->
+        <service
+            android:name=".contacts.contactreaderService"
+            android:icon="@drawable/ic_gcm_notification"
+            android:label="contactreaderService"
+            >
+        </service>
 
         <!--      local notification-->
         <receiver android:name=".CameraRecordActivity$NotificationRetry">

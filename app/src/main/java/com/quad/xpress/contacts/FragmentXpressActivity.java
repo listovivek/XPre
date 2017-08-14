@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,18 +35,25 @@ public class FragmentXpressActivity extends Fragment implements
     ContactRecycleAdapter mAdapter;
     ImageButton audio_Button, video_Button;
     String tempEmail, tempName;
+    SwipeRefreshLayout Swr;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+
+
+
+
         v = inflater.inflate(R.layout.fragment_ix_contacts, container, false);
+
 
         recyclerView_ixpress = (RecyclerView) v.findViewById(R.id.rv_contact_list);
         recyclerView_ixpress.setLayoutManager(new LinearLayoutManager(ContactMainActivity.mContactMainActivity));
         recyclerView_ixpress.setItemAnimator(new DefaultItemAnimator());
 
         searchView = (SearchView) v.findViewById(R.id.search);
+        Swr = v.findViewById(R.id.srl_contats);
         searchView.setActivated(true);
         searchView.onActionViewExpanded();
         searchView.setIconified(false);
@@ -74,9 +82,56 @@ public class FragmentXpressActivity extends Fragment implements
                 return false;
             }
         });
+        Swr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.notifyDataSetChanged();
+                Swr.setRefreshing(false);
+            }
+        });
+
+/*
+
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+
+                if(DashBoard.isLoadingContacts){
+                    Swr.setRefreshing(true);
+                }else{
+
+                    mAdapter.notifyDataSetChanged();
+                   // mAdapter.notifyAll();
+                   */
+/* FragmentTransaction ftr = getFragmentManager().beginTransaction();
+                    ftr.detach(FragmentXpressActivity.this).attach(FragmentXpressActivity.this).commit();*//*
+
+                    Swr.setRefreshing(false);
+                    int a =0;
+                    Log.d("loop",""+a++);
+
+                }
+
+            }
 
 
-            return v;
+        };
+
+        Timer timer = new Timer(); // This will create a new Thread
+        timer.schedule(new TimerTask() { // task to be scheduled
+
+            @Override
+            public void run() {
+                handler.post(Update);
+              //  handler.removeCallbacksAndMessages(null);
+            }
+        }, 500, 500);
+*/
+
+
+
+
+        return v;
 
     }
 

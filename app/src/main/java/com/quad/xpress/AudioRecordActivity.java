@@ -2,14 +2,11 @@ package com.quad.xpress;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -18,7 +15,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -46,24 +42,23 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.ContactMainActivity;
 import com.quad.xpress.contacts.DatabaseHandler;
-import com.quad.xpress.OOC.ToastCustom;
+import com.quad.xpress.models.contacts.ContactsReq;
+import com.quad.xpress.models.contacts.ContactsResp;
+import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.utills.StatiConstants;
 import com.quad.xpress.utills.helpers.FieldsValidator;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.utills.localNotification.LocalNotify;
-import com.quad.xpress.models.contacts.ContactsReq;
-import com.quad.xpress.models.contacts.ContactsResp;
-import com.quad.xpress.models.send.SVideoResp;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -111,8 +106,8 @@ public class AudioRecordActivity extends Activity {
     SharedPreferences.Editor editor;
     public Animation animBlink;
     public TextView AudioTimerValue,tv_PvtCount, text_hold_back, text_xp_it;
-    public SeekBar AudioSeekBar;
-    private RecorderVisualizerView visualizerView, visualizerView_avdiaoluge;
+
+    private RecorderVisualizerView visualizerView;
     LocalNotify localNotify;
     private static final int AUDIO_PERMISSION_REQUEST_CODE = 91;
     private static final int AUDIO_PERMISSION_REQUEST_CANCEL = 93;
@@ -124,7 +119,10 @@ public class AudioRecordActivity extends Activity {
     String AVTitle = "";
     String Tagsa = "";
     TextView tv_AD_title;
+    String val[];
     File audiofile;
+    AutoSuggestAdapter adapter_email;
+    ArrayAdapter<String> adapter_email_intent;
     CircleImageView Civ_audio;
     AutoCompleteTextView av_email;
     public static String FileNameWithMimeType;
@@ -136,8 +134,9 @@ public class AudioRecordActivity extends Activity {
     Activity _activity;
     String Permission4, permission5;
     DatabaseHandler dBhandler;
-
+    Boolean email_recepient = false;
     String mTempName, mTempEmail;
+    ArrayList<String>Merged = new ArrayList<>();
 
     int contactPosition, recentPosition;
 
@@ -163,6 +162,45 @@ public class AudioRecordActivity extends Activity {
         super.attachBaseContext(TypekitContextWrapper.wrap(newBase));
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        try {
+            // Contact.getInstance().ixpressemail.addAll(DatabaseHandler.dbEmailList);
+
+
+            recentPosition = getIntent().getExtras().getInt("ixpresspositionEmailID");
+            contactPosition = getIntent().getExtras().getInt("positionEmailID");
+            if(recentPosition == 1){
+                if(DatabaseHandler.dbEmailList.get(contactPosition) != null && contactPosition != -1){
+                    av_email.setText(DatabaseHandler.dbEmailList.get(contactPosition));
+                    val[0] = " - ";
+                    val[1] = DatabaseHandler.dbEmailList.get(contactPosition);
+                    mtd_Is_Xprez_user_intent();
+
+                }
+            }else{
+
+                mTempEmail = getIntent().getExtras().getString("tempEmail");
+                mTempName = getIntent().getExtras().getString("tempName");
+
+                //    Log.d("name", mTempEmail + mTempName);
+                if(Contact.getInstance().ixpressemail.get(contactPosition) !=
+                        null && contactPosition != -1){
+                    av_email.setText(mTempName+" - "+mTempEmail);
+                    Merged.clear();
+                    // Toast.makeText(_context, "tem", Toast.LENGTH_SHORT).show();
+                    mtd_Is_Xprez_user_intent();
+
+                }
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,6 +209,7 @@ public class AudioRecordActivity extends Activity {
         _context = AudioRecordActivity.this;
         _activity= AudioRecordActivity.this;
 
+       // adapter_email = new ArrayAdapter<String>(this,R.layout.spinner_autofill_av_dialouge,Merged);
 
         pulsator = (PulsatorLayout) findViewById(R.id.pulsator);
         pulsator_pic = (PulsatorLayout) findViewById(R.id.pulsator_around_pic);
@@ -318,42 +357,7 @@ public class AudioRecordActivity extends Activity {
 
         av_email = (AutoCompleteTextView) AVDialog.findViewById(R.id.av_email);
 
-        /*String emailID = null;
-        try {
 
-            if(ContactMainActivity.finalEmail != null){
-                av_email.setText(ContactMainActivity.finalEmail);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
-        try {
-           // Contact.getInstance().ixpressemail.addAll(DatabaseHandler.dbEmailList);
-
-
-            recentPosition = getIntent().getExtras().getInt("ixpresspositionEmailID");
-            contactPosition = getIntent().getExtras().getInt("positionEmailID");
-            if(recentPosition == 1){
-                if(DatabaseHandler.dbEmailList.get(contactPosition) != null && contactPosition != -1){
-                    av_email.setText(DatabaseHandler.dbEmailList.get(contactPosition));
-                }
-            }else{
-
-                mTempEmail = getIntent().getExtras().getString("tempEmail");
-                mTempName = getIntent().getExtras().getString("tempName");
-
-                Log.d("name", mTempEmail + mTempName);
-                if(Contact.getInstance().ixpressemail.get(contactPosition) !=
-                        null && contactPosition != -1){
-                    av_email.setText(mTempEmail);
-                }
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
 
@@ -387,95 +391,49 @@ public class AudioRecordActivity extends Activity {
 
     }
 
-    public  ArrayList<String>mtd_conts() {
-        HashSet<String> hashSet = new HashSet<String>();
+    private void mtd_Is_Xprez_user() {
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+        val = av_email.getText().toString().split(" - ");
+       // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
+        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
 
-            ContentResolver cer = getContentResolver();
-
-            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-            if (cur.getCount() > 0) {
-
-                while (cur.moveToNext()) {
-                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    Cursor cur1 = cer.query(
-                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (cur1.moveToNext()) {
-                        //to get the contact names
-              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                        DISPLAY_NAME_PRIMARY);
-                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
-                        String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                        //   Log.e("Name :", name);
-                        String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        //  Log.e("Email", email);
-             /*   long contactId = cur.getLong(mIdColIdx);
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();*/
-                        if (email != null) {
-                            // names.add(name);
-
-                            emlRecs.add(email);
-                        }
-                    }
-                    cur1.close();
-                }
-
-                //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
-            }
-
-            cur.close();
-
-
-        } else {
-            Cursor cur;
-            int mNameColIdx, mIdColIdx;
-            ContentResolver cr = this.getContentResolver();
-            String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.Contacts.PHOTO_ID,
-                    ContactsContract.CommonDataKinds.Email.DATA,
-                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-            String order = "CASE WHEN "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + ", "
-                    + ContactsContract.CommonDataKinds.Email.DATA
-                    + " COLLATE NOCASE";
-            String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-            cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-                    filter, null, order);
-
-            mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                    DISPLAY_NAME_PRIMARY);
-            mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-            for (int t = 0; t < cur.getCount(); t++) {
-                cur.moveToPosition(t);
-                String contactName = cur.getString(mNameColIdx);
-                long contactId = cur.getLong(mIdColIdx);
-                String email = cur.getString(cur.getColumnIndex
-                        (ContactsContract.CommonDataKinds.Email.DATA));
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();
-
-                emlRecs.add(email);
-                // Log.e("Emailx", email);
-            }
-
-            cur.close();
+            av_email.setText("");
+            Merged.clear();
+            Merged.addAll(Contact.getInstance().email_primary);
+            /*adapter_email.clear();
+            adapter_email = new ArrayAdapter<String>(_context,R.layout.spinner_autofill_av_dialouge,(em));*/
+            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,Merged);
+            av_email.setAdapter(adapter_email);
+            email_recepient = true;
+            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
+        }else {
 
         }
 
-        hashSet.addAll(emlRecs);
-        emlRecs.clear();
-        emlRecs.addAll(hashSet);
-        return emlRecs;
+
+
+    }
+    private void mtd_Is_Xprez_user_intent() {
+
+        val = av_email.getText().toString().split(" - ");
+        // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
+        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
+
+            av_email.setText("");
+          //  Toast.makeText(_context, "ex", Toast.LENGTH_SHORT).show();
+            ArrayList<String>em = new ArrayList<>();
+            em.addAll(Contact.getInstance().email_primary);
+            adapter_email.clear();
+            adapter_email_intent = new ArrayAdapter<>(_context,R.layout.spinner_autofill_av_dialouge,(em));
+            av_email.setAdapter(adapter_email_intent);
+            email_recepient = true;
+            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
+        }else {
+
+        }
+
+
+
     }
 
     private void AVDetailsDialog(final String fileMimeType) {
@@ -493,19 +451,26 @@ public class AudioRecordActivity extends Activity {
 
         final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
-        AutoSuggestAdapter adapter = null;
-        try {
-            ArrayList<String>contatx = new ArrayList<>();
-            HashSet<String> hashSet = new HashSet<String>();
-            hashSet.addAll(Contact.getInstance().email_list);
 
-            contatx.addAll(hashSet);
-            adapter = new AutoSuggestAdapter(this,
-                    R.layout.spinner_autofill_av_dialouge, contatx);
-            av_email.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            for (int i = 0; i <Contact.getInstance().ixpressname.size() ; i++) {
+                Merged.add(Contact.getInstance().ixpressname.get(i)+" - "+Contact.getInstance().ixpressemail.get(i));
+            }
+            HashSet <String> dup = new HashSet<>();
+            dup.addAll(Merged);
+            Merged.clear();
+            Merged.addAll(dup);
+            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,Merged);
+            av_email.setAdapter(adapter_email);
+
+
+        av_email.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mtd_Is_Xprez_user();
+            }
+        });
+
 
         av_email.setOnKeyListener(new View.OnKeyListener() {
 
@@ -513,6 +478,7 @@ public class AudioRecordActivity extends Activity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode == EditorInfo.IME_ACTION_NEXT  ) {
                     av_name.requestFocus();
+
                 }
                 return false;
 
@@ -583,9 +549,13 @@ public class AudioRecordActivity extends Activity {
                 //ARTimer = new AudioRecordCountDown(40000, 1000);
 
                 if (av_email.getVisibility() == view.VISIBLE) {
-                    if (!FieldsValidator.isEmailAddressOK(av_email, true)) {
+
+                    if(av_email.getText().toString().isEmpty() || av_email.getText().toString().length() < 5){
+                        av_email.setError("Can't be Empty");
+                        mtd_Is_Xprez_user();
                         return;
                     }
+
                 }
 
                 if (av_name.getVisibility() == view.VISIBLE) {
@@ -601,18 +571,56 @@ public class AudioRecordActivity extends Activity {
                 }
 
                 ToEmail = av_email.getText().toString();
+
+                    try {
+                        val = ToEmail.split(" - ");
+                        if (val[1] != null) {
+                            ToEmail = val[1].toLowerCase().trim();
+                            String xphone = Merged.toString().toLowerCase();
+                            if (!(xphone).contains(ToEmail) && !email_recepient) {
+                                av_email.setError("Kindly select from List");
+                                av_email.requestFocus();
+                                return;
+                            }
+                            String xemail = Merged.toString().toLowerCase();
+                            if (email_recepient && !(xemail.contains(ToEmail))) {
+
+                                av_email.setError("Kindly select Email from list");
+                                av_email.requestFocus();
+                                return;
+                            }
+
+
+                        /*try {
+                            int pos = Contact.getInstance().ixpressemail.indexOf(ToEmail);
+
+                            dBhandler = new DatabaseHandler(AudioRecordActivity.this);
+                            dBhandler.addContact(Contact.getInstance().ixpressemail.get(pos),
+                                    Contact.getInstance().ixpressname.get(pos),
+                                    Contact.getInstance().ixpress_user_pic.get(pos)
+                                    ,pos);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        av_email.setError("Kindly select Email from list");
+                        av_email.requestFocus();
+                        return;
+                    }
+
                 AVTitle = av_name.getText().toString();
                 tv_AD_title.setText(av_name.getText().toString());
                 String AvTitleSpaceRemover = AVTitle.replace(" ", "-");
                 FileNameWithMimeType = AvTitleSpaceRemover + fileMimeType;
                 Tagsa = TagResizer(MATTags.getText().toString());
                 ShareAsText = ShareAsType.getSelectedItem().toString();
-                if (AVDialog.isShowing()) {
-                    callWeb(ToEmail);
 
-                    /*av_email.setText("");
-                    av_name.setText("");
-                    MATTags.setText("");*/
+                if (AVDialog.isShowing()) {
+                 //   callWeb(ToEmail);
+
 
                     AVDialog.dismiss();
 

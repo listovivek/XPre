@@ -89,6 +89,7 @@
     <string name="start_recording">Start Recording</string>
     <string name="dashboard">DashBoard</string>
     <string name="av_email_hint">"Express your feelings to"</string>
+    <string name="av_email_auto">"iXprez user"</string>
     <string name="av_name_hint">Video Name</string>
     <string name="share_as">Share as ? </string>
     <string name="av_tags">Enter Tags</string>

@@ -237,7 +237,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
-
+                            swipeRefreshLayout_recent.setRefreshing(false);
                             if (arg0.getCode().equals("200")) {
 
                                 ParsePublicFiles(arg0);
@@ -246,16 +246,16 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
                                 RefreshTokenMethodName = "getData";
 
                             } else if (arg0.getCode().equals("202")) {
-                                swipeRefreshLayout_recent.setRefreshing(false);
+
 
                             }else if(arg0.getData().getLast().equals("1")||arg0.getData().getRecords().length == 0){
-                                swipeRefreshLayout_recent.setRefreshing(false);
+
                             }
                             else {
 
 
                             }
-                            swipeRefreshLayout_recent.setRefreshing(false);
+
                         }
 
 
@@ -265,7 +265,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
 
                         }
                     });
-
+       // swipeRefreshLayout_recent.setRefreshing(false);
         }
 
     public void RefreshToken_publicList() {

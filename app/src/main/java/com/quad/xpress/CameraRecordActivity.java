@@ -101,8 +101,8 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
 
 
-    ArrayList<String> EmailTemp = new ArrayList<>();
-    AutoSuggestAdapter adapter_email;
+
+    AutoSuggestAdapter adapter_email,adapter_email_intent;
     CounterClass timer;
     Animation animBlink;
     //private Context myContext;
@@ -168,7 +168,9 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     private TextView timerValue;
     Button switchBtn;
     String Permission4, permission5, permission6, Permission2;
-
+    private boolean email_recepient = false;
+    private String[] val;
+    ArrayList<String>Merged = new ArrayList<>();
 
 
     private void DeleteUploadedFile(Uri UploadedFileUri) {
@@ -339,13 +341,48 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     };
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+
+            recentPosition = getIntent().getExtras().getInt("ixpresspositionEmailID");
+            contactPosition = getIntent().getExtras().getInt("positionEmailID");
+            if(recentPosition == 1){
+                if(DatabaseHandler.dbEmailList.get(contactPosition) != null && contactPosition != -1){
+                    av_email.setText(DatabaseHandler.dbEmailList.get(contactPosition));
+                }
+                val[0] = " - ";
+                val[1] = DatabaseHandler.dbEmailList.get(contactPosition);
+                mtd_Is_Xprez_user_intent();
+
+            }else{
+
+                mTempEmail = getIntent().getExtras().getString("tempEmail");
+                mTempName = getIntent().getExtras().getString("tempName");
+
+                if(Contact.getInstance().ixpressemail.get(contactPosition) != null && contactPosition != -1) {
+                    av_email.setText(getIntent().getExtras().getString("tempEmail"));
+                }
+                av_email.setText(mTempName+" - "+mTempEmail);
+                Merged.clear();
+                mtd_Is_Xprez_user_intent();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.new_video_capture);
         toolBar = (RelativeLayout) findViewById(R.id.tb_top);
         Hs_filter = (HorizontalScrollView) findViewById(R.id.scroll_filter);
-      //  new async_contacts().execute();
+
          typedValue = new TypedValue();
          getApplicationContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
 
@@ -502,28 +539,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         pulsator_dialouge = (PulsatorLayout) AVDialog.findViewById(R.id.pulsator);
         pulsator_dialouge.start();
 
-        try {
 
-            recentPosition = getIntent().getExtras().getInt("ixpresspositionEmailID");
-            contactPosition = getIntent().getExtras().getInt("positionEmailID");
-            if(recentPosition == 1){
-                if(DatabaseHandler.dbEmailList.get(contactPosition) != null && contactPosition != -1){
-                    av_email.setText(DatabaseHandler.dbEmailList.get(contactPosition));
-                }
-
-            }else{
-
-                mTempEmail = getIntent().getExtras().getString("tempEmail");
-                mTempName = getIntent().getExtras().getString("tempName");
-
-                if(Contact.getInstance().ixpressemail.get(contactPosition) != null && contactPosition != -1) {
-                    av_email.setText(getIntent().getExtras().getString("tempEmail"));
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
 
@@ -898,18 +914,28 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
         try {
-            HashSet<String> hashSet = new HashSet<String>();
-            hashSet.addAll(Contact.getInstance().email_list);
 
-            contatx.addAll(hashSet);
+            ArrayList<String>Merged = new ArrayList<>();
+            for (int i = 0; i <Contact.getInstance().ixpressname.size() ; i++) {
+                Merged.add(Contact.getInstance().ixpressname.get(i)+" - "+Contact.getInstance().ixpressemail.get(i));
+            }
+            HashSet <String> dup = new HashSet<>();
+            dup.addAll(Merged);
+            Merged.clear();
+            Merged.addAll(dup);
             adapter_email = new AutoSuggestAdapter(this,
-                    R.layout.spinner_autofill_av_dialouge,contatx );
+                    R.layout.spinner_autofill_av_dialouge,Merged);
             av_email.setAdapter(adapter_email);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        av_email.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mtd_Is_Xprez_user();
+            }
+        });
         av_email.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -983,12 +1009,6 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
 
                 linear_discard.setVisibility(View.GONE);
 
-                if (av_email.getVisibility() == view.VISIBLE) {
-                    if (!FieldsValidator.isEmailAddressOK(av_email, true)) {
-                        return;
-                    }
-                }
-
                 if (av_name.getVisibility() == view.VISIBLE) {
                     if (!FieldsValidator.hasText(av_name)) {
                         return;
@@ -1002,6 +1022,48 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 }
 
                 ToEmail = av_email.getText().toString();
+
+                try {
+                    val = ToEmail.split(" - ");
+                    if (val[1] != null) {
+                        ToEmail = val[1].toLowerCase().trim();
+                        String xphone = Merged.toString().toLowerCase();
+                        if (!(xphone).contains(ToEmail) && !email_recepient) {
+                            av_email.setError("Kindly select from List");
+                            av_email.requestFocus();
+                            return;
+                        }
+                        String xemail = Merged.toString().toLowerCase();
+                        if (email_recepient && !(xemail.contains(ToEmail))) {
+
+                            av_email.setError("Kindly select Email from list");
+                            av_email.requestFocus();
+                            return;
+                        }
+
+
+                        /*try {
+                            int pos = Contact.getInstance().ixpressemail.indexOf(ToEmail);
+
+                            dBhandler = new DatabaseHandler(AudioRecordActivity.this);
+                            dBhandler.addContact(Contact.getInstance().ixpressemail.get(pos),
+                                    Contact.getInstance().ixpressname.get(pos),
+                                    Contact.getInstance().ixpress_user_pic.get(pos)
+                                    ,pos);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    av_email.setError("Kindly select Email from list");
+                    av_email.requestFocus();
+                    return;
+                }
+
+
+
                 AVTitle = av_name.getText().toString();
                 tv_title.setText(AVTitle);
 
@@ -1018,7 +1080,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                    // av_name.setText("");
                    // MATTags.setText("");
 
-                    callWeb(ToEmail);
+                  //  callWeb(ToEmail);
                     AVDialog.dismiss();
 
                 }
@@ -1105,6 +1167,54 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         });*/
 
     }
+    private void mtd_Is_Xprez_user_intent() {
+
+        val = av_email.getText().toString().split(" - ");
+        // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
+        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
+
+            av_email.setText("");
+            //  Toast.makeText(_context, "ex", Toast.LENGTH_SHORT).show();
+            ArrayList<String>em = new ArrayList<>();
+            em.addAll(Contact.getInstance().email_primary);
+            adapter_email.clear();
+            ArrayAdapter<String> adapter_email_intent;
+            adapter_email_intent = new ArrayAdapter<>(CameraRecordActivity.this,R.layout.spinner_autofill_av_dialouge,(em));
+            av_email.setAdapter(adapter_email_intent);
+            email_recepient = true;
+            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
+        }else {
+
+        }
+
+
+
+    }
+    private void mtd_Is_Xprez_user() {
+
+        val = av_email.getText().toString().split(" - ");
+        // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
+        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
+
+            av_email.setText("");
+            av_email.dismissDropDown();
+            Merged.clear();
+            Merged.addAll(Contact.getInstance().email_primary);
+            /*adapter_email.clear();
+            adapter_email = new ArrayAdapter<String>(_context,R.layout.spinner_autofill_av_dialouge,(em));*/
+            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,Merged);
+            av_email.setAdapter(adapter_email);
+            email_recepient = true;
+            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
+        }else {
+
+        }
+
+
+
+    }
+
+
 
     private class ShareTypeListener implements AdapterView.OnItemSelectedListener {
         @Override

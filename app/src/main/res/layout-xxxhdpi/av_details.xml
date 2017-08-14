@@ -224,10 +224,10 @@
                 android:layout_toStartOf="@+id/btn_contacts">
                 <AutoCompleteTextView
                     android:id="@+id/av_email"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="13"
-                    android:hint=" Email"
+                    android:hint="@string/av_email_auto"
 
                     android:layout_centerVertical="true"
                     android:textColor="@color/orange"

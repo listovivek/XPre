@@ -3,6 +3,8 @@ package com.quad.xpress.contacts;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Entity that represents a contact
@@ -24,12 +26,13 @@ public class Contact {
     public Uri profilePic;
     public String name;
     public String xpressUser;
-
+    public HashSet<String> email_primary = new HashSet<>();
     public ArrayList<String> ixpressname = new ArrayList<>();
     public ArrayList<String> ixpress_user_pic = new ArrayList<>();
     public ArrayList<String> ixpressemail = new ArrayList<>();
-
-
+    public ArrayList<String> ixpressemail_DB = new ArrayList<>();
+    public HashMap<String, String> ContactPairs=new HashMap<String, String>();
+    public ArrayList<String> phone_list = new ArrayList<>();
     public ArrayList<String> email_list = new ArrayList<>();
     public ArrayList<String> contact_namelist = new ArrayList<>();
     public ArrayList<String> contact_urilist = new ArrayList<>();

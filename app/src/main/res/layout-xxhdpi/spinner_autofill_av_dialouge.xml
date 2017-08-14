@@ -8,7 +8,7 @@
     android:textAlignment="gravity"
     android:textStyle="normal"
     android:padding="5dp"
-    android:textSize="13sp"
+    android:textSize="17sp"
     android:textColor="@color/black"
     android:gravity="start"
     />

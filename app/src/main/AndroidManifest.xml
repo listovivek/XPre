@@ -233,7 +233,7 @@
 
 
         <service
-            android:name=".contacts.contactreaderService"
+            android:name=".contacts.contactSyncService"
             android:icon="@drawable/ic_gcm_notification"
             android:label="contactreaderService"
             >

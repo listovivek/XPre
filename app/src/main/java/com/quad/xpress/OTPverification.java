@@ -378,7 +378,7 @@ public class OTPverification extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.d(TAG, "signInial:success");
 
                             FirebaseUser user = task.getResult().getUser();
                           //  editor.putString(SharedPrefUtils.SpToken, "sms");

@@ -1,13 +1,8 @@
 package com.quad.xpress.contacts;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,20 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.quad.xpress.DashBoard;
 import com.quad.xpress.R;
-import com.quad.xpress.models.contacts.ContactsReq;
-import com.quad.xpress.models.contacts.ContactsResp;
-import com.quad.xpress.utills.helpers.FieldsValidator;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.webservice.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by ctl on 13/3/17.
@@ -40,16 +26,8 @@ public class ContactMainActivity extends AppCompatActivity   {
 
 
     private ImageButton btn_back_tb;
-
     TabLayout tabLayout;
-
     ViewPager mViewPager;
-    ArrayList<String> ixprez_email = new ArrayList<>();
-    ArrayList<String> ixprez_username = new ArrayList<>();
-    ArrayList<String> ixprez_profilepic = new ArrayList<>();
-    ArrayList<String> appendEmail = new ArrayList<String>();
-    ArrayList<String> appendName = new ArrayList<String>();
-    ArrayList<String> appendProfilePic = new ArrayList<String>();
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
 
@@ -98,12 +76,18 @@ public class ContactMainActivity extends AppCompatActivity   {
         super.onStop();
         this.finish();
     }
-    private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
+
+    /*private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isLoadingContacts = true;
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Cursor cursorPhone;
-            Integer counter;
+            // mtd_contacts_readera();
             String phoneNumber = null;
             String email = null;
             Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
@@ -140,19 +124,19 @@ public class ContactMainActivity extends AppCompatActivity   {
                         }
                         phoneCursor.close();
                         // Read every email id associated with the contact
-                       /* Cursor emailCursor = contentResolver.query(EmailCONTENT_URI, null, EmailCONTACT_ID + " = ?", new String[]{contact_id}, null);
+                       *//* Cursor emailCursor = contentResolver.query(EmailCONTENT_URI, null, EmailCONTACT_ID + " = ?", new String[]{contact_id}, null);
                         while (emailCursor.moveToNext()) {
                             email = emailCursor.getString(emailCursor.getColumnIndex(DATA));
 
 
 
                         }
-                        emailCursor.close();*/
+                        emailCursor.close();*//*
                     }
                     // Add the contact to the ArrayList
-                   /* if(name !=null && email != null){
+                   *//* if(name !=null && email != null){
                         Contact.getInstance().email_primary.add(email);
-                    }*/
+                    }*//*
 
 
 
@@ -197,16 +181,16 @@ public class ContactMainActivity extends AppCompatActivity   {
                         // names.add(name);
                         if(emails != null && emails.length() >5 ){
 
-                               /* Contact.getInstance().email_primary.add(emails.trim());
-                                Contact.getInstance().phone_list.add("kuralms@gmail.com".trim());*/
-                            if(name!=null && !name.contains("@")){
+                               *//* Contact.getInstance().email_primary.add(emails.trim());
+                                Contact.getInstance().phone_list.add("kuralms@gmail.com".trim());*//**//*
+                                if(name!=null && !name.contains("@")){
 
                                 Contact.getInstance().email_primary.add(name.trim()+" - "+emails.trim());}
 
-                            else {
-                                String val [] =  name.split("@");
-                                Contact.getInstance().email_primary.add(val[0]+" - "+emails.trim());
-                            }
+                                else {
+                                    String val [] =  name.split("@");
+                                    Contact.getInstance().email_primary.add(val[0]+" - "+emails.trim());
+                                }*//*
                         }
 
 
@@ -228,101 +212,10 @@ public class ContactMainActivity extends AppCompatActivity   {
             //Toast.makeText(context, ""+ Contact.getInstance().email_primary, Toast.LENGTH_LONG).show();
             callwebForContacts();
         }
-    }
-
-    private void callwebForContacts() {
-
-
-        //  Toast.makeText(context, "called", Toast.LENGTH_SHORT).show();
-
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
+    }*/
 
 
 
-        ixprez_email.clear();
-        ixprez_username.clear();
-        ixprez_profilepic.clear();
-
-        appendEmail.clear();
-        appendName.clear();
-        appendProfilePic.clear();
-
-
-        //  Log.d("emailcons", Contact.getInstance().email_list.toString());
-
-        if (Contact.getInstance().email_list != null) {
-
-            RestClient.get(this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
-                    new Callback<ContactsResp>() {
-                        @Override
-                        public void success(ContactsResp contactsResp, Response response) {
-
-                            if (contactsResp.getCode().equals("200")) {
-
-                                for (int i = 0; i < contactsResp.getData().length; i++) {
-
-                                    ixprez_email.add(contactsResp.getData()[i].getEmail_id());
-                                    ixprez_username.add(contactsResp.getData()[i].getUser_name());
-                                    ixprez_profilepic.add(contactsResp.getData()[i].getProfile_image());
-
-                                    Contact.getInstance().ixpressemail_DB.add(contactsResp.getData()[i].getEmail_id());
-
-                                    //count=i++;
-                                }
-
-                                DatabaseHandler handler = new DatabaseHandler(getApplicationContext());
-                                List<String> contacts = handler.getAllDetailsFormDatabase();
-                                DashBoard.ixemailcount = 0;
-                                /*if(DatabaseHandler.dbEmailList!=null &&
-                                        DatabaseHandler.dbEmailList.size()>0){
-                                    appendEmail.addAll(DatabaseHandler.dbEmailList);
-                                    appendName.addAll(DatabaseHandler.dbNameList);
-                                    appendProfilePic.addAll(DatabaseHandler.dbPicList);
-                                }*/
-
-                                // ixemailcount = ixprez_email.size();
-
-                                // ixprez user from service
-
-                                appendEmail.addAll(ixprez_email);
-                                appendName.addAll(ixprez_username);
-                                appendProfilePic.addAll(ixprez_profilepic);
-
-                                // internal contacts list
-
-                                appendEmail.addAll(Contact.getInstance().email_list);
-                                appendName.addAll(Contact.getInstance().contact_namelist);
-                                appendProfilePic.addAll(Contact.getInstance().contact_urilist);
-
-                                Contact.getInstance().ixpressname = appendName;
-                                Contact.getInstance().ixpressemail = appendEmail;
-                                Contact.getInstance().ixpress_user_pic = appendProfilePic;
-                                Contact.getInstance().xpressUser = "iXpressUser";
-
-
-                            } else if (contactsResp.getCode().equals("202")) {
-                              /*  Toast.makeText(DashBoard.this, "ixpress users...found " +
-                                        "in your contacts...", Toast.LENGTH_SHORT).show();*/
-                                //  recyclerView.setAdapter(new ContactsAdapter(cur, null));
-
-                            } else {
-                              /*  Toast.makeText(DashBoard.this, "Hmm,.. " +
-                                        "Something went wrong...", Toast.LENGTH_SHORT).show();*/
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            //recyclerView.setAdapter(new ContactsAdapter(cur, null));
-                        }
-                    });
-        } else {
-           /* Toast.makeText(DashBoard.this, "Hmm,.. " +
-                    "No records found...", Toast.LENGTH_SHORT).show();*/
-        }
-    }
     class ViewPagerAdapter extends FragmentPagerAdapter{
 
         private final List<Fragment> mFragmentList = new ArrayList<>();

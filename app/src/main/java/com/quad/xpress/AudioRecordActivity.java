@@ -65,7 +65,6 @@ import com.tsengvn.typekit.TypekitContextWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -119,10 +118,8 @@ public class AudioRecordActivity extends Activity {
     String AVTitle = "";
     String Tagsa = "";
     TextView tv_AD_title;
-    String val[];
-    File audiofile;
+    EditText av_name;
     AutoSuggestAdapter adapter_email;
-    ArrayAdapter<String> adapter_email_intent;
     CircleImageView Civ_audio;
     AutoCompleteTextView av_email;
     public static String FileNameWithMimeType;
@@ -134,9 +131,8 @@ public class AudioRecordActivity extends Activity {
     Activity _activity;
     String Permission4, permission5;
     DatabaseHandler dBhandler;
-    Boolean email_recepient = false;
     String mTempName, mTempEmail;
-    ArrayList<String>Merged = new ArrayList<>();
+    ArrayList<String>merged_contats = new ArrayList<>();
 
     int contactPosition, recentPosition;
 
@@ -175,9 +171,7 @@ public class AudioRecordActivity extends Activity {
             if(recentPosition == 1){
                 if(DatabaseHandler.dbEmailList.get(contactPosition) != null && contactPosition != -1){
                     av_email.setText(DatabaseHandler.dbEmailList.get(contactPosition));
-                    val[0] = " - ";
-                    val[1] = DatabaseHandler.dbEmailList.get(contactPosition);
-                    mtd_Is_Xprez_user_intent();
+
 
                 }
             }else{
@@ -189,9 +183,7 @@ public class AudioRecordActivity extends Activity {
                 if(Contact.getInstance().ixpressemail.get(contactPosition) !=
                         null && contactPosition != -1){
                     av_email.setText(mTempName+" - "+mTempEmail);
-                    Merged.clear();
-                    // Toast.makeText(_context, "tem", Toast.LENGTH_SHORT).show();
-                    mtd_Is_Xprez_user_intent();
+
 
                 }
             }
@@ -391,50 +383,6 @@ public class AudioRecordActivity extends Activity {
 
     }
 
-    private void mtd_Is_Xprez_user() {
-
-        val = av_email.getText().toString().split(" - ");
-       // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
-        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
-
-            av_email.setText("");
-            Merged.clear();
-            Merged.addAll(Contact.getInstance().email_primary);
-            /*adapter_email.clear();
-            adapter_email = new ArrayAdapter<String>(_context,R.layout.spinner_autofill_av_dialouge,(em));*/
-            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,Merged);
-            av_email.setAdapter(adapter_email);
-            email_recepient = true;
-            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
-        }else {
-
-        }
-
-
-
-    }
-    private void mtd_Is_Xprez_user_intent() {
-
-        val = av_email.getText().toString().split(" - ");
-        // Toast.makeText(_context, ""+val[0]+val[1], Toast.LENGTH_SHORT).show();
-        if(!Contact.getInstance().ixpressemail_DB.contains(val[1]) && !email_recepient ){
-
-            av_email.setText("");
-          //  Toast.makeText(_context, "ex", Toast.LENGTH_SHORT).show();
-            ArrayList<String>em = new ArrayList<>();
-            em.addAll(Contact.getInstance().email_primary);
-            adapter_email.clear();
-            adapter_email_intent = new ArrayAdapter<>(_context,R.layout.spinner_autofill_av_dialouge,(em));
-            av_email.setAdapter(adapter_email_intent);
-            email_recepient = true;
-            av_email.setError("Receiver mobile not a member of iXprez, Please use their Email ID to xpress.");
-        }else {
-
-        }
-
-
-
-    }
 
     private void AVDetailsDialog(final String fileMimeType) {
 
@@ -449,26 +397,23 @@ public class AudioRecordActivity extends Activity {
         MATTags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         final ImageButton btn_start_recording = (ImageButton) AVDialog.findViewById(R.id.btn_start_recording);
 
-        final EditText av_name = (EditText) AVDialog.findViewById(R.id.av_name);
+         av_name = (EditText) AVDialog.findViewById(R.id.av_name);
 
-
-
-            for (int i = 0; i <Contact.getInstance().ixpressname.size() ; i++) {
-                Merged.add(Contact.getInstance().ixpressname.get(i)+" - "+Contact.getInstance().ixpressemail.get(i));
-            }
-            HashSet <String> dup = new HashSet<>();
-            dup.addAll(Merged);
-            Merged.clear();
-            Merged.addAll(dup);
-            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,Merged);
+        for (int i = 0; i <Contact.getInstance().ixpressemail.size() ; i++) {
+            merged_contats.add(Contact.getInstance().ixpressname.get(i)+" - "+Contact.getInstance().ixpressemail.get(i));
+        }
+            adapter_email =new AutoSuggestAdapter(this,R.layout.spinner_autofill_av_dialouge,merged_contats);
             av_email.setAdapter(adapter_email);
 
 
         av_email.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mtd_Is_Xprez_user();
+               av_name.requestFocus();
+
             }
+
+
         });
 
 
@@ -479,6 +424,9 @@ public class AudioRecordActivity extends Activity {
                 if(keyCode == EditorInfo.IME_ACTION_NEXT  ) {
                     av_name.requestFocus();
 
+                }
+                if (keyCode == KeyEvent.KEYCODE_DEL){
+                    av_email.setText("");
                 }
                 return false;
 
@@ -546,14 +494,26 @@ public class AudioRecordActivity extends Activity {
                 SdSend.setVisibility(View.INVISIBLE);
                 StartRecord.setEnabled(true);
                 AudioTimerValue.setText("00:40" );
-                //ARTimer = new AudioRecordCountDown(40000, 1000);
+
 
                 if (av_email.getVisibility() == view.VISIBLE) {
 
-                    if(av_email.getText().toString().isEmpty() || av_email.getText().toString().length() < 5){
-                        av_email.setError("Can't be Empty");
-                        mtd_Is_Xprez_user();
+
+                    if(!(av_email.getText().length() > 6)){
+                        av_email.setError("Please choose from list.");
                         return;
+                    }
+
+                    try {
+                        String[] spliter =  av_email.getText().toString().split(" - ");
+                        ToEmail =spliter[1];
+                    } catch (Exception e) {
+                        ToEmail = av_email.getText().toString().trim();
+                        if(!FieldsValidator.isEmailAddressOK(av_email,true) ){
+                            return;
+                        }
+
+
                     }
 
                 }
@@ -570,46 +530,6 @@ public class AudioRecordActivity extends Activity {
                     }
                 }
 
-                ToEmail = av_email.getText().toString();
-
-                    try {
-                        val = ToEmail.split(" - ");
-                        if (val[1] != null) {
-                            ToEmail = val[1].toLowerCase().trim();
-                            String xphone = Merged.toString().toLowerCase();
-                            if (!(xphone).contains(ToEmail) && !email_recepient) {
-                                av_email.setError("Kindly select from List");
-                                av_email.requestFocus();
-                                return;
-                            }
-                            String xemail = Merged.toString().toLowerCase();
-                            if (email_recepient && !(xemail.contains(ToEmail))) {
-
-                                av_email.setError("Kindly select Email from list");
-                                av_email.requestFocus();
-                                return;
-                            }
-
-
-                        /*try {
-                            int pos = Contact.getInstance().ixpressemail.indexOf(ToEmail);
-
-                            dBhandler = new DatabaseHandler(AudioRecordActivity.this);
-                            dBhandler.addContact(Contact.getInstance().ixpressemail.get(pos),
-                                    Contact.getInstance().ixpressname.get(pos),
-                                    Contact.getInstance().ixpress_user_pic.get(pos)
-                                    ,pos);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }*/
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        av_email.setError("Kindly select Email from list");
-                        av_email.requestFocus();
-                        return;
-                    }
 
                 AVTitle = av_name.getText().toString();
                 tv_AD_title.setText(av_name.getText().toString());
@@ -719,6 +639,8 @@ public class AudioRecordActivity extends Activity {
 
 
     }
+
+
 
 
     private class ShareTypeListener implements AdapterView.OnItemSelectedListener {

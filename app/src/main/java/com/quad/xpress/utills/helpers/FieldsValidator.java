@@ -18,7 +18,7 @@ public class FieldsValidator {
     private static final String EMAIL_MSG = "Oops! Invalid Email ID!";
     private static final String PHONE_MSG = "Clue: It's numeric. Between 10-13 digits. Try again!";
     private static final String USER_NAME = "No excuses for forgetting your name. (Except if you are Jason Bourne, then it's OK.)";
-    private static final String HAS_TEXT = "Can't be Empty.";
+    private static final String HAS_TEXT = "Minimum 3 characters length";
 
     // call this method when you need to check email validation
     public static boolean isEmailAddressOK(AutoCompleteTextView editText, boolean required) {
@@ -153,7 +153,7 @@ public class FieldsValidator {
         editText.setError(null);
 
         // length 0 means there is no text
-        if (text.length() == 0) {
+        if (text.length() == 0 || text.length() < 3) {
             editText.setError(HAS_TEXT);
             return false;
         }

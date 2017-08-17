@@ -270,7 +270,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
 
 
 
-        if(!Contact.getInstance().phone_list.contains(list.from_email)){
+        if(!Contact.getInstance().ixpressemail.contains(list.from_email)){
             holder.rl_foreground.setBackgroundResource(R.drawable.private_recycle_curve_spammer);
             holder.RvImage.setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP);
         }

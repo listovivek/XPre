@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.claritaz.ixprez"
-     //   applicationId "com.quad.xpressed"
+
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
@@ -69,10 +69,10 @@ dependencies {
     // additional dependencies.
     //compile 'com.google.android.exoplayer:exoplayer:r2.4.0'
     //Firebase stuff
-    compile 'com.google.firebase:firebase-core:11.0.1'
-    compile 'com.google.firebase:firebase-auth:11.0.1'
+    compile 'com.google.firebase:firebase-core:11.2.0'
+    compile 'com.google.firebase:firebase-auth:11.2.0'
     compile 'com.firebase:firebase-jobdispatcher:0.6.0'
-    compile 'com.google.firebase:firebase-messaging:11.0.1'
+    compile 'com.google.firebase:firebase-messaging:11.2.0'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'org.jetbrains.anko:anko-sdk23:0.9' // sdk19, sdk21, sdk23 are also available

@@ -90,45 +90,6 @@ public class FragmentXpressActivity extends Fragment implements
             }
         });
 
-/*
-
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-
-                if(DashBoard.isLoadingContacts){
-                    Swr.setRefreshing(true);
-                }else{
-
-                    mAdapter.notifyDataSetChanged();
-                   // mAdapter.notifyAll();
-                   */
-/* FragmentTransaction ftr = getFragmentManager().beginTransaction();
-                    ftr.detach(FragmentXpressActivity.this).attach(FragmentXpressActivity.this).commit();*//*
-
-                    Swr.setRefreshing(false);
-                    int a =0;
-                    Log.d("loop",""+a++);
-
-                }
-
-            }
-
-
-        };
-
-        Timer timer = new Timer(); // This will create a new Thread
-        timer.schedule(new TimerTask() { // task to be scheduled
-
-            @Override
-            public void run() {
-                handler.post(Update);
-              //  handler.removeCallbacksAndMessages(null);
-            }
-        }, 500, 500);
-*/
-
-
 
 
         return v;

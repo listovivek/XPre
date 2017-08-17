@@ -91,7 +91,7 @@ public class AutoSuggestAdapter extends ArrayAdapter {
                 clear();
                 for (String item : filterList){
                     add(item);
-                    notifyDataSetChanged();
+                  //  notifyDataSetChanged();
                 }
             }
         }

@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Entity that represents a contact
@@ -26,7 +25,8 @@ public class Contact {
     public Uri profilePic;
     public String name;
     public String xpressUser;
-    public HashSet<String> email_primary = new HashSet<>();
+    public ArrayList<Boolean> is_ixpress_user = new ArrayList<>();
+    public HashMap<String,String> email_name = new HashMap<>();
     public ArrayList<String> ixpressname = new ArrayList<>();
     public ArrayList<String> ixpress_user_pic = new ArrayList<>();
     public ArrayList<String> ixpressemail = new ArrayList<>();

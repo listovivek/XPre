@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -215,7 +214,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                 }
 
                 holder.mImageButton.setBackgroundResource(R.drawable.ic_heart_white);
-                Log.d("Pic URL", ""+mFilterPic.get(position));
+            //    Log.d("Pic URL", ""+mFilterPic.get(position));
 
             }else{
                 holder.mLabel.setText(mFilterName.get(position));
@@ -238,12 +237,16 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
             holder.mLabel.setText(mFilterName.get(position));
             holder.mEmail.setText(mFilterEmail.get(position));
 
-            Picasso.with(mContext.getActivity()).load(mFilterPic.get(position))
-                    .resize(300, 300)
-                    .centerCrop()
-                    .placeholder(R.mipmap.ic_user_icon)
-                    .error(R.mipmap.ic_user_icon)
-                    .into(holder.mImage);
+            try {
+                Picasso.with(mContext.getActivity()).load(mFilterPic.get(position))
+                        .resize(300, 300)
+                        .centerCrop()
+                        .placeholder(R.mipmap.ic_user_icon)
+                        .error(R.mipmap.ic_user_icon)
+                        .into(holder.mImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             holder.mImageButton.setBackgroundResource(android.R.drawable.ic_dialog_email);
 

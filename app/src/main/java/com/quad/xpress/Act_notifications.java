@@ -14,8 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -133,7 +131,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
 
         });
 
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+      /*  recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
 
                 @Override public boolean onSingleTapUp(MotionEvent e) {
@@ -148,7 +146,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                 if(child != null && gestureDetector.onTouchEvent(e)) {
                     int position = rv.getChildAdapterPosition(child);
 
-                    /*String selected_file_path = list.get(position).getFileuploadPath();
+                    *//*String selected_file_path = list.get(position).getFileuploadPath();
                     String Selected_file_url="";
                     if (selected_file_path.contains(StaticConfig.ROOT_URL_Media)) {
                         Selected_file_url = StaticConfig.ROOT_URL + selected_file_path.replace(StaticConfig.ROOT_URL_Media, "");
@@ -194,7 +192,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                     }
 
                     startActivity(videoIntent);
-*/
+*//*
 
 
                 }
@@ -211,7 +209,7 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
             public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
             }
-        });
+        });*/
 
 
 
@@ -253,7 +251,9 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                                         alertStreamResp.getData().getRecords()[i].getIsUserLiked(),//is userliked
                                         alertStreamResp.getData().getRecords()[i].getPrivacy(),//
                                         alertStreamResp.getData().getRecords()[i].getFrom_name(),
-                                        alertStreamResp.getData().getRecords()[i].getDp()
+                                        alertStreamResp.getData().getRecords()[i].getDp(),
+                                        alertStreamResp.getData().getRecords()[i].getPhone_number(),
+                                        alertStreamResp.getData().getRecords()[i].getUser_id()
                                 );
 
                             list.add(listDatas);
@@ -427,12 +427,12 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
         editor = sharedpreferences.edit();
         editor.putBoolean(SharedPrefUtils.SpSlideViewusedOnce,false );
         editor.commit();
-        RestClient.get(context).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(list.get(position).getFromEmail(),sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(context).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(list.get(position).getFromEmail(),sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),list.get(position).getUser_id()),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
 
-                        Toast.makeText(context, "Unfollowed from "+list.get(position).getFromEmail()+" posts...", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Unfollowed from "+list.get(position).getSendername()+" posts...", Toast.LENGTH_SHORT).show();
 
 
 
@@ -623,8 +623,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
             public void onClick(View v) {
 
 
-                PrivateBlockUser(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data);
-                PrivateBlockUser((sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),list.get(position).getFromEmail());
+                PrivateBlockUser(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data,list.get(position).getUser_id());
+                PrivateBlockUser((sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),list.get(position).getFromEmail(), list.get(position).getUser_id());
                 proceedDiscardDialog.dismiss();
 
             }
@@ -682,8 +682,8 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
     }
 
 
-    private void PrivateBlockUser(String user_email, String blocked_email) {
-        RestClient.get(context).PrivateBlockWS(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivBlockReq(user_email, blocked_email), new Callback<PrivARresp>() {
+    private void PrivateBlockUser(String user_email, String blocked_email, String user_id) {
+        RestClient.get(context).PrivateBlockWS(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivBlockReq(user_email, blocked_email,user_id), new Callback<PrivARresp>() {
             @Override
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {

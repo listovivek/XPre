@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,26 +29,38 @@ public class FragmentRecentActivity extends Fragment implements
     ContactRecentAdapter mAdapter;
     private int itemPosition, recentPosition;
     ImageButton audio_Button, video_Button;
+    DatabaseHandler Dbh;
+    SwipeRefreshLayout swr ;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        View v = inflater.inflate(R.layout.fragment_ix_contacts, container, false);
-
-        recyclerView_ixpress = (RecyclerView) v.findViewById(R.id.rv_contact_list);
+        View v = inflater.inflate(R.layout.fragment_ix_recent_contacts, container, false);
+        Dbh = new DatabaseHandler(getActivity());
+        swr = v.findViewById(R.id.srl_contats_recent);
+        recyclerView_ixpress = (RecyclerView) v.findViewById(R.id.rv_contact_list_recent);
         recyclerView_ixpress.setLayoutManager(new LinearLayoutManager(ContactMainActivity.mContactMainActivity));
         recyclerView_ixpress.setItemAnimator(new DefaultItemAnimator());
 
-        SearchView mSearch = (SearchView) v.findViewById(R.id.search);
+        SearchView mSearch = (SearchView) v.findViewById(R.id.search_recent);
         mSearch.setVisibility(View.GONE);
 
-
-
+        Dbh.getAllDetailsFormDatabase().size();
+        //Toast.makeText(getActivity(), ""+Dbh.getAllDetailsFormDatabase().size(), Toast.LENGTH_SHORT).show();
         mAdapter = new ContactRecentAdapter(FragmentRecentActivity.this,
                 FragmentRecentActivity.this);
         recyclerView_ixpress.setAdapter(mAdapter);
+        swr.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.notifyDataSetChanged();
+                swr.setRefreshing(false);
+            }
+        });
+
+
 
 
         return v;

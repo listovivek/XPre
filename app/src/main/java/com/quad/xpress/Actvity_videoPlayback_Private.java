@@ -60,7 +60,8 @@ import retrofit.client.Response;
  */
 
 public class Actvity_videoPlayback_Private extends AppCompatActivity implements View.OnClickListener{
-    String url,type,likes,views,file_id,title,ul_date,tags,IsUserLiked,bg_img_url,fromemail,isBoth;
+    String url,type,likes,views,file_id,title,ul_date,tags,
+            IsUserLiked,bg_img_url,fromemail,isBoth,phonenumber,user_id;
     VideoView mVideoView;
     ProgressBar pb;
     Boolean looping=true,orientation_poitrate= true,vid_orintaion_lanscape= false,IsMyUploads ;
@@ -137,6 +138,9 @@ public class Actvity_videoPlayback_Private extends AppCompatActivity implements 
         bg_img_url = getVurl.getStringExtra("img_url");
         fromemail = getVurl.getStringExtra("FromEmail");
         isBoth = getVurl.getStringExtra("isBoth");
+        phonenumber = getVurl.getStringExtra("phonenumber");
+        user_id =getVurl.getStringExtra("user_id");
+
 
         try {
             IsMyUploads  = getVurl.getBooleanExtra("IsMyUploads",false);

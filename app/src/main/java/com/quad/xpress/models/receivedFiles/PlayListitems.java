@@ -22,7 +22,8 @@ public class PlayListitems {
     private String fileID;
     private String tags;
     private String likesCount,isUserLiked;
-    private String viewsCount;
+    private String viewsCount,phonenumber,user_id;
+
 
     public PlayListitems() {
 
@@ -30,7 +31,7 @@ public class PlayListitems {
 
     public PlayListitems(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                          String fileuploadPath, String fileuploadFilename, String fileID, String tags,String likesCount,String viewsCount
-    ,String isUserLiked, String username,String privacy) {
+    ,String isUserLiked, String username,String privacy,String phonenumber,String user_id) {
         this.filename = filename;
         this.title = title;
         this.created_date = created_date;
@@ -46,6 +47,24 @@ public class PlayListitems {
         this.isUserLiked= isUserLiked;
         this.username = username;
         this.privacy = privacy;
+        this.phonenumber=phonenumber;
+        this.user_id=user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
     }
 
     public String getUsername() {

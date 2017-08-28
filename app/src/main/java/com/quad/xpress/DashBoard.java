@@ -36,8 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,7 +50,8 @@ import com.nex3z.notificationbadge.NotificationBadge;
 import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.ContactMainActivity;
-import com.quad.xpress.contacts.DatabaseHandler;
+import com.quad.xpress.contacts.FullContactDBOBJ;
+import com.quad.xpress.contacts.FullContactsDBhandler;
 import com.quad.xpress.contacts.contactSyncService;
 import com.quad.xpress.models.contacts.ContactsReq;
 import com.quad.xpress.models.contacts.ContactsResp;
@@ -70,10 +69,13 @@ import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.crosswall.lib.coverflow.CoverFlow;
@@ -90,37 +92,26 @@ public class DashBoard extends AppCompatActivity {
 
     Context context;
     Dialog AVDialog,GuideDialouge;
-    Dialog SendDiscardDialog;
-    AutoCompleteTextView av_email;
-    Dialog AudioRecordDialog;
     ImageView iv_no_data;
     ProgressBar pb;
     Boolean exit = false;
     Boolean is_vp_Touched = false;
     private static final int PERMISSION_REQUEST_CODE = 1;
     int rl_ht;
-    ArrayList<String> phonecontactList;
     Cursor cursorPhone;
     int counter;
     public static String FileNameWithMimeType;
     RecyclerView Rv_lists;
-    public static Boolean isLoadingContacts = true;
-
-
+    Boolean isLoadingContacts = false;
+    Dialog pdialog;
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
-
-    static Context staticContex;
-
     String AppName;
     Activity _activity;
     ImageButton dash_receive;
     ImageButton DashPublicPlaylist;
-
-
     ImageButton AudioFab;
     ImageButton VideoFab;
-    public Animation animBlink;
     TextView tv_nb_MyUploads,tv_nb_userName,tv_nb_contacts,tv_nb_help,tv_nb_support,tv_nb_about;
     ImageButton btn_nb_exit,btn_nb_settings;
      SlidingMenu Smenu;
@@ -134,16 +125,17 @@ public class DashBoard extends AppCompatActivity {
     ViewPager viewPager_dash_lists;
     String count="",PreviousNotificOUNT;
     TabLayout tabLayout;
-
+    Boolean guide;
     CoordinatorLayout cl;
-
+    ProgressBar pbar;
+    Dialog GuideDialog;
    /* Intent slider_intent;*/
     int noofsize = 0;
     int noofsizeguide = 3,currentPage;
     ViewPagerCustom myPager = null;
     PagerContainer mPagerContainer;
     ImageButton btn_btm_settings,btn_btm_notifi,btn_tb_navigation,btn_nb_nav;
-    Boolean Api_Popular = Boolean.TRUE ;
+
     //Data for vp
     final ArrayList<String>user_name = new ArrayList<>();
     final ArrayList<String>user_img= new ArrayList<>();
@@ -162,30 +154,16 @@ public class DashBoard extends AppCompatActivity {
     TextView tv_counter,tv_counter_nb;
  //   SwipeRefreshLayout swipeRefreshLayout;
     static Boolean iSnotificationClicked =false;
-
-
-    public static int ixemailcount;
-
     public static    ArrayList<String> ixprez_email = new ArrayList<>();
-    ArrayList<String> ixprez_username = new ArrayList<>();
-    ArrayList<String> ixprez_profilepic = new ArrayList<>();
-
-
-    ArrayList<String> appendEmail = new ArrayList<String>();
-    ArrayList<String> appendName = new ArrayList<String>();
-    ArrayList<String> appendProfilePic = new ArrayList<String>();
-
-
-
     int TotalCount;
     NotificationBadge TopBadge,tv_PvtCount,tv_notifi_count;;
     private boolean NoPermisson  = true;
+    FullContactsDBhandler fDB;
+
 
     @Override
     protected void onStart() {
         super.onStart();
-
-
 
         vp_frga_adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -249,9 +227,12 @@ public class DashBoard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_nb);
+
+
         AppName = getResources().getString(R.string.app_name);
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
+        guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar_dashboard);
         btn_tb_navigation = (ImageButton) findViewById(R.id.navigation_ic_tb);
@@ -260,9 +241,7 @@ public class DashBoard extends AppCompatActivity {
         cl = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         TopBadge = (NotificationBadge) findViewById(R.id.tb_db_badge);
         fl_counter = (FrameLayout) findViewById(R.id.fl_couter_holder);
-
-        context = getApplicationContext();
-        staticContex = this;
+        fDB = new FullContactsDBhandler(DashBoard.this);
         _activity = this;
         StaticConfig.IsPublicActivity = true;
         pb = (ProgressBar) findViewById(R.id.progressBar_dash);
@@ -271,7 +250,7 @@ public class DashBoard extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager_dash_lists = (ViewPager) findViewById(R.id.viewPager_dash);
-
+        pdialog = new Dialog(context);
 
         fl_counter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,25 +308,6 @@ public class DashBoard extends AppCompatActivity {
             }
         });
 
-       // new ContactsReaderClass().execute();
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-
-                CheckAndRequestPermission();
-                // getContacts();
-            }
-            else{
-                //  Toast.makeText(context, "ec", Toast.LENGTH_SHORT).show();
-              //  new ContactsReaderClass().execute();
-                Intent intent = new Intent(this, contactSyncService.class);
-                startService(intent);
-                // new ContactsReaderClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                // getContacts();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
 
@@ -398,6 +358,9 @@ public class DashBoard extends AppCompatActivity {
         tv_nb_help = (TextView) Smenu.findViewById(R.id.nb_help);
         tv_nb_support = (TextView) Smenu.findViewById(R.id.nb_support);
         tv_nb_about = (TextView) Smenu.findViewById(R.id.nb_about);
+
+
+
 
 
 
@@ -467,10 +430,10 @@ public class DashBoard extends AppCompatActivity {
                 ItemParent.putExtra("ItemParent","help");
                 startActivity(ItemParent);*/
 
-                String shareBody = "Hi, iam using this Xpressive app, iXprez to send my emotions.";
+                String shareBody = "Hi! Check out this app, iXprez, I am using to express myself!";
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Ixprez");
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "iXprez");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
 
@@ -499,7 +462,7 @@ public class DashBoard extends AppCompatActivity {
         });
 
 
-        
+
 
         iv_user_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -594,13 +557,6 @@ public class DashBoard extends AppCompatActivity {
             }
         });
 
-        // Verifying guide
-        Boolean guide = sharedpreferences.getBoolean(SharedPrefUtils.SpGuideDiplayed, false);
-       // mtd_getProfilePic();
-       // guide = false;
-        if(!guide) {
-            mtd_guide_view_pager();
-        }
 
 
         btn_nb_exit= (ImageButton) findViewById(R.id.btn_exit_nb);
@@ -727,15 +683,15 @@ public class DashBoard extends AppCompatActivity {
 
 
         }
-        mtd_resize();
+
+        //guide = false;
 
 
 
 
 
 
-        sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
+
         NoInternet = Toast.makeText(context, "Please check your Internet Connection", Toast.LENGTH_LONG);
         dash_receive.setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -807,6 +763,33 @@ public class DashBoard extends AppCompatActivity {
         GuideDialouge = new Dialog(DashBoard.this, R.style.DialogMaxwidth);
         GuideDialouge.requestWindowFeature(Window.FEATURE_NO_TITLE);
         GuideDialouge.setContentView(R.layout.guide);
+        mtd_resize();
+
+        if(!guide) {
+            mtd_guide_view_pager();
+
+        }
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+                CheckAndRequestPermission();
+
+            }
+            else{
+
+                if(guide) {
+                    Intent intent = new Intent(this, contactSyncService.class);
+                    startService(intent);
+                }else {
+                new ContactsReaderClass().execute();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
 
 
@@ -814,109 +797,238 @@ public class DashBoard extends AppCompatActivity {
     }
 
 
+    private class ContactsReaderClass extends AsyncTask<Void,Void,Void> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isLoadingContacts = true;
+            pbar.setVisibility(View.VISIBLE);
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            Contact.getInstance().email_list.clear();
+            Contact.getInstance().contact_namelist.clear();
+            Contact.getInstance().contact_urilist.clear();
+            Contact.getInstance().ContactPairs_phone.clear();
+            Contact.getInstance().email_name.clear();
+
+            String phoneNumber = null;
+            String email = null;
+            Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
+            String _ID = ContactsContract.Contacts._ID;
+            String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME;
+            String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+            String CONTACT_LAST_UPDATED_TIMESTAMP = ContactsContract.RawContacts.VERSION;
+            Uri PhoneCONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            String Phone_CONTACT_ID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+            String NUMBER = ContactsContract.CommonDataKinds.Phone.NUMBER;
+            Uri EmailCONTENT_URI =  ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+            String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
+            String DATA = ContactsContract.CommonDataKinds.Email.DATA;
+
+            ContentResolver contentResolver = getContentResolver();
+            cursorPhone = contentResolver.query(CONTENT_URI, null,null, null, null);
+
+
+            // Iterate every contact in the phone
+            if (cursorPhone.getCount() > 0) {
+                counter = 0;
+                while (cursorPhone.moveToNext()) {
+
+                    String contact_id = cursorPhone.getString(cursorPhone.getColumnIndex(_ID));
+                    String name = cursorPhone.getString(cursorPhone.getColumnIndex(DISPLAY_NAME));
+                    int hasPhoneNumber = Integer.parseInt(cursorPhone.getString(cursorPhone.getColumnIndex(HAS_PHONE_NUMBER)));
+                    if (hasPhoneNumber > 0) {
+
+                        //This is to read multiple phone numbers associated with the same contact
+                        Cursor phoneCursor = contentResolver.query(PhoneCONTENT_URI, null, Phone_CONTACT_ID + " = ?", new String[]{contact_id}, null);
+                        while (phoneCursor.moveToNext()) {
+                            phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(NUMBER));
+
+                            // Log.d("pno",output.toString());
+
+                        }
+                        phoneCursor.close();
+
+
+                        if (name != null && phoneNumber != null && FieldsValidator.isPhoneNumberString(phoneNumber, true)) {
+
+                            //phonecontactList.add(output.toString());
+
+                            Contact.getInstance().email_list.add(phoneNumber.replace(" ", ""));
+                            Contact.getInstance().contact_namelist.add(name);
+                            Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
+                            Contact.getInstance().ContactPairs_phone.put(phoneNumber, name);
+                            phoneNumber = null;
+
+                        }
+
+                    }
+                }
+
+
+
+            }
+            return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+        callwebForContacts();
+    }
+}
     private void callwebForContacts() {
 
+        SharedPreferences sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
 
-      //  Toast.makeText(context, "called", Toast.LENGTH_SHORT).show();
+            Contact.getInstance().ixpressemail.clear();
+            Contact.getInstance().ixpressname.clear();
+            Contact.getInstance().ixpress_user_pic.clear();
+            Contact.getInstance().is_ixpress_user.clear();
 
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
-/*        Contact.getInstance().ixpressemail.add(" ");
-        Contact.getInstance().ixpressname.add(" ");
-        Contact.getInstance().ixpress_user_pic.add(" ");*/
-
-
-        ixprez_email.clear();
-        ixprez_username.clear();
-        ixprez_profilepic.clear();
-
-        appendEmail.clear();
-        appendName.clear();
-        appendProfilePic.clear();
-
-
-      //  Log.d("emailcons", Contact.getInstance().email_list.toString());
-
-        if (Contact.getInstance().email_list != null) {
-           // Toast.makeText(context, ""+Contact.getInstance().email_list.size(), Toast.LENGTH_SHORT).show();
-
-            RestClient.get(DashBoard.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
+            RestClient.get(this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
                     new Callback<ContactsResp>() {
                         @Override
                         public void success(ContactsResp contactsResp, Response response) {
+
 
                             if (contactsResp.getCode().equals("200")) {
 
                                 for (int i = 0; i < contactsResp.getData().length; i++) {
 
-                                    ixprez_email.add(contactsResp.getData()[i].getEmail_id());
-                                    ixprez_username.add(contactsResp.getData()[i].getUser_name());
-                                    ixprez_profilepic.add(contactsResp.getData()[i].getProfile_image());
+                    fDB.addContact(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(), contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
 
-                                    Contact.getInstance().ixpressemail_DB.add(contactsResp.getData()[i].getEmail_id());
 
-                                    //count=i++;
                                 }
 
-                                DatabaseHandler handler = new DatabaseHandler(DashBoard.this);
-                                List<String> contacts = handler.getAllDetailsFormDatabase();
-                                ixemailcount = 0;
-                                /*if(DatabaseHandler.dbEmailList!=null &&
-                                        DatabaseHandler.dbEmailList.size()>0){
-                                    appendEmail.addAll(DatabaseHandler.dbEmailList);
-                                    appendName.addAll(DatabaseHandler.dbNameList);
-                                    appendProfilePic.addAll(DatabaseHandler.dbPicList);
-                                }*/
+                                new ContactsReaderEmail().execute();
 
-                               // ixemailcount = ixprez_email.size();
+                            }  else {
 
-                                // ixprez user from service
+                                   new ContactsReaderEmail().execute();
 
-                                appendEmail.addAll(ixprez_email);
-                                appendName.addAll(ixprez_username);
-                                appendProfilePic.addAll(ixprez_profilepic);
-
-                                // internal contacts list
-
-                                appendEmail.addAll(Contact.getInstance().email_list);
-                                appendName.addAll(Contact.getInstance().contact_namelist);
-                                appendProfilePic.addAll(Contact.getInstance().contact_urilist);
-
-                                Contact.getInstance().ixpressname = appendName;
-                                Contact.getInstance().ixpressemail = appendEmail;
-                                Contact.getInstance().ixpress_user_pic = appendProfilePic;
-                                Contact.getInstance().xpressUser = "iXpressUser";
-                                isLoadingContacts = false;
-
-                            } else if (contactsResp.getCode().equals("202")) {
-                              /*  Toast.makeText(DashBoard.this, "ixpress users...found " +
-                                        "in your contacts...", Toast.LENGTH_SHORT).show();*/
-                              //  recyclerView.setAdapter(new ContactsAdapter(cur, null));
-
-                            } else {
-                              /*  Toast.makeText(DashBoard.this, "Hmm,.. " +
-                                        "Something went wrong...", Toast.LENGTH_SHORT).show();*/
                             }
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
-                            //recyclerView.setAdapter(new ContactsAdapter(cur, null));
-                        }
+                            Toast.makeText(DashBoard.this, "Contacts Sync failed miserably...  ", Toast.LENGTH_SHORT).show();
+
+                            new ContactsReaderEmail().execute();
+                                }
                     });
-        } else {
-           /* Toast.makeText(DashBoard.this, "Hmm,.. " +
-                    "No records found...", Toast.LENGTH_SHORT).show();*/
-        }
+
+
     }
 
+    private class ContactsReaderEmail extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if(!guide) {
+
+                ContentResolver contentResolver = getContentResolver();
+                Cursor cur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+                if (cur.getCount() > 0) {
+
+                    while (cur.moveToNext()) {
+                        String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                        Cursor cur1 = contentResolver.query(
+                                ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                                new String[]{id}, null);
+                        while (cur1.moveToNext()) {
+
+                            String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                            String emails = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+                            if (emails != null && emails.length() > 5) {
+                               // Log.d("EMAI", emails);
+                                if (name != null && !name.contains("@")) {
+
+                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+
+
+                                } else {
+                                    String val[] = name.split("@");
+                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+
+                                }
+                            }
+
+
+                        }
+                        cur1.close();
+                    }
+
+
+                }
+                cur.close();
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
+
+            for (FullContactDBOBJ cn : Dbcontacts) {
+
+              if(cn.get_ixprezuser().equalsIgnoreCase("true")){
+
+                  Contact.getInstance().ixpressemail.add(cn.getPhoneNumber());
+                  Contact.getInstance().ixpressname.add(cn.getName());
+                  Contact.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
+                  Contact.getInstance().is_ixpress_user.add(true);
+              }
+
+            }
+
+
+            TreeMap<String,String> map = new TreeMap<>();
+
+                for (FullContactDBOBJ cn : Dbcontacts) {
+                    if(cn.get_ixprezuser().equalsIgnoreCase("false")){
+                        map.put(cn.getName(),cn.getPhoneNumber());
+                    }
+
+
+                }
+
+            Contact.getInstance().ixpressemail.addAll(map.values());
+            Contact.getInstance().ixpressname.addAll(map.keySet());
+
+            for (int i = 0; i < map.size(); i++) {
+                Contact.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
+                Contact.getInstance().is_ixpress_user.add(false);
+            }
+            if(!guide){
+                pbar.setVisibility(View.GONE);
+                isLoadingContacts = false;
+
+            }
+            }
 
 
 
-
-
+    }
 
     private void mtd_getFeatured_bkp() {
 
@@ -1141,19 +1253,38 @@ public class DashBoard extends AppCompatActivity {
     }
 
     private void mtd_guide_view_pager() {
-       final Dialog GuideDialog = new Dialog(DashBoard.this, R.style.guideDiaoluge);
+
+
+
+
+       GuideDialog = new Dialog(DashBoard.this, R.style.guideDiaoluge);
 
        GuideDialog.setContentView(R.layout.guide_dashboard_new);
+       GuideDialog.setCancelable(false);
        GuideDialog.show();
+
+        pbar = GuideDialog.findViewById(R.id.progressBar_guide);
+        pbar.setVisibility(View.INVISIBLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            pbar.setTooltipText("Sync in progress..");
+        }
         RelativeLayout rl_guide = (RelativeLayout) GuideDialog.findViewById(R.id.rl_guide);
             rl_guide.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(!isLoadingContacts){
+
+                    guide = true;
+                    editor.putBoolean(SharedPrefUtils.SpGuideDiplayed,true);
+                    editor.commit();
                     GuideDialog.dismiss();
+                    }else{
+                        Toast.makeText(context, "Please wait for initial run...", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
-       editor.putBoolean(SharedPrefUtils.SpGuideDiplayed,true);
-       editor.commit();
+
+
 
     }
 
@@ -1163,6 +1294,8 @@ public class DashBoard extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         is_vp_Touched = true;
+
+
     }
 
 
@@ -1201,9 +1334,12 @@ public class DashBoard extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        /*if(Contact.getInstance().ixpressemail.size()<= 0){
-            new ContactsReaderClass().execute();
-        }*/
+
+
+
+
+
+
       if(Actvity_video.isFromFeatured){
 
            mtd_getFeatured_bkp();
@@ -1226,7 +1362,6 @@ public class DashBoard extends AppCompatActivity {
     }
 
 
-
     private void mtd_resize() {
         ViewTreeObserver observer = rl_btm.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -1247,7 +1382,19 @@ public class DashBoard extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+       /* if (emailSyncDisp!=null && !emailSyncDisp.isDisposed()) {
+            emailSyncDisp.dispose();
+        }*/
+
+    }
+
+    @Override
     public void onBackPressed() {
+
+
 
         if (Smenu.isMenuShowing()== true) {
             Smenu.toggle();
@@ -1280,10 +1427,13 @@ public class DashBoard extends AppCompatActivity {
                     ActivityCompat.requestPermissions(this, new String[]{PermissionStrings.GET_ACCOUNTS}, 93);
 
                     NoPermisson = false;
-                    Intent intent = new Intent(this, contactSyncService.class);
-                    startService(intent);
-                   // new ContactsReaderClass().execute();
-                   // new ContactsReaderClass().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                    if(guide) {
+                        Intent intent = new Intent(this, contactSyncService.class);
+                        startService(intent);
+                    }else {
+                        new ContactsReaderClass().execute();
+                    }
 
                 } else {
 

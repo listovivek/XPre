@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "171772001326-8eg0rq3bpch7fgoqjje2c3pk8h5bhins.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.claritaz.ixprez",
+            "certificate_hash": "eb1d01e035d56fd37ec2a4bbbc14238e25d9a995"
+          }
+        },
+        {
           "client_id": "171772001326-1hvn2s1194fsjt3ps0pudu4hs12h2f4v.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -42,6 +50,13 @@
             {
               "client_id": "171772001326-1hvn2s1194fsjt3ps0pudu4hs12h2f4v.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "171772001326-09dmvvguqsipfbpjh311vdr1pcrt38kk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.claritaz.ixprez"
+              }
             }
           ]
         },

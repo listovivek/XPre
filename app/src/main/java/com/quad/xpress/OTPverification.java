@@ -35,10 +35,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.models.otpverification.OTPMreq;
-import com.quad.xpress.models.otpverification.OTPMresp;
-import com.quad.xpress.models.otpverification.ResendOtpMreq;
-import com.quad.xpress.models.otpverification.ResendOtpMresp;
+import com.quad.xpress.models.registration.RegRequest;
+import com.quad.xpress.models.registration.RegResp;
+import com.quad.xpress.utills.helpers.LoadingDialog;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -72,6 +71,8 @@ public class OTPverification extends AppCompatActivity {
      String atv_phnumber;
      String TypedOtp;
     TextWatcher mTextEditorWatcher;
+   // Intent VerifiedIntent;
+    Intent intentemail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +99,9 @@ public class OTPverification extends AppCompatActivity {
                 //     user action.
                 Log.d(TAG, "onVerificationCompleted:" + credential);
                 // [START_EXCLUDE silent]
-                mVerificationInProgress = false;
+                StartRegistration(credential);
+
+            /*    mVerificationInProgress = false;
                 // [END_EXCLUDE]
                 String a1;
                 a1 ="Phone number \n";
@@ -113,10 +116,12 @@ public class OTPverification extends AppCompatActivity {
                 editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
                 editor.commit();
 
-                Intent VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
+                VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
                 startActivity(VerifiedIntent);
                 finish();
                 signInWithPhoneAuthCredential(credential);
+                */
+
             }
 
             @Override
@@ -178,7 +183,7 @@ public class OTPverification extends AppCompatActivity {
         btn_verify_done = (Button) findViewById(R.id.btn_verify_done);
         et_otp = (EditText) findViewById(R.id.et_otp);
         tvResendCode = (TextView) findViewById(R.id.tv_resend_code);
-        Intent intentemail = getIntent();
+        intentemail = getIntent();
         String atv_uemail = intentemail.getExtras().getString("email");
         atv_phnumber = intentemail.getExtras().getString("phnumber");
       //  mVerificationId = intentemail.getExtras().getString("verificationId");
@@ -232,8 +237,8 @@ public class OTPverification extends AppCompatActivity {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Confirmation code has been sent to ");
-        sb.append(atv_uemail);
-        sb.append(" & "+atv_phnumber);
+        //sb.append(atv_uemail);
+        sb.append(atv_phnumber);
         sb.append(" Please Click resend if the code failed to deliver.");
      //   Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_LONG).show();
 
@@ -285,7 +290,7 @@ public class OTPverification extends AppCompatActivity {
                     verifyPhoneNumberWithCode(mVerificationId,TypedOtp);}
                     else{
                         try {
-                            OtpVerifyWebService(TypedOtp);
+                          //  OtpVerifyWebService(TypedOtp);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -328,7 +333,7 @@ public class OTPverification extends AppCompatActivity {
     }
 
 
-    private void OtpVerifyWebService(String typedOTP) {
+   /* private void OtpVerifyWebService(String typedOTP) {
 
         RestClient.get(OTPverification.this).OTPVerification(new OTPMreq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
                 typedOTP, sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<OTPMresp>() {
@@ -358,17 +363,20 @@ public class OTPverification extends AppCompatActivity {
                 //   Toast.makeText(OTPverification.this, "Failure " + error, Toast.LENGTH_LONG).show();
             }
         });
-    }
+    }*/
     private void verifyPhoneNumberWithCode(String verificationIds, String codes) {
         // [START verify_with_code]
         PhoneAuthCredential credential = null;
         // [END verify_with_code]
         try {
              credential = PhoneAuthProvider.getCredential(verificationIds, codes);
+            StartRegistration(credential);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        signInWithPhoneAuthCredential(credential);
+
+
+      //  signInWithPhoneAuthCredential(credential);
     }
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
 
@@ -394,8 +402,9 @@ public class OTPverification extends AppCompatActivity {
                           //  updateUI(STATE_SIGNIN_SUCCESS, user);
                             // [END_EXCLUDE]
                         } else {
+                            et_otp.setError(WRONG_OTP);
 
-                            OtpVerifyWebService(TypedOtp);
+                          //  OtpVerifyWebService(TypedOtp);
                             // Sign in failed, display a message and update the UI
 
 
@@ -413,7 +422,7 @@ public class OTPverification extends AppCompatActivity {
 */
 
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                Log.d(TAG, "signInWithCredential:failure", task.getException());
                             }
 
 
@@ -433,7 +442,7 @@ public class OTPverification extends AppCompatActivity {
                 mCallbacks);
 
 
-        RestClient.get(OTPverification.this).ResendOTP(new ResendOtpMreq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
+     /*   RestClient.get(OTPverification.this).ResendOTP(new ResendOtpMreq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),
                 sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<ResendOtpMresp>() {
             @Override
             public void success(ResendOtpMresp resendOtpMresp, Response response) {
@@ -452,10 +461,101 @@ public class OTPverification extends AppCompatActivity {
 
                 Toast.makeText(OTPverification.this, "Failure " + error, Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
     }
 
+    private void StartRegistration(PhoneAuthCredential credential) {
+        // OnVerificationStateChangedCallbacks
 
+        final LoadingDialog LD;
+        LD = new LoadingDialog(this);
+        LD.ShowTheDialog("Setting up your account...", "Please wait..", true);
+
+  /*      regBundel.putString("uemail",atv_uemail.getText().toString().trim());
+        regBundel.putString("uphone",PhoneNumberWithCode.trim());
+        regBundel.putString("ucountry",atv_country.getText().toString().trim());
+        regBundel.putString("",atv_languadge.getText().toString().trim());
+        regBundel.putString("udevice",Device_id.trim());
+        regBundel.putString("ugcmtoken",GCMToken);
+        regBundel.putString("uos","Android");
+        regBundel.putString("uosver",Integer.toString(Build.VERSION.SDK_INT));
+        regBundel.putString("ucomp",Build.MANUFACTURER);
+        regBundel.putString("umodel",Build.MODEL);*/
+
+        Bundle b = intentemail.getExtras();
+
+
+
+        RestClient.get(this).Registration(new RegRequest(b.getString("uname").toString(), b.getString("uemail").toString(),b.getString("uphone").toString(),
+                        b.getString("ucountry").toString(), b.getString("ulanguage").toString(),b.getString("udevice").toString()
+                ,b.getString("ugcmtoken").toString(), "Android", b.getString("uosver").toString(), b.getString("ucomp")+ " " + Build.MODEL, "0","1","1"),
+                new Callback<RegResp>() {
+            @Override
+            public void success(final RegResp arg0, Response arg1) {
+
+                if (arg0.getCode().equals("200")) {
+
+                    editor.putBoolean(SharedPrefUtils.SpRegisterSuccess, true);
+                    editor.putString(SharedPrefUtils.SpUserName, arg0.getData()[0].getUser_name());
+                    editor.putString(SharedPrefUtils.SpEmail, arg0.getData()[0].getEmail_id());
+                    editor.putString(SharedPrefUtils.SpDeviceId, arg0.getData()[0].getDevice_id());
+                    editor.putString(SharedPrefUtils.SpLanguage, arg0.getData()[0].getLanguage());
+                    editor.putString(SharedPrefUtils.SpPhone, arg0.getData()[0].getPhone_number());
+                    editor.putString(SharedPrefUtils.SpCountry, arg0.getData()[0].getCountry());
+                   // editor.putString(SharedPrefUtils.SpPhoneCode, arg0.getData()[0].get);
+                    editor.putString(SharedPrefUtils.SpGcmToken, arg0.getData()[0].getGcm_id());
+                    editor.putString(SharedPrefUtils.SpCountryFullName, arg0.getData()[0].getCountry());
+                    editor.putString(SharedPrefUtils.SpToken, arg0.getData()[0].getToken());
+                    editor.commit();
+
+                    mVerificationInProgress = false;
+                    // [END_EXCLUDE]
+                    String a1;
+                    a1 ="Phone number \n";
+                    ToastCustom toastCustom = new ToastCustom(OTPverification.this);
+                    SpannableString ss = new SpannableString(a1 +atv_phnumber+", verified.");
+
+                    ss.setSpan(new ForegroundColorSpan(Color.GREEN), a1.length(), a1.length()+atv_phnumber.length(), 0);
+                    ss.setSpan(new RelativeSizeSpan(1.5f),a1.length(), a1.length()+atv_phnumber.length(), 0);
+                    toastCustom.ShowToast("iXprez ",ss,1);
+
+
+                    editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
+                    editor.commit();
+
+                   Intent VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
+                    startActivity(VerifiedIntent);
+                    signInWithPhoneAuthCredential(credential);
+                    finish();
+
+
+                    // Toast.makeText(RegistrationActivity.this, "tok " +  arg0.getData()[0].getToken(), Toast.LENGTH_LONG).show();
+
+                  //  ChangeEmail=true;
+                    LD.DismissTheDialog();
+
+
+
+
+                } else {
+                    Log.v("", "Try again later " + arg0.getStatus());
+                    LD.DismissTheDialog();
+                    Toast.makeText(OTPverification.this, "Try again " + arg0.getStatus(), Toast.LENGTH_LONG).show();
+                    btn_change_email.performClick();
+
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+                LD.DismissTheDialog();
+
+                Toast.makeText(OTPverification.this, "Failed, try again later. " , Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
 
     @Override
     public void onBackPressed() {

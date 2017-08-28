@@ -554,6 +554,11 @@ public class AudioRecordActivity extends Activity {
 
                 ShowAudioRecordDialog(CreateVideoFolder(MEDIA_TYPE_VIDEO, FileNameWithMimeType));
 
+                try {
+                    callWeb(av_email.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             private void callWeb(final String toEmail) {

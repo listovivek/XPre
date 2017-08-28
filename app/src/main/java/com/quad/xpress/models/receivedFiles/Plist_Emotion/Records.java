@@ -7,11 +7,13 @@ public class Records
 {
     private String fileuploadFilename;
 
+    private String phone_number;
+
     private String likeCount;
 
-    private String both;
-
     private String thumbnailPath;
+
+    private String both;
 
     private String fileuploadPath;
 
@@ -27,25 +29,29 @@ public class Records
 
     private String createdAt;
 
+    private String action;
+
     private String from_user;
 
-    private String to_user;
+    private String user_id;
 
     private String del_status;
 
     private String thumbnailFilename;
 
-    private String emotionCount;
+    private String tags;
+
+    private String likes_count;
 
     private String created_date;
 
-    private String tags;
+    private String emotionCount;
 
     private String featuredVideo;
 
-    private String isUserLiked;
-
     private String status;
+
+    private String isUserLiked;
 
     private String privacy;
 
@@ -56,8 +62,6 @@ public class Records
     private String isuerfollowing;
 
     private String country;
-
-    private String myname;
 
     private Emotion[] emotion;
 
@@ -89,6 +93,16 @@ public class Records
         this.fileuploadFilename = fileuploadFilename;
     }
 
+    public String getPhone_number ()
+    {
+        return phone_number;
+    }
+
+    public void setPhone_number (String phone_number)
+    {
+        this.phone_number = phone_number;
+    }
+
     public String getLikeCount ()
     {
         return likeCount;
@@ -99,16 +113,6 @@ public class Records
         this.likeCount = likeCount;
     }
 
-    public String getBoth ()
-    {
-        return both;
-    }
-
-    public void setBoth (String both)
-    {
-        this.both = both;
-    }
-
     public String getThumbnailPath ()
     {
         return thumbnailPath;
@@ -117,6 +121,16 @@ public class Records
     public void setThumbnailPath (String thumbnailPath)
     {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public String getBoth ()
+    {
+        return both;
+    }
+
+    public void setBoth (String both)
+    {
+        this.both = both;
     }
 
     public String getFileuploadPath ()
@@ -189,6 +203,16 @@ public class Records
         this.createdAt = createdAt;
     }
 
+    public String getAction ()
+    {
+        return action;
+    }
+
+    public void setAction (String action)
+    {
+        this.action = action;
+    }
+
     public String getFrom_user ()
     {
         return from_user;
@@ -199,14 +223,14 @@ public class Records
         this.from_user = from_user;
     }
 
-    public String getTo_user ()
+    public String getUser_id ()
     {
-        return to_user;
+        return user_id;
     }
 
-    public void setTo_user (String to_user)
+    public void setUser_id (String user_id)
     {
-        this.to_user = to_user;
+        this.user_id = user_id;
     }
 
     public String getDel_status ()
@@ -229,14 +253,24 @@ public class Records
         this.thumbnailFilename = thumbnailFilename;
     }
 
-    public String getEmotionCount ()
+    public String getTags ()
     {
-        return emotionCount;
+        return tags;
     }
 
-    public void setEmotionCount (String emotionCount)
+    public void setTags (String tags)
     {
-        this.emotionCount = emotionCount;
+        this.tags = tags;
+    }
+
+    public String getLikes_count ()
+    {
+        return likes_count;
+    }
+
+    public void setLikes_count (String likes_count)
+    {
+        this.likes_count = likes_count;
     }
 
     public String getCreated_date ()
@@ -249,14 +283,14 @@ public class Records
         this.created_date = created_date;
     }
 
-    public String getTags ()
+    public String getEmotionCount ()
     {
-        return tags;
+        return emotionCount;
     }
 
-    public void setTags (String tags)
+    public void setEmotionCount (String emotionCount)
     {
-        this.tags = tags;
+        this.emotionCount = emotionCount;
     }
 
     public String getFeaturedVideo ()
@@ -269,16 +303,6 @@ public class Records
         this.featuredVideo = featuredVideo;
     }
 
-    public String getIsUserLiked ()
-    {
-        return isUserLiked;
-    }
-
-    public void setIsUserLiked (String isUserLiked)
-    {
-        this.isUserLiked = isUserLiked;
-    }
-
     public String getStatus ()
     {
         return status;
@@ -287,6 +311,16 @@ public class Records
     public void setStatus (String status)
     {
         this.status = status;
+    }
+
+    public String getIsUserLiked ()
+    {
+        return isUserLiked;
+    }
+
+    public void setIsUserLiked (String isUserLiked)
+    {
+        this.isUserLiked = isUserLiked;
     }
 
     public String getPrivacy ()
@@ -337,16 +371,6 @@ public class Records
     public void setCountry (String country)
     {
         this.country = country;
-    }
-
-    public String getMyname ()
-    {
-        return myname;
-    }
-
-    public void setMyname (String myname)
-    {
-        this.myname = myname;
     }
 
     public Emotion[] getEmotion ()
@@ -452,6 +476,6 @@ public class Records
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", from_user = "+from_user+", to_user = "+to_user+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", emotionCount = "+emotionCount+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", myname = "+myname+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", mydp = "+mydp+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", phone_number = "+phone_number+", likeCount = "+likeCount+", thumbnailPath = "+thumbnailPath+", both = "+both+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", action = "+action+", from_user = "+from_user+", user_id = "+user_id+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", likes_count = "+likes_count+", created_date = "+created_date+", emotionCount = "+emotionCount+", featuredVideo = "+featuredVideo+", status = "+status+", isUserLiked = "+isUserLiked+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", mydp = "+mydp+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

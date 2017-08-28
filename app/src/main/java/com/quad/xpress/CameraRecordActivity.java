@@ -164,7 +164,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
     int contactPosition, recentPosition ;
     String mTempName, mTempEmail;
 
-
+    DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
     private TextView timerValue;
     Button switchBtn;
     String Permission4, permission5, permission6, Permission2;
@@ -589,11 +589,11 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         CD = new NetConnectionDetector();
 
 
-        if (CD.isConnected(getApplicationContext())) {
+      /*  if (CD.isConnected(getApplicationContext())) {
             RefreshTokenMethodName = "";
             final Uri UriDummy = Uri.parse("");
             RefreshToken(UriDummy);
-        }
+        }*/
 
 
         AlphaAnimation blinkanimation= new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
@@ -1012,17 +1012,6 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                         return;
                     }
 
-                    try {
-                        String[] spliter =  av_email.getText().toString().split(" - ");
-                        ToEmail =spliter[1];
-                    } catch (Exception e) {
-                        ToEmail = av_email.getText().toString().trim();
-                        if(!FieldsValidator.isEmailAddressOK(av_email,true) ){
-                            return;
-                        }
-
-
-                    }
 
                 }
 
@@ -1044,6 +1033,13 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
               //  Log.v("Camera ToSaveUri", ToSaveURI);
                 Tags = TagResizer(MATTags.getText().toString());
                 ShareAsText = Spinner_ShareAsType.getSelectedItem().toString();
+
+              /*  handler.addContact(Contact.getInstance().ixpressemail.get(i),
+                        Contact.getInstance().ixpressname.get(i),
+                        Contact.getInstance().ixpress_user_pic.get(i)
+                        , contactPosition);*/
+
+
                 if (AVDialog.isShowing()) {
                    // av_email.setText("");
                    // av_name.setText("");
@@ -1053,7 +1049,11 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                     AVDialog.dismiss();
 
                 }
-
+                try {
+                    callWeb(av_email.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             private void callWeb(final String toEmail) {
@@ -1069,7 +1069,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                                         for (int i = 0; i < Contact.getInstance().ixpressemail.size(); i++) {
 
                                             if (Contact.getInstance().ixpressemail.get(i).equalsIgnoreCase(toEmail)) {
-                                                DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
+
                                                 handler.addContact(Contact.getInstance().ixpressemail.get(i),
                                                         Contact.getInstance().ixpressname.get(i),
                                                         Contact.getInstance().ixpress_user_pic.get(i)

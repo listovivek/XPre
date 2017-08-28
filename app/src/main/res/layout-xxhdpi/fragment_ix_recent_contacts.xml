@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/primary">
+
+
+
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_recent"
+        android:layout_below="@+id/textview_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:clickable="true" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/search"
+        android:layout_marginTop="5dp"
+        android:id="@+id/srl_contats_recent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/search"
+            android:id="@+id/rv_contact_list_recent"
+            android:layout_height="match_parent"
+
+            android:layout_width="match_parent"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+
+
+</RelativeLayout>

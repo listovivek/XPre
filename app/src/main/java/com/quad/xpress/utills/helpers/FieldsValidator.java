@@ -167,11 +167,11 @@ public class FieldsValidator {
         editText.setError(null);
 
         // length 0 means there is no text
-        if (text.length() <= 8) {
+        if (text.length() <= 11) {
             editText.setError(PHONE_MSG);
             return false;
         }
-        if (text.length() >= 14) {
+        if (text.length() >= 17) {
             editText.setError(PHONE_MSG);
             return false;
         }
@@ -183,11 +183,11 @@ public class FieldsValidator {
         String text = editText;
 
         // length 0 means there is no text
-        if (text.length() <= 8) {
+        if (text.length() <= 11) {
 
             return false;
         }
-        if (text.length() >= 14) {
+        if (text.length() >= 17) {
 
             return false;
         }

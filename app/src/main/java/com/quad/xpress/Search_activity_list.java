@@ -624,7 +624,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
     @Override
     public void Subcribed(int position, final String email) {
-        sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+       /* sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
         RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
@@ -641,13 +641,13 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                     public void failure(RetrofitError error) {
 
                     }
-                });
+                });*/
 
     }
 
     @Override
     public void UnSubcribed(int position, final String email) {
-        sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+       /* sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
         RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
                 new Callback<FollowRep>() {
@@ -664,7 +664,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                     public void failure(RetrofitError error) {
 
                     }
-                });
+                });*/
     }
 
 
@@ -780,7 +780,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),iii.getEmotionCount()
-                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),iii.getMydp());
+                    ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),iii.getMydp(),iii.getUser_id(),iii.getPhone_number());
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();

@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -55,7 +53,6 @@ import com.quad.xpress.utills.helpers.LoadingDialog;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.pushnotification.NotifyConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -104,7 +101,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     String TAG = "RegistrationActivity",PhoneNumberWithCode ="unavailable";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+   // private BroadcastReceiver mRegistrationBroadcastReceiver;
     String GCMToken = null;
     String CountryFullName;
     String[] languages;
@@ -118,17 +115,24 @@ public class RegistrationActivity extends AppCompatActivity {
 
     Activity _activity;
     Context context;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (checkPlayServices()) {
+            // Log.v(TAG, "checkPlayServices");
+            registerGCM();
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_registration);
 
 
-        if (checkPlayServices()) {
-           // Log.v(TAG, "checkPlayServices");
-            registerGCM();
 
-        }
         Permission4 = PermissionStrings.WRITE_EXTERNAL_STORAGE;
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -263,7 +267,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder("By joining xPress, you agree to our \n");
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder("By joining iXprez, you agree to our \n");
         spanTxt.append("Term of services");
         spanTxt.setSpan(new ClickableSpan() {
             @Override
@@ -426,7 +430,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+       /* mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // checking for type intent filter
@@ -444,7 +448,7 @@ public class RegistrationActivity extends AppCompatActivity {
                   //   Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
                 }
             }
-        };
+        };*/
 
 
        // Log.v("Build ", " " + Integer.toString(Build.VERSION.SDK_INT) + " , " + Build.MODEL);
@@ -480,9 +484,9 @@ public class RegistrationActivity extends AppCompatActivity {
 
                         PhoneNumberWithCode = et_umob_no.getText().toString();
 
-                        StartRegistration();
+                       // StartRegistration();
 
-
+                        OTPVerificationIntent();
 
 
 
@@ -613,7 +617,7 @@ public class RegistrationActivity extends AppCompatActivity {
         } catch (Throwable e) {
         }
 
-        return result;
+        return result;/**/
     }
     private void StartRegistration() {
          // OnVerificationStateChangedCallbacks
@@ -640,7 +644,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     editor.putString(SharedPrefUtils.SpLanguage, atv_languadge.getText().toString());
                     editor.putString(SharedPrefUtils.SpPhone, PhoneNumberWithCode);
                     editor.putString(SharedPrefUtils.SpCountry, atv_country.getText().toString());
-                    editor.putString(SharedPrefUtils.SpPhoneCode, CountryPhoneText);
+                  //  editor.putString(SharedPrefUtils.SpPhoneCode, CountryPhoneText);
                     editor.putString(SharedPrefUtils.SpGcmToken, GCMToken);
                     editor.putString(SharedPrefUtils.SpCountryFullName, atv_country.getText().toString());
                     editor.putString(SharedPrefUtils.SpToken, arg0.getData()[0].getToken());
@@ -653,7 +657,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     LD.DismissTheDialog();
 
 
-                   OTPVerificationIntent();
+
 
                 } else {
                     Log.v("", "Try again later " + arg0.getStatus());
@@ -668,7 +672,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                 LD.DismissTheDialog();
 
-                Toast.makeText(RegistrationActivity.this, "Failure " + error, Toast.LENGTH_LONG).show();
+                Toast.makeText(RegistrationActivity.this, "Failed, try again later. " , Toast.LENGTH_LONG).show();
             }
         });
 
@@ -679,10 +683,24 @@ public class RegistrationActivity extends AppCompatActivity {
     private void OTPVerificationIntent() {
 
 
-        Intent OtpVerify = new Intent(RegistrationActivity.this, OTPverification.class);
+        Bundle regBundel = new Bundle();
+        regBundel.putString("uname",et_uname.getText().toString().trim());
+        regBundel.putString("uemail",atv_uemail.getText().toString().trim());
+        regBundel.putString("uphone",PhoneNumberWithCode.trim());
+        regBundel.putString("ucountry",atv_country.getText().toString().trim());
+        regBundel.putString("ulanguage",atv_languadge.getText().toString().trim());
+        regBundel.putString("udevice",Device_id.trim());
+        regBundel.putString("ugcmtoken",GCMToken);
+        regBundel.putString("uos","Android");
+        regBundel.putString("uosver",Integer.toString(Build.VERSION.SDK_INT));
+        regBundel.putString("ucomp",Build.MANUFACTURER);
+        regBundel.putString("umodel",Build.MODEL);
 
+        Intent OtpVerify = new Intent(RegistrationActivity.this, OTPverification.class);
+        OtpVerify.putExtras(regBundel);
         OtpVerify.putExtra("email",atv_uemail.getText().toString());
         OtpVerify.putExtra("phnumber",PhoneNumberWithCode.trim());
+
 
         OtpVerify.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(OtpVerify);
@@ -786,11 +804,11 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedState) {
         super.onRestoreInstanceState(savedState);
     }
-    @Override
+   /* @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         super.onPause();
-    }
+    }*/
 
 
 

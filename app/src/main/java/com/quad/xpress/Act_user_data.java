@@ -17,16 +17,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.Adapters_horizontal.adapter_user_data;
+import com.quad.xpress.models.Follow.FollowRep;
+import com.quad.xpress.models.Follow.FollowReq;
+import com.quad.xpress.models.receivedFiles.FollowerPublicListReq;
+import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
+import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
+import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
 import com.quad.xpress.utills.EndlessRecyclerOnScrollListener;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.utills.helpers.StaticConfig;
-import com.quad.xpress.models.Follow.FollowRep;
-import com.quad.xpress.models.Follow.FollowReq;
-import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
-import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
-import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
-import com.quad.xpress.models.receivedFiles.PublicPlayListReq;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -92,7 +92,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         try {
             Purl = inget.getStringExtra("ProfilePic");
             usernae = inget.getStringExtra("username");
-            fromemail = inget.getStringExtra("fromemail");
+            fromemail = inget.getStringExtra("user_id");
             isfollowing = inget.getStringExtra("isfollowing");
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,8 +118,8 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
         AppName = getResources().getString(R.string.app_name);
         _activity = this;
 
-        TextView tv_tb_title = (TextView) findViewById(R.id.tb_normal_title);
-        tv_tb_title.setText("Your Uploads");
+        /*TextView tv_tb_title = (TextView) findViewById(R.id.tb_normal_title);
+        tv_tb_title.setText("Your Uploads");*/
         ImageButton btn_tb_back = (ImageButton) findViewById(R.id.tb_normal_back);
         btn_tb_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +145,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
 
 
-        if(sharedpreferences.getString(SharedPrefUtils.SpEmail, "").equals(fromemail)){
+        if(sharedpreferences.getString(SharedPrefUtils.SpPhone, "").equals(fromemail)){
             btn_follow.setVisibility(View.GONE);
         }
 
@@ -197,7 +197,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     public void Subcribed(String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),email),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
@@ -218,7 +218,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
     public void UnSubcribed(String email) {
         sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
+        RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),email),
                 new Callback<FollowRep>() {
                     @Override
                     public void success(FollowRep followRep, Response response) {
@@ -244,7 +244,7 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
 
 
 
-            RestClient.get(context).MyUploads_API(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PublicPlayListReq(Integer.toString(Index), "30", fromemail, emotion),
+            RestClient.get(context).Followers_public_list(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new FollowerPublicListReq(Integer.toString(Index), "30", fromemail, emotion),
                     new Callback<PlayListResp_emotion>() {
                         @Override
                         public void success(final PlayListResp_emotion arg0, Response arg1) {
@@ -306,7 +306,8 @@ public class Act_user_data extends Activity implements adapter_user_data.OnRecyc
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),
-                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getFrom_email(),iii.getFrom_user(),iii.getMydp());
+                    sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getFrom_email(),
+                    iii.getFrom_user(),iii.getMydp(),iii.getUser_id(),iii.getPhone_number());
             playlist.add(playlistItems);
             sb.setLength(0);
         }

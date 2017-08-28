@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
@@ -25,7 +26,9 @@ import com.quad.xpress.webservice.RestClient;
 
 import org.apache.commons.lang3.StringUtils;
 
-import retrofit.Callback;
+import java.util.List;
+import java.util.TreeMap;
+
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -39,20 +42,27 @@ public class contactSyncService extends Service {
         private ServiceHandler mServiceHandler;
         Cursor cursorPhone;
         Integer counter;
+        FullContactsDBhandler fDB;
+        List<FullContactDBOBJ> Dbcontacts;
+        SharedPreferences sharedpreferences;
 
-        // Handler that receives messages from the thread
+
+    // Handler that receives messages from the thread
         private final class ServiceHandler extends Handler {
             public ServiceHandler(Looper looper) {
                 super(looper);
             }
             @Override
             public void handleMessage(Message msg) {
-
-
+                sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+                fDB = new FullContactsDBhandler(contactSyncService.this);
+                Dbcontacts = fDB.getAllContacts();
+                int Dbver = Integer.parseInt(sharedpreferences.getString(SharedPrefUtils.SpDbver, "0"));
+                fDB.onUpgrade(fDB.getReadableDatabase(),Dbver,Dbver++);
                 Contact.getInstance().email_list.clear();
                 Contact.getInstance().contact_namelist.clear();
                 Contact.getInstance().contact_urilist.clear();
-                Contact.getInstance().ContactPairs.clear();
+                Contact.getInstance().ContactPairs_phone.clear();
                 Contact.getInstance().email_name.clear();
 
                 String phoneNumber = null;
@@ -71,14 +81,6 @@ public class contactSyncService extends Service {
 
                 ContentResolver contentResolver = getContentResolver();
                 cursorPhone = contentResolver.query(CONTENT_URI, null,null, null, null);
-
-                Boolean IsNewVer =false ;
-
-                if (IsNewVer){
-
-
-                }
-
 
 
                 // Iterate every contact in the phone
@@ -104,17 +106,10 @@ public class contactSyncService extends Service {
 
                             if (name != null && phoneNumber != null && FieldsValidator.isPhoneNumberString(phoneNumber, true)) {
 
-                                //phonecontactList.add(output.toString());
-
-                                Contact.getInstance().email_list.add(phoneNumber.replace(" ",""));
+                                Contact.getInstance().email_list.add(phoneNumber.replace(" ", ""));
                                 Contact.getInstance().contact_namelist.add(name);
                                 Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
-                                Contact.getInstance().ContactPairs.put(phoneNumber, name);
-
-                           /* Contact.getInstance().ixpressemail.add(phoneNumber);
-                            Contact.getInstance().ixpressname.add(name);
-                            Contact.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));*/
-
+                                Contact.getInstance().ContactPairs_phone.put(phoneNumber, name);
                                 phoneNumber = null;
 
 
@@ -123,54 +118,155 @@ public class contactSyncService extends Service {
                         }
                     }
 
-                    ContentResolver cer = getContentResolver();
+                }
 
-                    Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-                    if (cur.getCount() > 0) {
 
-                        while (cur.moveToNext()) {
-                            String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                            Cursor cur1 = cer.query(
-                                    ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                                    ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                                    new String[]{id}, null);
-                            while (cur1.moveToNext()) {
 
-                                String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                                String emails = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                Contact.getInstance().ixpressemail.clear();
+                Contact.getInstance().ixpressname.clear();
+                Contact.getInstance().ixpress_user_pic.clear();
+                Contact.getInstance().is_ixpress_user.clear();
 
-                                if (emails != null && emails.length() > 5) {
+                sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
+                RestClient.get(contactSyncService.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
+                        new retrofit.Callback<ContactsResp>() {
+                            @Override
+                            public void success(ContactsResp contactsResp, Response response) {
 
-                                    if (name != null && !name.contains("@")) {
 
-                                        Contact.getInstance().email_name.put(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase());
+                                if (contactsResp.getCode().equals("200")) {
 
-                                    } else {
-                                        String val[] = name.split("@");
 
-                                        Contact.getInstance().email_name.put(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase());
+                                    for (int i = 0; i < contactsResp.getData().length; i++) {
+
+                                        fDB.addContactWithConflict(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(),
+                                                contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
+
+                                        //fDB.updateContact(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(), contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
+
+
+
                                     }
+
+
+
                                 }
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(contactSyncService.this, "Contacts Sync failed miserably...  ", Toast.LENGTH_SHORT).show();
 
 
                             }
-                            cur1.close();
+                        });
+
+
+
+                Cursor cur = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+
+                if (cur.getCount() > 0) {
+
+                    while (cur.moveToNext()) {
+                        String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                        Cursor cur1 = contentResolver.query(
+                                ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                                new String[]{id}, null);
+                        while (cur1.moveToNext()) {
+
+                            String name = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                            String emails = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+                            if (emails != null && emails.length() > 5) {
+                                // Log.d("EMAI", emails);
+                                if (name != null && !name.contains("@")) {
+
+                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+
+                                   /* for (FullContactDBOBJ cn : Dbcontacts) {
+                                        if(!cn.getPhoneNumber().contains(emails.trim().toLowerCase())){
+
+                                           // fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+                                        }
+
+                                    }*/
+
+
+
+                                } else {
+                                    String val[] = name.split("@");
+
+                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+
+                                  /*  for (FullContactDBOBJ cn : Dbcontacts) {
+                                        if(!cn.getPhoneNumber().contains(emails.trim().toLowerCase())){
+
+                                          //  fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+                                    }
+                                    }*/
+
+                                }
+                            }
+
+
                         }
-
-
+                        cur1.close();
                     }
 
-                    cur.close();
+
+                }
+                cur.close();
+
+
+
+
+      /*          for (int i = 0; i <Contact.getInstance().ixpressemail.size() ; i++) {
+
+                   *//* if(Dbcontacts.contains(Contact.getInstance().ixpressemail.get(i).trim().toLowerCase())) {
+                        fDB.addContact(new FullContactDBOBJ(Contact.getInstance().ixpressname.get(i), Contact.getInstance().ixpressemail.get(i), Contact.getInstance().ixpress_user_pic.get(i), "true"));
+                    }*//*
+
+                    fDB.addContact(new FullContactDBOBJ(Contact.getInstance().ixpressname.get(i), Contact.getInstance().ixpressemail.get(i), Contact.getInstance().ixpress_user_pic.get(i), "true"));
+                }*/
+
+
+
+
+
+                for (FullContactDBOBJ cn : Dbcontacts) {
+
+                    if(cn.get_ixprezuser().equalsIgnoreCase("true")){
+
+                        Contact.getInstance().ixpressemail.add(cn.getPhoneNumber());
+                        Contact.getInstance().ixpressname.add(cn.getName());
+                        Contact.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
+                        Contact.getInstance().is_ixpress_user.add(true);
+                    }
+
                 }
 
-                    callwebForContacts();
+
+                TreeMap<String,String> map = new TreeMap<>();
+
+                for (FullContactDBOBJ cn : Dbcontacts) {
+                    if(cn.get_ixprezuser().equalsIgnoreCase("false")){
+                        map.put(cn.getName(),cn.getPhoneNumber());
+                    }
 
 
+                }
 
+                Contact.getInstance().ixpressemail.addAll(map.values());
+                Contact.getInstance().ixpressname.addAll(map.keySet());
 
-                // Stop the service using the startId, so that we don't stop
-                // the service in the middle of handling another job
+                for (int i = 0; i < map.size(); i++) {
+                    Contact.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
+                    Contact.getInstance().is_ixpress_user.add(false);
+                }
+
                 stopSelf(msg.arg1);
             }
         }
@@ -181,10 +277,6 @@ public class contactSyncService extends Service {
             // separate thread because the service normally runs in the process's
             // main thread, which we don't want to block.  We also make it
             // background priority so CPU-intensive work will not disrupt our UI.
-
-           /* ContactsObserver Cobserver=new ContactsObserver(new Handler());
-            getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, false, Cobserver);*/
-
 
 
             HandlerThread thread = new HandlerThread("ServiceStartArguments",
@@ -218,65 +310,34 @@ public class contactSyncService extends Service {
 
         @Override
         public void onDestroy() {
+          //  Toast.makeText(contactSyncService.this, "size in Service "+Dbcontacts.size(), Toast.LENGTH_SHORT).show();
+            ContactsObservers contactsContentObserver = new ContactsObservers(null);
+            getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI, false, contactsContentObserver);
 
-          //  Toast.makeText(this, "service done"+Contact.getInstance().email_primary.size(), Toast.LENGTH_SHORT).show();
+        }
+    public class ContactsObservers extends ContentObserver {
+
+        public ContactsObservers(Handler handler) {
+            super(handler);
         }
 
-    private void callwebForContacts() {
-
-       SharedPreferences sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-
-        if (Contact.getInstance().email_list != null) {
-
-            Contact.getInstance().ixpressemail.clear();
-            Contact.getInstance().ixpressname.clear();
-            Contact.getInstance().ixpress_user_pic.clear();
-
-            RestClient.get(contactSyncService.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
-                    new Callback<ContactsResp>() {
-                        @Override
-                        public void success(ContactsResp contactsResp, Response response) {
-
-
-                            if (contactsResp.getCode().equals("200")) {
-
-                                for (int i = 0; i < contactsResp.getData().length; i++) {
-
-                                    Contact.getInstance().ixpressemail.add(contactsResp.getData()[i].getEmail_id().trim());
-                                    Contact.getInstance().ixpressname.add(contactsResp.getData()[i].getUser_name().trim());
-                                    Contact.getInstance().ixpress_user_pic.add(contactsResp.getData()[i].getProfile_image().trim());
-
-                                }
-
-                                Contact.getInstance().ixpressemail.addAll(Contact.getInstance().email_name.values());
-                                Contact.getInstance().ixpressname.addAll(Contact.getInstance().email_name.keySet());
-                                Contact.getInstance().ixpress_user_pic.addAll(Contact.getInstance().contact_urilist);
+        @Override
+        public void onChange(boolean selfChange) {
+            this.onChange(selfChange, null);
 
 
 
-                             }  else {
-                                Contact.getInstance().ixpressemail.addAll(Contact.getInstance().email_name.values());
-                                Contact.getInstance().ixpressname.addAll(Contact.getInstance().email_name.keySet());
-                                Contact.getInstance().ixpress_user_pic.addAll(Contact.getInstance().contact_urilist);
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Toast.makeText(contactSyncService.this, "Contacts Sync failed miserably..  ", Toast.LENGTH_SHORT).show();
-
-                            Contact.getInstance().ixpressemail.addAll(Contact.getInstance().email_name.values());
-                            Contact.getInstance().ixpressname.addAll(Contact.getInstance().email_name.keySet());
-                            Contact.getInstance().ixpress_user_pic.addAll(Contact.getInstance().contact_urilist);
-                        }
-                    });
         }
 
-        else {
-            Contact.getInstance().ixpressemail.addAll(Contact.getInstance().email_name.values());
-            Contact.getInstance().ixpressname.addAll(Contact.getInstance().email_name.keySet());
-            Contact.getInstance().ixpress_user_pic.addAll(Contact.getInstance().contact_urilist);
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+
+            onCreate();
+            Log.d("ccc","ccc");
+            //Toast.makeText(contactSyncService.this, "contacts changed", Toast.LENGTH_SHORT).show();
         }
 
     }
+
+
 }

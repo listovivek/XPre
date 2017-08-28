@@ -171,6 +171,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
                 IAct.putExtra("ProfilePic",getMydp);
                 IAct.putExtra("username",list.from_user);
+                IAct.putExtra("user_id",list.getUser_id());
                 IAct.putExtra("fromemail",list.from_email);
                 IAct.putExtra("isfollowing",list.getIsUserFollowing());
 

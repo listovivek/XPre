@@ -31,7 +31,7 @@ public class Contact {
     public ArrayList<String> ixpress_user_pic = new ArrayList<>();
     public ArrayList<String> ixpressemail = new ArrayList<>();
     public ArrayList<String> ixpressemail_DB = new ArrayList<>();
-    public HashMap<String, String> ContactPairs=new HashMap<String, String>();
+    public HashMap<String, String> ContactPairs_phone=new HashMap<String, String>();
     public ArrayList<String> phone_list = new ArrayList<>();
     public ArrayList<String> email_list = new ArrayList<>();
     public ArrayList<String> contact_namelist = new ArrayList<>();

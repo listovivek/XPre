@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -128,7 +129,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
                     if (v.getId() == R.id.menu_button) {
                         popupWindow.showAsDropDown(v, v.getWidth(), -v.getHeight());
                     } else {
-                        recyclerListener.onMenuItemClicked(position, data, v.getId());
+
                         if (popupWindow.isShowing())
                             popupWindow.dismiss();
                     }
@@ -157,7 +158,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final PlayListitems list = rvListitems.get(position);
         holder.RvVideoTitle.setText(StringUtils.capitalize(list.getTitle().trim()));
-        holder.RvSender.setText(list.getFromEmail());
+        holder.RvSender.setText(list.getUsername());
         //holder.RvTime.setText(list.getCreatedDate());
 
         String DateTime = list.getCreatedDate();
@@ -269,18 +270,21 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
         }
 
 
-
-        if(!Contact.getInstance().ixpressemail.contains(list.from_email)){
-            holder.rl_foreground.setBackgroundResource(R.drawable.private_recycle_curve_spammer);
-            holder.RvImage.setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP);
-        }
-        else if(Contact.getInstance().email_list.isEmpty()){
-            holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
-            holder.RvImage.clearColorFilter();
-        }
-        else {
-            holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
-            holder.RvImage.clearColorFilter();
+        try {
+            if(!Contact.getInstance().ixpressemail.contains(list.from_email)){
+                holder.rl_foreground.setBackgroundResource(R.drawable.private_recycle_curve_spammer);
+                holder.RvImage.setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP);
+            }
+            else if(Contact.getInstance().email_list.isEmpty()){
+                holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
+                holder.RvImage.clearColorFilter();
+            }
+            else {
+                holder.rl_foreground.setBackgroundResource(R.drawable.curved_dark);
+                holder.RvImage.clearColorFilter();
+            }
+        } catch (Exception e) {
+            Toast.makeText(_context, "Contacts permisson needed to mask spam content", Toast.LENGTH_LONG).show();
         }
 
         holder.position = position;
@@ -315,7 +319,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
                     IsnewContact = true;
                 }
                 file_id_=list.getFromEmail();
-                recyclerListener.onBlock(position, file_id_,IsnewContact);
+                recyclerListener.onBlock(position, file_id_,IsnewContact,list.getUser_id());
 
             }
         });
@@ -330,12 +334,10 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
     public interface OnRecyclerListener {
         void onItemClicked(int position);
 
-        // void onItemClicked(int position, String data);
-        void onMenuItemClicked(int position, String data, int menuId);
 
         void onAccept(int position, String data);
         void onReject(int position, String data);
-        void onBlock(int position, String data, Boolean isnewContact);
+        void onBlock(int position, String data, Boolean isnewContact, String user_id);
     }
 }
 

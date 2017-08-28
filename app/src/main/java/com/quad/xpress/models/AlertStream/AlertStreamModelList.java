@@ -20,8 +20,8 @@ public class AlertStreamModelList {
     private String fileID;
     private String tags;
     private String likesCount,isUserLiked;
-    private String viewsCount;
-    private String privacy;
+    private String viewsCount,user_id;
+    private String privacy,phone_number;
 
     public AlertStreamModelList() {
 
@@ -29,7 +29,8 @@ public class AlertStreamModelList {
 
     public AlertStreamModelList(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                                 String fileuploadPath, String fileuploadFilename, String fileID, String tags,
-                                String likesCount, String viewsCount, String isUserLiked, String privacy, String sendername,String Profile_pic) {
+                                String likesCount, String viewsCount, String isUserLiked, String privacy, String sendername,String Profile_pic,
+                                String phone_number,String user_id) {
         this.filename = filename;
         this.title = title;
         this.created_date = created_date;
@@ -46,6 +47,8 @@ public class AlertStreamModelList {
         this.isUserLiked= isUserLiked;
         this.privacy = privacy;
         this.Profile_pic=Profile_pic;
+        this.phone_number=phone_number;
+        this.user_id=user_id;
     }
 
     public String getProfile_pic() {
@@ -115,6 +118,22 @@ public class AlertStreamModelList {
         }
 
         return ChangedDate;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
     }
 
     public void setCreatedDate(String created_date) {
@@ -194,4 +213,6 @@ public class AlertStreamModelList {
     public void setIsUserLiked(String isUserLiked) {
         this.isUserLiked = isUserLiked;
     }
+
+
 }

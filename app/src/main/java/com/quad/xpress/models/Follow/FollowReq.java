@@ -5,10 +5,11 @@ package com.quad.xpress.models.Follow;
  */
 
 public class FollowReq {
-    String orignator,followers;
-    public FollowReq(String orignator, String followers){
+    String orignator,followers,user_id;
+    public FollowReq(String orignator, String followers, String user_id){
         this.orignator = orignator;
         this.followers =followers;
+        this.user_id=user_id;
     }
 
 }

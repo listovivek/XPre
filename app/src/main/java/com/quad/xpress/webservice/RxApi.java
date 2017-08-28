@@ -34,6 +34,7 @@ import com.quad.xpress.models.privateAcceptReject.PrivARreq;
 import com.quad.xpress.models.privateAcceptReject.PrivARresp;
 import com.quad.xpress.models.privateBlock.PrivBlockReq;
 import com.quad.xpress.models.profile_pic.profilepicResp;
+import com.quad.xpress.models.receivedFiles.FollowerPublicListReq;
 import com.quad.xpress.models.receivedFiles.PlayListResp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListResp_emotion;
 import com.quad.xpress.models.receivedFiles.PrivatePlayListReq;
@@ -140,6 +141,10 @@ public interface RxApi {
 
      @POST("/queryService/myUploads")
      void MyUploads_API(@Header("authtoken") String authToken, @Body PublicPlayListReq body, Callback<PlayListResp_emotion> callback);
+
+    @POST("/queryService/followerscreen")
+    void Followers_public_list(@Header("authtoken") String authToken, @Body FollowerPublicListReq body, Callback<PlayListResp_emotion> callback);
+
 
     @POST("/queryService/getIsoList")
     void  GetCountry(@Header("authtoken") String authToken, @Body ReqCL body, Callback<RespCountry> callback);

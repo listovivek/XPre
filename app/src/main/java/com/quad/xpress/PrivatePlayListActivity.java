@@ -3,14 +3,10 @@ package com.quad.xpress;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.ContactsContract;
@@ -34,16 +30,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.DatabaseHandler;
-import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.utills.helpers.NetConnectionDetector;
-import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
-import com.quad.xpress.models.contacts.ContactsReq;
-import com.quad.xpress.models.contacts.ContactsResp;
 import com.quad.xpress.models.privateAcceptReject.PrivARreq;
 import com.quad.xpress.models.privateAcceptReject.PrivARresp;
 import com.quad.xpress.models.privateBlock.PrivBlockReq;
@@ -54,6 +45,9 @@ import com.quad.xpress.models.receivedFiles.PlayListitems;
 import com.quad.xpress.models.receivedFiles.PrivatePlayListReq;
 import com.quad.xpress.models.spam.spam_req;
 import com.quad.xpress.models.spam.spamresp;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -227,7 +221,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
             }
             playlistItems = new PlayListitems(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
                     , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
-                    , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getStatus(),iii.getFeaturedVideo(),iii.getPrivacy());
+                    , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getStatus(),iii.getFeaturedVideo(),
+                    iii.getPrivacy(),iii.getPhone_number(),iii.getUser_id());
             playlist.add(playlistItems);
         }
         EndOfRecords = arg0.getData().getLast();
@@ -297,6 +292,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                 videoIntent.putExtra("isPrivate","true");
                 videoIntent.putExtra("FromEmail",playlistItems.getFromEmail());
                 videoIntent.putExtra("isBoth",playlistItems.getPrivacy());
+                videoIntent.putExtra("phonenumber",playlistItems.getPhonenumber());
+                videoIntent.putExtra("user_id",playlistItems.getUser_id());
 
                 startActivity(videoIntent);
 
@@ -306,33 +303,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
         }
     }
 
-    @Override
-    public void onMenuItemClicked(int position, String data, int menuId) {
-        playlistItems = playlist.get(position);
-        switch (menuId) {
 
-            case R.id.rv_opt_accept:
-                PrivateFileFeedback(playlistItems.getFileID(), playlistItems.getFileMimeType(), "1", position);
-
-                break;
-            case R.id.rv_opt_reject:
-                PrivateFileFeedback(playlistItems.getFileID(), playlistItems.getFileMimeType(), "0", position);
-
-                break;
-            case R.id.rv_opt_block:
-                PrivateBlockUser(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), playlistItems.from_email);
-                break;
-            case R.id.rv_opt_later:
-                //  Toast.makeText(context, "rv_opt_replyad-position " + position, Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                //  Toast.makeText(context, "rv_opt_cancel", Toast.LENGTH_SHORT).show();
-                break;
-
-        }
-
-
-    }
 
     @Override
     public void onAccept(final int position, String data) {
@@ -473,7 +444,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
     }
 
     @Override
-    public void onBlock(final int position, final String data, Boolean isnewContact) {
+    public void onBlock(final int position, final String data, Boolean isnewContact, String user_id) {
 
 
 
@@ -483,7 +454,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
         final Dialog proceedDiscardDialog = new Dialog(PrivatePlayListActivity.this,
                 R.style.Theme_Transparent);
-        SpannableString ss = new SpannableString(playlistItems.getFromEmail()+"\n"+" can’t Xpress themselves to you anymore. Sure you want to proceed?");
+        SpannableString ss = new SpannableString(playlistItems.getUsername()+"\n"+" can’t Xpress themselves to you anymore. Sure you want to proceed?");
 
         ss.setSpan(new ForegroundColorSpan(Color.GREEN), 0, playlistItems.getFromEmail().length(), 0);
         ss.setSpan(new RelativeSizeSpan(1.5f), 0, playlistItems.getFromEmail().length(), 0);
@@ -534,7 +505,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
             public void onClick(View v) {
 
 
-                PrivateBlockUser(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data);
+
+                PrivateBlockUser(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data,user_id);
                 PrivateFileFeedback(playlistItems.getFileID(), playlistItems.getFileMimeType(), "0", position);
                 proceedDiscardDialog.dismiss();
 
@@ -582,7 +554,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                 v.startAnimation(buttonClick);
 
 
-                RestClient.get(context).ReportSpam(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new spam_req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data),
+                RestClient.get(context).ReportSpam(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new spam_req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), data ,user_id),
                         new Callback<spamresp>() {
                             @Override
                             public void success(spamresp spamrespx, Response response) {
@@ -621,8 +593,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
     }
 
-    private void PrivateBlockUser(String user_email, String blocked_email) {
-        RestClient.get(context).PrivateBlockWS(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivBlockReq(user_email, blocked_email), new Callback<PrivARresp>() {
+    private void PrivateBlockUser(String user_email, String blocked_email, String user_id) {
+        RestClient.get(context).PrivateBlockWS(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new PrivBlockReq(user_email, blocked_email,user_id), new Callback<PrivARresp>() {
             @Override
             public void success(final PrivARresp arg0, Response arg1) {
                 if (arg0.getCode().equals("200")) {
@@ -726,100 +698,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
         }
     }
 
-    private void mtd_contacts_reader(){
 
-        Contact.getInstance().contact_namelist.clear();
-        Contact.getInstance().email_list.clear();
-        Contact.getInstance().contact_urilist.clear();
-
-        Contact.getInstance().ixpressemail.clear();
-        Contact.getInstance().ixpressname.clear();
-        Contact.getInstance().ixpress_user_pic.clear();
-
-        int mNameColIdx, mIdColIdx;
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1){
-
-            ContentResolver cer = getContentResolver();
-
-            Cursor cur = cer.query(ContactsContract.Contacts.CONTENT_URI, null,null, null, null);
-
-            if (cur.getCount() > 0) {
-
-                while (cur.moveToNext()) {
-                    String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    Cursor cur1 = cer.query(
-                            ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (cur1.moveToNext()) {
-                        //to get the contact names
-              /*  mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                        DISPLAY_NAME_PRIMARY);
-                mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);*/
-                        String name=cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                        Log.e("Name :", name);
-                        String email = cur1.getString(cur1.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        Log.e("Email", email);
-             /*   long contactId = cur.getLong(mIdColIdx);
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();*/
-                        if(email!=null){
-                            // names.add(name);
-                            Contact.getInstance().contact_namelist.add(name);
-                            Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
-                            Contact.getInstance().email_list.add(email);
-                        }
-                    }
-                    cur1.close();
-                }
-
-                //  Toast.makeText(context, ""+Contact.getInstance().email_list, Toast.LENGTH_SHORT).show();
-            }
-
-            cur.close();
-        }
-        else {
-            Cursor cur;
-            ContentResolver cr = this.getContentResolver();
-            String[] PROJECTION = new String[]{ContactsContract.RawContacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME,
-                    ContactsContract.Contacts.PHOTO_ID,
-                    ContactsContract.CommonDataKinds.Email.DATA,
-                    ContactsContract.CommonDataKinds.Photo.CONTACT_ID};
-            String order = "CASE WHEN "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
-                    + ContactsContract.Contacts.DISPLAY_NAME
-                    + ", "
-                    + ContactsContract.CommonDataKinds.Email.DATA
-                    + " COLLATE NOCASE";
-            String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-            cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION,
-                    filter, null, order);
-
-            mNameColIdx = cur.getColumnIndex(ContactsContract.Contacts.
-                    DISPLAY_NAME_PRIMARY);
-            mIdColIdx = cur.getColumnIndex(ContactsContract.Contacts._ID);
-
-            for (int t = 0; t < cur.getCount(); t++) {
-                cur.moveToPosition(t);
-                String contactName = cur.getString(mNameColIdx);
-                long contactId = cur.getLong(mIdColIdx);
-                String email = cur.getString(cur.getColumnIndex
-                        (ContactsContract.CommonDataKinds.Email.DATA));
-                String contact_uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        contactId).toString();
-
-                Contact.getInstance().contact_namelist.add(contactName);
-                Contact.getInstance().contact_urilist.add(contact_uri);
-                Contact.getInstance().email_list.add(email);
-                Log.e("Emailx", email);
-            }
-            cur.close();
-        }
-        // Toast.makeText(context, ""+Contact.getInstance().email_list.toString(), Toast.LENGTH_SHORT).show();
-        callwebForContacts();
-    }
     public void RefreshToken() {
 
         RestClient.get(context).RefreshTokenWS(new AuthTokenReq(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""), sharedpreferences.getString(SharedPrefUtils.SpDeviceId, "")), new Callback<AuthTokenResp>() {
@@ -873,7 +752,7 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
     protected void onResume() {
         super.onResume();
             if( Contact.getInstance().email_list.size()== 0){
-               mtd_contacts_reader();
+
             }
      //   Toast.makeText(context, "" +Contact.getInstance().email_list.size(), Toast.LENGTH_SHORT).show();
 
@@ -890,69 +769,6 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
 
     }
 
-    private void callwebForContacts() {
-
-
-
-
-        if (Contact.getInstance().email_list != null) {
-
-            RestClient.get(PrivatePlayListActivity.this).PostContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
-                    new Callback<ContactsResp>() {
-                        @Override
-                        public void success(ContactsResp contactsResp, Response response) {
-
-                            if (contactsResp.getCode().equals("200")) {
-
-                                for (int i = 0; i < contactsResp.getData().length; i++) {
-
-                                    ixprez_email.add(contactsResp.getData()[i].getEmail_id());
-                                    ixprez_username.add(contactsResp.getData()[i].getUser_name());
-                                    ixprez_profilepic.add(contactsResp.getData()[i].getProfile_image());
-                                    Log.d("ixpc",contactsResp.getData()[i].getProfile_image());
-                                    //count=i++;
-                                }
-                               // Toast.makeText(context, ""+ixprez_profilepic.get(0), Toast.LENGTH_SHORT).show();
-                                DatabaseHandler handler = new DatabaseHandler(PrivatePlayListActivity.this);
-                                List<String> contacts = handler.getAllDetailsFormDatabase();
-
-                                /*if(DatabaseHandler.dbEmailList!=null &&
-                                        DatabaseHandler.dbEmailList.size()>0){
-                                    appendEmail.addAll(DatabaseHandler.dbEmailList);
-                                    appendName.addAll(DatabaseHandler.dbNameList);
-                                    appendProfilePic.addAll(DatabaseHandler.dbPicList);
-                                }*/
-
-                                // ixemailcount = ixprez_email.size();
-
-                                // ixprez user from service
-
-
-                                // internal contacts list
-
-
-                            } else if (contactsResp.getCode().equals("202")) {
-                              /*  Toast.makeText(DashBoard.this, "ixpress users...found " +
-                                        "in your contacts...", Toast.LENGTH_SHORT).show();*/
-                                //  recyclerView.setAdapter(new ContactsAdapter(cur, null));
-
-                            } else {
-
-                              /*  Toast.makeText(DashBoard.this, "Hmm,.. " +
-                                        "Something went wrong...", Toast.LENGTH_SHORT).show();*/
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            //recyclerView.setAdapter(new ContactsAdapter(cur, null));
-                        }
-                    });
-        } else {
-           /* Toast.makeText(DashBoard.this, "Hmm,.. " +
-                    "No records found...", Toast.LENGTH_SHORT).show();*/
-        }
-    }
 
 
     @Override

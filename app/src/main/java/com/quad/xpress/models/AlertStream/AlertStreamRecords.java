@@ -4,68 +4,77 @@ package com.quad.xpress.models.AlertStream;
  * Created by kural on 2/18/2017.
  */
 
-public class AlertStreamRecords {
-    private String fileuploadFilename;
+public class AlertStreamRecords
+    {
+        private String fileuploadFilename;
 
-    private String likeCount;
+        private String phone_number;
 
-    private String both;
+        private String likeCount;
 
-    private String thumbnailPath;
+        private String both;
 
-    private String fileuploadPath;
+        private String thumbnailPath;
 
-    private String date;
+        private String fileuploadPath;
 
-    private String feedback;
+        private String date;
 
-    private String title;
+        private String feedback;
 
-    private String from_name;
+        private String title;
 
-    private String _id;
+        private String from_name;
 
-    private String from_email;
+        private String _id;
 
-    private String createdAt;
+        private String from_email;
 
-    private String del_status;
+        private String createdAt;
 
-    private String dp;
+        private String action;
 
-    private String thumbnailFilename;
+        private String user_id;
 
-    private String created_date;
+        private String del_status;
 
-    private String tags;
+        private String dp;
 
-    private String featuredVideo;
+        private String thumbnailFilename;
 
-    private String isUserLiked;
+        private String likes_count;
 
-    private String status;
+        private String created_date;
 
-    private String __v;
+        private String tags;
 
-    private String privacy;
+        private String featuredVideo;
 
-    private String viewed;
+        private String isUserLiked;
 
-    private String country;
+        private String status;
 
-    private String updatedAt;
+        private String privacy;
 
-    private String is_deleted;
+        private String __v;
 
-    private String thumbnailmimeType;
+        private String viewed;
 
-    private String filemimeType;
+        private String country;
 
-    private String language;
+        private String updatedAt;
 
-    private String view_count;
+        private String is_deleted;
 
-    private String to_email;
+        private String thumbnailmimeType;
+
+        private String filemimeType;
+
+        private String language;
+
+        private String view_count;
+
+        private String to_email;
 
     public String getFileuploadFilename ()
     {
@@ -75,6 +84,16 @@ public class AlertStreamRecords {
     public void setFileuploadFilename (String fileuploadFilename)
     {
         this.fileuploadFilename = fileuploadFilename;
+    }
+
+    public String getPhone_number ()
+    {
+        return phone_number;
+    }
+
+    public void setPhone_number (String phone_number)
+    {
+        this.phone_number = phone_number;
     }
 
     public String getLikeCount ()
@@ -187,6 +206,26 @@ public class AlertStreamRecords {
         this.createdAt = createdAt;
     }
 
+    public String getAction ()
+    {
+        return action;
+    }
+
+    public void setAction (String action)
+    {
+        this.action = action;
+    }
+
+    public String getUser_id ()
+    {
+        return user_id;
+    }
+
+    public void setUser_id (String user_id)
+    {
+        this.user_id = user_id;
+    }
+
     public String getDel_status ()
     {
         return del_status;
@@ -215,6 +254,16 @@ public class AlertStreamRecords {
     public void setThumbnailFilename (String thumbnailFilename)
     {
         this.thumbnailFilename = thumbnailFilename;
+    }
+
+    public String getLikes_count ()
+    {
+        return likes_count;
+    }
+
+    public void setLikes_count (String likes_count)
+    {
+        this.likes_count = likes_count;
     }
 
     public String getCreated_date ()
@@ -267,16 +316,6 @@ public class AlertStreamRecords {
         this.status = status;
     }
 
-    public String get__v ()
-    {
-        return __v;
-    }
-
-    public void set__v (String __v)
-    {
-        this.__v = __v;
-    }
-
     public String getPrivacy ()
     {
         return privacy;
@@ -285,6 +324,16 @@ public class AlertStreamRecords {
     public void setPrivacy (String privacy)
     {
         this.privacy = privacy;
+    }
+
+    public String get__v ()
+    {
+        return __v;
+    }
+
+    public void set__v (String __v)
+    {
+        this.__v = __v;
     }
 
     public String getViewed ()
@@ -380,6 +429,6 @@ public class AlertStreamRecords {
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", from_name = "+from_name+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", del_status = "+del_status+", dp = "+dp+", thumbnailFilename = "+thumbnailFilename+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", __v = "+__v+", privacy = "+privacy+", viewed = "+viewed+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", phone_number = "+phone_number+", likeCount = "+likeCount+", both = "+both+", thumbnailPath = "+thumbnailPath+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", from_name = "+from_name+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", action = "+action+", user_id = "+user_id+", del_status = "+del_status+", dp = "+dp+", thumbnailFilename = "+thumbnailFilename+", likes_count = "+likes_count+", created_date = "+created_date+", tags = "+tags+", featuredVideo = "+featuredVideo+", isUserLiked = "+isUserLiked+", status = "+status+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

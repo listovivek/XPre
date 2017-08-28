@@ -20,19 +20,21 @@ import com.quad.xpress.CameraRecordActivity;
 import com.quad.xpress.R;
 
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by suresh on 3/4/17.
  */
 public class FragmentXpressActivity extends Fragment implements
-        ContactRecycleAdapter.onRecyclerListener, View.OnClickListener{
+         View.OnClickListener, ContactRecycleAdapter.onRecyclerListener {
 
 
     private RecyclerView recyclerView_ixpress;
     SearchView searchView;
     View v;
     private int itemPosition, recentPosition;
-    ContactRecycleAdapter mAdapter;
+//    ContactRecycleSearchAdapter mAdapter;
+    ContactRecycleAdapter  mAdapter;
     ImageButton audio_Button, video_Button;
     String tempEmail, tempName;
     SwipeRefreshLayout Swr;
@@ -65,9 +67,72 @@ public class FragmentXpressActivity extends Fragment implements
 
 
 
-        mAdapter = new ContactRecycleAdapter(Contact.getInstance(), FragmentXpressActivity.this,
+
+
+
+
+
+        Contact contactData = new Contact();
+
+
+        contactData.getInstance().ixpressemail.clear();
+        contactData.getInstance().ixpressname.clear();
+        contactData.getInstance().ixpress_user_pic.clear();
+        contactData.getInstance().is_ixpress_user.clear();
+
+        FullContactsDBhandler fDB = new FullContactsDBhandler(getActivity());
+        List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
+
+        if(Dbcontacts.size() <= 0 || Contact.getInstance().ixpressemail.size() > Dbcontacts.size()){
+
+            contactData.getInstance().ixpressemail.clear();
+            contactData.getInstance().ixpressname.clear();
+            contactData.getInstance().ixpress_user_pic.clear();
+            contactData.getInstance().is_ixpress_user.clear();
+
+                contactData = Contact.getInstance();
+            //Toast.makeText(getActivity(), ""+Contact.getInstance().ixpressemail.size(), Toast.LENGTH_SHORT).show();
+
+
+        }
+
+        for (FullContactDBOBJ cn : Dbcontacts) {
+
+            if(cn.get_ixprezuser().equalsIgnoreCase("true")){
+
+                contactData.getInstance().ixpressemail.add(cn.getPhoneNumber());
+                contactData.getInstance().ixpressname.add(cn.getName());
+                contactData.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
+                contactData.getInstance().is_ixpress_user.add(true);
+            }
+
+        }
+
+
+        TreeMap<String,String> map = new TreeMap<>();
+
+        for (FullContactDBOBJ cn : Dbcontacts) {
+            if(cn.get_ixprezuser().equalsIgnoreCase("false")){
+                map.put(cn.getName(),cn.getPhoneNumber());
+            }
+
+
+        }
+
+        contactData.getInstance().ixpressemail.addAll(map.values());
+        contactData.getInstance().ixpressname.addAll(map.keySet());
+
+        for (int i = 0; i < map.size(); i++) {
+            contactData.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
+            contactData.getInstance().is_ixpress_user.add(false);
+        }
+      /*  mAdapter = new ContactRecycleSearchAdapter(contactData.getInstance(), FragmentXpressActivity.this,
                 FragmentXpressActivity.this);
+*/
+        mAdapter = new ContactRecycleAdapter(contactData.getInstance(),FragmentXpressActivity.this,FragmentXpressActivity.this);
+
         recyclerView_ixpress.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

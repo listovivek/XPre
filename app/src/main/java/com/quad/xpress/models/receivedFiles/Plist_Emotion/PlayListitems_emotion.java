@@ -25,7 +25,7 @@ public class PlayListitems_emotion {
     private String emotion;
     private String emotion_count;
     private String isUserFollowing;
-    private String Privacy;
+    private String Privacy,phone_number,user_id;
 
     public PlayListitems_emotion() {
 
@@ -34,7 +34,7 @@ public class PlayListitems_emotion {
     public PlayListitems_emotion(String filename, String title, String created_date, String from_email, String TBPath, String filemimeType,
                                  String fileuploadPath, String fileuploadFilename, String fileID,String tags,
                                  String likesCount, String viewsCount, String isUserLiked,String emotion,String emotion_count,
-                                    String isUserFollowing, String Privacy ,String to_email,String from_user,String Mydp) {
+                                    String isUserFollowing, String Privacy ,String to_email,String from_user,String Mydp,String user_id,String phone_number) {
         this.filename = filename;
         this.title = title;
         this.to_email =to_email;
@@ -55,6 +55,25 @@ public class PlayListitems_emotion {
         this.isUserFollowing= isUserFollowing;
         this.Privacy = Privacy;
         this.Mydp = Mydp;
+        this.phone_number=phone_number;
+        this.user_id=user_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
     }
 
     public void setMydp(String mydp) {

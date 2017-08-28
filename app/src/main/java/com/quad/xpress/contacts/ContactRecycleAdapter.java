@@ -1,9 +1,9 @@
 package com.quad.xpress.contacts;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,16 +35,15 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
 
     private Contact mContact;
     private FragmentXpressActivity mContext;
-    private Dialog SendDiscardDialog;
     private onRecyclerListener mOnRecyclerListener;
     ValueFilter valueFilter;
 
-    public List<String> mFilterEmail;
+    List<String> mFilterEmail;
     List<String> mFilterName;
     List<String> mFilterPic;
     Context context;
     List<String> mStringFilterList;
-
+    List<Boolean>isiXprezuser;
     /*public ContactRecycleAdapter(Contact contact, onRecyclerListener recycler, Context con) {
         this.mData = contact.ixpressemail;
         this.mContact = contact;
@@ -63,6 +62,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
         this.mOnRecyclerListener = recycler;
         this.mFilterName = contact.ixpressname;
         this.mFilterPic = contact.ixpress_user_pic;
+        this.isiXprezuser = contact.is_ixpress_user;
     }
 
 
@@ -147,9 +147,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
         }
     }
 
-    private void alert() {
-        SendDiscardDialog.show();
-    }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -192,15 +190,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                                 .centerCrop()
                                 .into(holder.mImage);
 
-                    } else if(imgUrl.contains("https")){
-                        Picasso.with(mContext.getActivity()).load(imgUrl)
-                                .resize(300,300)
-                                .centerCrop()
-                                .into(holder.mImage);
-
-                    }
-
-                    else {
+                    } else {
                         // imgUrl = StaticConfig.ROOT_URL + "/" +imgUrl;
                     }
 
@@ -214,7 +204,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                 }
 
                 holder.mImageButton.setBackgroundResource(R.drawable.ic_heart_white);
-            //    Log.d("Pic URL", ""+mFilterPic.get(position));
+                Log.d("Pic URL", ""+mFilterPic.get(position));
 
             }else{
                 holder.mLabel.setText(mFilterName.get(position));
@@ -237,20 +227,22 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
             holder.mLabel.setText(mFilterName.get(position));
             holder.mEmail.setText(mFilterEmail.get(position));
 
-            try {
-                Picasso.with(mContext.getActivity()).load(mFilterPic.get(position))
-                        .resize(300, 300)
-                        .centerCrop()
-                        .placeholder(R.mipmap.ic_user_icon)
-                        .error(R.mipmap.ic_user_icon)
-                        .into(holder.mImage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Picasso.with(mContext.getActivity()).load(mFilterPic.get(position))
+                    .resize(300, 300)
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_user_icon)
+                    .error(R.mipmap.ic_user_icon)
+                    .into(holder.mImage);
 
             holder.mImageButton.setBackgroundResource(android.R.drawable.ic_dialog_email);
 
         }
+
+
+        if(isiXprezuser.get(position)){
+            holder.mImageButton.setBackgroundResource(R.drawable.ic_heart_white);
+        }
+
     }
 
     @Override
@@ -275,6 +267,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
 
     private class ValueFilter extends Filter{
         ArrayList<String> pic = new ArrayList<>();
+        ArrayList<Boolean> picx = new ArrayList<>();
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
@@ -288,6 +281,7 @@ public class ContactRecycleAdapter extends RecyclerView.Adapter<ContactRecycleAd
                     if ((mStringFilterList.get(i).toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         nn.put(mStringFilterList.get(i), mContact.ixpressname.get(i));
                         pic.add(mFilterPic.get(i));
+                        picx.add(isiXprezuser.get(i));
                     }
                 }
 

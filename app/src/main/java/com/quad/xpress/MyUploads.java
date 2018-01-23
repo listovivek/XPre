@@ -28,7 +28,7 @@ import com.quad.xpress.Myuploads.DeleteReq;
 import com.quad.xpress.Myuploads.MyUploadsAdapter;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.clickResponce.Like_Resp;
@@ -278,7 +278,7 @@ public class MyUploads extends AppCompatActivity implements MyUploadsAdapter.OnR
                 return;
             }
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
-                    , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
+                    , iii.getThumbtokenizedUrl(), iii.getFilemimeType(), iii.getTokenizedUrl(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),
                     sb.toString(),iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),
                     iii.getFrom_user(),iii.getMydp(),iii.getUser_id(),iii.getPhone_number());

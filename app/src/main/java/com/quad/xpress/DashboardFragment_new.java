@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Emotion;
@@ -217,15 +217,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
         }
     }
 
-    @Override
-    public void Subcribed(int position, String email) {
 
-    }
-
-    @Override
-    public void UnSubcribed(int position, String email) {
-
-    }
 
 
     private void getData() {
@@ -323,7 +315,7 @@ public class DashboardFragment_new extends Fragment implements adapter_dashboard
                 return;
             }
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
-                    , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
+                    , iii.getThumbtokenizedUrl(), iii.getFilemimeType(), iii.getTokenizedUrl(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),
                     iii.getEmotionCount(),iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),
                     iii.getMydp(),iii.getUser_id(),iii.getPhone_number());

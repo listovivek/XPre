@@ -59,13 +59,14 @@ import com.quad.xpress.models.counter.CounterReq;
 import com.quad.xpress.models.counter.CounterResp;
 import com.quad.xpress.models.featuredVideos.featuredReq;
 import com.quad.xpress.models.featuredVideos.featuredResp;
+import com.quad.xpress.uploadsFragments.act_my_uploads;
 import com.quad.xpress.utills.StatiConstants;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.utills.ViewPagerCustom;
 import com.quad.xpress.utills.helpers.FieldsValidator;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -75,7 +76,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.crosswall.lib.coverflow.CoverFlow;
@@ -159,7 +159,8 @@ public class DashBoard extends AppCompatActivity {
     NotificationBadge TopBadge,tv_PvtCount,tv_notifi_count;;
     private boolean NoPermisson  = true;
     FullContactsDBhandler fDB;
-
+    TextView tv_guide_prog;
+    List<FullContactDBOBJ> Dbcontacts;
 
     @Override
     protected void onStart() {
@@ -401,7 +402,7 @@ public class DashBoard extends AppCompatActivity {
         tv_nb_MyUploads.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentMyuploads = new Intent(DashBoard.this,MyUploads.class);
+                Intent intentMyuploads = new Intent(DashBoard.this,act_my_uploads.class);
                 startActivity(intentMyuploads);
             }
         });
@@ -545,6 +546,7 @@ public class DashBoard extends AppCompatActivity {
             });
 
         mtd_getFeatured_bkp();
+
         myPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -863,6 +865,7 @@ public class DashBoard extends AppCompatActivity {
                             Contact.getInstance().contact_namelist.add(name);
                             Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
                             Contact.getInstance().ContactPairs_phone.put(phoneNumber, name);
+                            fDB.addContact(new FullContactDBOBJ(name.trim(), phoneNumber.replace(" ", "").trim(),String.valueOf(R.drawable.ic_user_icon), "false","yes"));
                             phoneNumber = null;
 
                         }
@@ -887,25 +890,52 @@ public class DashBoard extends AppCompatActivity {
 
         SharedPreferences sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
 
-            Contact.getInstance().ixpressemail.clear();
-            Contact.getInstance().ixpressname.clear();
-            Contact.getInstance().ixpress_user_pic.clear();
-            Contact.getInstance().is_ixpress_user.clear();
+
 
             RestClient.get(this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
                     new Callback<ContactsResp>() {
                         @Override
                         public void success(ContactsResp contactsResp, Response response) {
 
+                            Contact.getInstance().ixpressemail.clear();
+                            Contact.getInstance().ixpressname.clear();
+                            Contact.getInstance().ixpress_user_pic.clear();
+                            Contact.getInstance().is_ixpress_user.clear();
+
 
                             if (contactsResp.getCode().equals("200")) {
 
                                 for (int i = 0; i < contactsResp.getData().length; i++) {
 
-                    fDB.addContact(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(), contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
+                               fDB.addContact(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(), contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true","yep"));
 
 
                                 }
+
+
+
+
+                                if(!guide){
+                                    pbar.setVisibility(View.GONE);
+                                    isLoadingContacts = false;
+                                    tv_guide_prog.setVisibility(View.GONE);
+
+                                }
+                                Dbcontacts = fDB.getAllContacts();
+
+                                for (FullContactDBOBJ cn : Dbcontacts) {
+
+                                    if(cn.get_ixprezuser().equalsIgnoreCase("true")){
+
+                                        Contact.getInstance().ixpressemail.add(cn.getPhoneNumber());
+                                        Contact.getInstance().ixpressname.add(cn.getName());
+                                        Contact.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
+                                        Contact.getInstance().is_ixpress_user.add(true);
+                                    }
+
+                                }
+
+
 
                                 new ContactsReaderEmail().execute();
 
@@ -960,12 +990,12 @@ public class DashBoard extends AppCompatActivity {
                                // Log.d("EMAI", emails);
                                 if (name != null && !name.contains("@")) {
 
-                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false","nope"));
 
 
                                 } else {
                                     String val[] = name.split("@");
-                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+                                    fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false","nope"));
 
                                 }
                             }
@@ -987,44 +1017,7 @@ public class DashBoard extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
-
-            for (FullContactDBOBJ cn : Dbcontacts) {
-
-              if(cn.get_ixprezuser().equalsIgnoreCase("true")){
-
-                  Contact.getInstance().ixpressemail.add(cn.getPhoneNumber());
-                  Contact.getInstance().ixpressname.add(cn.getName());
-                  Contact.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
-                  Contact.getInstance().is_ixpress_user.add(true);
-              }
-
-            }
-
-
-            TreeMap<String,String> map = new TreeMap<>();
-
-                for (FullContactDBOBJ cn : Dbcontacts) {
-                    if(cn.get_ixprezuser().equalsIgnoreCase("false")){
-                        map.put(cn.getName(),cn.getPhoneNumber());
-                    }
-
-
-                }
-
-            Contact.getInstance().ixpressemail.addAll(map.values());
-            Contact.getInstance().ixpressname.addAll(map.keySet());
-
-            for (int i = 0; i < map.size(); i++) {
-                Contact.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
-                Contact.getInstance().is_ixpress_user.add(false);
-            }
-            if(!guide){
-                pbar.setVisibility(View.GONE);
-                isLoadingContacts = false;
-
-            }
-            }
+          }
 
 
 
@@ -1055,11 +1048,11 @@ public class DashBoard extends AppCompatActivity {
                             for (int i=0 ; i < featuredResp.getData().length;i++){
                                 user_name.add(featuredResp.getData()[i].getUsername());
                                 user_img.add(featuredResp.getData()[i].getProfilePicture());
-                                thumb_url.add(featuredResp.getData()[i].getThumbnailPath());
+                                thumb_url.add(featuredResp.getData()[i].getThumbtokenizedUrl());
                                 time.add(featuredResp.getData()[i].getTimePost());
                                 likes.add(featuredResp.getData()[i].getLikeCount());
                                 views.add(featuredResp.getData()[i].getView_count());
-                                media.add(featuredResp.getData()[i].getFileuploadPath());
+                                media.add(featuredResp.getData()[i].getTokenizedUrl());
                                 reactions.add(featuredResp.getData()[i].getSmailyCount());
                                 title.add(featuredResp.getData()[i].getTitle());
                                 file_id.add(featuredResp.getData()[i].get_id());
@@ -1264,6 +1257,7 @@ public class DashBoard extends AppCompatActivity {
        GuideDialog.show();
 
         pbar = GuideDialog.findViewById(R.id.progressBar_guide);
+        tv_guide_prog = GuideDialog.findViewById(R.id.tv_guide_progress);
         pbar.setVisibility(View.INVISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             pbar.setTooltipText("Sync in progress..");

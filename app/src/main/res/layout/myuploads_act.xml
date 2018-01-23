@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <include layout="@layout/toolbar_normal"
+        android:id="@+id/tb"/>
+
+    <android.support.design.widget.TabLayout
+
+        android:id="@+id/act_my_upl_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="1dp"
+        android:layout_gravity="top"
+        android:elevation="3dp"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/Bg_divider"
+        />
+
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/myupl_viewpager">
+
+    </android.support.v4.view.ViewPager>
+
+</LinearLayout>

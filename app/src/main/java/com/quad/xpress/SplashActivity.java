@@ -50,6 +50,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
 
+
         //CheckAndRequestPermission();
         Intent2Activity();
 

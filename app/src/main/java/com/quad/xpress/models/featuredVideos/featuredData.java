@@ -6,6 +6,7 @@ package com.quad.xpress.models.featuredVideos;
 
 public class featuredData {
 
+    
         private String fileuploadFilename;
 
         private String timePost;
@@ -13,6 +14,8 @@ public class featuredData {
         private String thumbnailPath;
 
         private String likeCount;
+
+        private String tokenizedUrl;
 
         private String fileuploadPath;
 
@@ -43,6 +46,8 @@ public class featuredData {
         private String privacy;
 
         private String __v;
+
+        private String thumbtokenizedUrl;
 
         private String viewed;
 
@@ -102,6 +107,16 @@ public class featuredData {
     public void setLikeCount (String likeCount)
     {
         this.likeCount = likeCount;
+    }
+
+    public String getTokenizedUrl ()
+    {
+        return tokenizedUrl;
+    }
+
+    public void setTokenizedUrl (String tokenizedUrl)
+    {
+        this.tokenizedUrl = tokenizedUrl;
     }
 
     public String getFileuploadPath ()
@@ -254,6 +269,16 @@ public class featuredData {
         this.__v = __v;
     }
 
+    public String getThumbtokenizedUrl ()
+    {
+        return thumbtokenizedUrl;
+    }
+
+    public void setThumbtokenizedUrl (String thumbtokenizedUrl)
+    {
+        this.thumbtokenizedUrl = thumbtokenizedUrl;
+    }
+
     public String getViewed ()
     {
         return viewed;
@@ -357,6 +382,6 @@ public class featuredData {
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", timePost = "+timePost+", thumbnailPath = "+thumbnailPath+", likeCount = "+likeCount+", fileuploadPath = "+fileuploadPath+", feedback = "+feedback+", username = "+username+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", created_date = "+created_date+", featuredVideo = "+featuredVideo+", liked = "+liked+", profilePicture = "+profilePicture+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", smailyCount = "+smailyCount+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", timePost = "+timePost+", thumbnailPath = "+thumbnailPath+", likeCount = "+likeCount+", tokenizedUrl = "+tokenizedUrl+", fileuploadPath = "+fileuploadPath+", feedback = "+feedback+", username = "+username+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", created_date = "+created_date+", featuredVideo = "+featuredVideo+", liked = "+liked+", profilePicture = "+profilePicture+", privacy = "+privacy+", __v = "+__v+", thumbtokenizedUrl = "+thumbtokenizedUrl+", viewed = "+viewed+", smailyCount = "+smailyCount+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

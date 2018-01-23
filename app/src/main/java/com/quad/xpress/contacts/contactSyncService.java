@@ -27,7 +27,6 @@ import com.quad.xpress.webservice.RestClient;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -110,6 +109,8 @@ public class contactSyncService extends Service {
                                 Contact.getInstance().contact_namelist.add(name);
                                 Contact.getInstance().contact_urilist.add(String.valueOf(R.drawable.ic_user_icon));
                                 Contact.getInstance().ContactPairs_phone.put(phoneNumber, name);
+                                fDB.addContact(new FullContactDBOBJ(name.trim(), phoneNumber.replace(" ", "").trim(),String.valueOf(R.drawable.ic_user_icon), "false","yes"));
+
                                 phoneNumber = null;
 
 
@@ -123,10 +124,7 @@ public class contactSyncService extends Service {
 
 
 
-                Contact.getInstance().ixpressemail.clear();
-                Contact.getInstance().ixpressname.clear();
-                Contact.getInstance().ixpress_user_pic.clear();
-                Contact.getInstance().is_ixpress_user.clear();
+
 
                 sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
                 RestClient.get(contactSyncService.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(Contact.getInstance().email_list),
@@ -134,24 +132,19 @@ public class contactSyncService extends Service {
                             @Override
                             public void success(ContactsResp contactsResp, Response response) {
 
-
                                 if (contactsResp.getCode().equals("200")) {
 
 
                                     for (int i = 0; i < contactsResp.getData().length; i++) {
 
                                         fDB.addContactWithConflict(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(),
-                                                contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
-
-                                        //fDB.updateContact(new FullContactDBOBJ(contactsResp.getData()[i].getUser_name().trim(), contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true"));
-
-
-
+                                                contactsResp.getData()[i].getEmail_id().trim().toLowerCase(), contactsResp.getData()[i].getProfile_image().trim(), "true","yep"));
                                     }
 
-
-
                                 }
+
+
+
                             }
 
                             @Override
@@ -184,29 +177,14 @@ public class contactSyncService extends Service {
                                 // Log.d("EMAI", emails);
                                 if (name != null && !name.contains("@")) {
 
-                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
-
-                                   /* for (FullContactDBOBJ cn : Dbcontacts) {
-                                        if(!cn.getPhoneNumber().contains(emails.trim().toLowerCase())){
-
-                                           // fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
-                                        }
-
-                                    }*/
-
+                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(name, 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false","nope"));
 
 
                                 } else {
                                     String val[] = name.split("@");
 
-                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
+                                    fDB.addContactWithConflict(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false","nope"));
 
-                                  /*  for (FullContactDBOBJ cn : Dbcontacts) {
-                                        if(!cn.getPhoneNumber().contains(emails.trim().toLowerCase())){
-
-                                          //  fDB.addContact(new FullContactDBOBJ(StringUtils.abbreviate(val[0], 18), emails.trim().toLowerCase(), String.valueOf(R.drawable.ic_user_icon), "false"));
-                                    }
-                                    }*/
 
                                 }
                             }
@@ -222,21 +200,7 @@ public class contactSyncService extends Service {
 
 
 
-
-      /*          for (int i = 0; i <Contact.getInstance().ixpressemail.size() ; i++) {
-
-                   *//* if(Dbcontacts.contains(Contact.getInstance().ixpressemail.get(i).trim().toLowerCase())) {
-                        fDB.addContact(new FullContactDBOBJ(Contact.getInstance().ixpressname.get(i), Contact.getInstance().ixpressemail.get(i), Contact.getInstance().ixpress_user_pic.get(i), "true"));
-                    }*//*
-
-                    fDB.addContact(new FullContactDBOBJ(Contact.getInstance().ixpressname.get(i), Contact.getInstance().ixpressemail.get(i), Contact.getInstance().ixpress_user_pic.get(i), "true"));
-                }*/
-
-
-
-
-
-                for (FullContactDBOBJ cn : Dbcontacts) {
+            /*    for (FullContactDBOBJ cn : Dbcontacts) {
 
                     if(cn.get_ixprezuser().equalsIgnoreCase("true")){
 
@@ -252,8 +216,12 @@ public class contactSyncService extends Service {
                 TreeMap<String,String> map = new TreeMap<>();
 
                 for (FullContactDBOBJ cn : Dbcontacts) {
-                    if(cn.get_ixprezuser().equalsIgnoreCase("false")){
-                        map.put(cn.getName(),cn.getPhoneNumber());
+                    if((cn.get_diplayed().equalsIgnoreCase("true")) ){
+
+                         map.put(cn.getName(),cn.getPhoneNumber());
+                        *//*if((cn.get_diplayed().equalsIgnoreCase("true"))){
+
+                        }*//*
                     }
 
 
@@ -266,7 +234,7 @@ public class contactSyncService extends Service {
                     Contact.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
                     Contact.getInstance().is_ixpress_user.add(false);
                 }
-
+*/
                 stopSelf(msg.arg1);
             }
         }

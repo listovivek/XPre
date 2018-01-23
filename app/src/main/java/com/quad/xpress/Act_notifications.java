@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.quad.xpress.utills.helpers.LoadingDialog;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.AlertStream.AdapterAlertStream;
 import com.quad.xpress.models.AlertStream.AlertStreamModelList;
 import com.quad.xpress.models.AlertStream.AlertStreamReq;
@@ -240,9 +240,9 @@ public class Act_notifications extends Activity implements AdapterAlertStream.On
                                         alertStreamResp.getData().getRecords()[i].getTitle(),
                                         alertStreamResp.getData().getRecords()[i].getCreated_date(),
                                         alertStreamResp.getData().getRecords()[i].getFrom_email(),
-                                        alertStreamResp.getData().getRecords()[i].getThumbnailPath(),
+                                        alertStreamResp.getData().getRecords()[i].getThumbtokenizedUrl(),
                                         alertStreamResp.getData().getRecords()[i].getFilemimeType(),
-                                        alertStreamResp.getData().getRecords()[i].getFileuploadPath(),
+                                        alertStreamResp.getData().getRecords()[i].getTokenizedUrl(),
                                         alertStreamResp.getData().getRecords()[i].getFileuploadFilename(),
                                         alertStreamResp.getData().getRecords()[i].get_id(),
                                         alertStreamResp.getData().getRecords()[i].getTags(),

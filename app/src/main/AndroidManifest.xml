@@ -213,6 +213,13 @@
             android:label="Your Uploads"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".uploadsFragments.act_my_uploads"
+            android:label="Your Uploads"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".Act_user_data"
             android:label="User Public Uploads"

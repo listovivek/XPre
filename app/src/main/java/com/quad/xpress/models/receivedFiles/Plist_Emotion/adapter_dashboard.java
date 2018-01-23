@@ -20,11 +20,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
-import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
-import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 
 import org.apache.commons.lang3.StringUtils;
@@ -183,20 +182,6 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
 
 
-     /*   ViewTreeObserver vto = holder.RvImage.getViewTreeObserver();
-
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                // Remove after the first run so it doesn't fire forever
-                holder.RvImage.getViewTreeObserver().removeOnPreDrawListener(this);
-                finalHeight = holder.RvImage.getMeasuredHeight();
-                finalWidth = holder.RvImage.getMeasuredWidth();
-
-                return true;
-            }
-        });
-*/
-
 
         if (list.getIsUserFollowing().equalsIgnoreCase("1")){
 
@@ -208,52 +193,6 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
         }
 
 
-
-       /* if (list.getIsUserFollowing().equalsIgnoreCase("1")){
-
-            holder.tv_follow.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfollow,0,0,0);
-            holder.tv_follow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.UnSubcribed(position,list.getFromEmail());
-
-
-                }});
-
-
-            holder.ll_follow_user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.UnSubcribed(position,list.getFromEmail());
-
-                }
-            });
-
-
-                }else {
-                holder.tv_follow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    recyclerListener.Subcribed(position,list.getFromEmail());
-
-
-                }});
-
-            holder.ll_follow_user.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    recyclerListener.Subcribed(position,list.getFromEmail());
-
-                }
-            });
-
-
-
-        }
-*/
 
 
 
@@ -547,45 +486,6 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
             }
         });
 
-      /*  holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                switch (v.getId()) {
-
-
-                    case R.id.RvImage:
-                    case R.id.imageView_play_icon:
-                    case R.id.imageView_audio_icon:
-                    case R.id.RvVideoTitle:
-
-                        Toast.makeText(_context, "Click", Toast.LENGTH_LONG).show();
-                        holder.pbar.setVisibility(View.INVISIBLE);
-
-                        recyclerListener.onItemClicked(holder.position);
-
-                        int views_count;
-                        views_count=Integer.parseInt(list.getViewsCount());
-                        views_count++;
-
-                        holder.RvMoreTag.setText(views_count+" Views");
-                        file_id_=list.getFileID();
-                        String Vtype = list.getFileMimeType();
-                        if(Vtype.equalsIgnoreCase("video/mp4")){
-                            video_type = "video";
-                        }else {
-                            video_type = "audio";
-                        }
-
-                        mtd_views_count();
-                        break;
-                }
-
-
-                Toast.makeText(_context, "Outside Click", Toast.LENGTH_LONG).show();
-
-            }
-        });*/
 
 
 
@@ -594,51 +494,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
 
 
 
-    private void mtd_like_count() {
 
-        sharedpreferences = _context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-
-        String Emotion="like";
-
-        RestClient.get(_context).Liked(sharedpreferences.getString(SharedPrefUtils.SpToken, ""), new Like_Req(sharedpreferences.getString(SharedPrefUtils.SpEmail, ""),Emotion,Status,file_id_),
-                new Callback<Like_Resp>() {
-                    @Override
-                    public void success(final Like_Resp arg0, Response arg1) {
-
-                        if (arg0.getCode().equals("200")) {
-
-                            String Post_status = arg0.getStatus();
-                        //    Log.d("Mes-Like",Post_status);
-                           if(Post_status.equals("")){
-                              // Toast.makeText(_context, "Success +1", Toast.LENGTH_LONG).show();
-                           }else {
-                              // Toast.makeText(_context, "Failed ", Toast.LENGTH_LONG).show();
-                           }
-                           // LD.DismissTheDialog();
-                            //  Populate();
-                        } else if (arg0.getCode().equals("601")) {
-                            Toast.makeText(_context, "Please, try again", Toast.LENGTH_LONG).show();
-                            //  RefreshToken();
-                        } else if (arg0.getCode().equals("202")) {
-                            Toast.makeText(_context, "No Records ", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            Toast.makeText(_context, "ReceiveFile error " + arg0.getCode(), Toast.LENGTH_LONG).show();
-
-                        }
-                        //Populate();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                       // LD.DismissTheDialog();
-
-                        Toast.makeText(_context, "Error Raised", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-    }
 
     private void mtd_views_count() {
         sharedpreferences = _context.getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -693,8 +549,7 @@ public class adapter_dashboard extends RecyclerView.Adapter<adapter_dashboard.My
     public interface OnRecyclerListener {
         void onItemClicked(int position);
 
-        void Subcribed(int position,String email);
-        void UnSubcribed(int position,String email);
+
 
 
     }

@@ -37,7 +37,6 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.models.registration.RegRequest;
 import com.quad.xpress.models.registration.RegResp;
-import com.quad.xpress.utills.helpers.LoadingDialog;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
@@ -73,6 +72,10 @@ public class OTPverification extends AppCompatActivity {
     TextWatcher mTextEditorWatcher;
    // Intent VerifiedIntent;
     Intent intentemail;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +100,9 @@ public class OTPverification extends AppCompatActivity {
                 // 2 - Auto-retrieval. On some devices Google Play services can automatically
                 //     detect the incoming verification SMS and perform verificaiton without
                 //     user action.
+
                 Log.d(TAG, "onVerificationCompleted:" + credential);
+
                 // [START_EXCLUDE silent]
                 StartRegistration(credential);
 
@@ -132,12 +137,13 @@ public class OTPverification extends AppCompatActivity {
                 // [START_EXCLUDE silent]
                 mVerificationInProgress = false;
                 // [END_EXCLUDE]
-               // Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
+
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
                     // [START_EXCLUDE]
                     // mPhoneNumberField.setError("Invalid phone number.");
                     // [END_EXCLUDE]
+
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     // [START_EXCLUDE]
@@ -146,7 +152,7 @@ public class OTPverification extends AppCompatActivity {
                             Snackbar.LENGTH_SHORT).show();
                     // [END_EXCLUDE]
                 }
-
+                Toast.makeText(getApplicationContext(), "Verification Timeout Enter manually...", Toast.LENGTH_SHORT).show();
                 // Show a message and update the UI
                 // [START_EXCLUDE]
                 //  updateUI(STATE_VERIFY_FAILED);
@@ -256,12 +262,8 @@ public class OTPverification extends AppCompatActivity {
         tvResendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //   Toast.makeText(OTPverification.this, "Resend Clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(OTPverification.this, "OTP Resent.", Toast.LENGTH_LONG).show();
                 ResendOtpWebService();
-
-
-
-
 
             }
         });
@@ -282,6 +284,7 @@ public class OTPverification extends AppCompatActivity {
             public void onClick(View v) {
 
                 TypedOtp = et_otp.getText().toString();
+
                 if (TypedOtp.length() == 6) {
 
                    // OtpVerifyWebService(TypedOtp);
@@ -370,13 +373,13 @@ public class OTPverification extends AppCompatActivity {
         // [END verify_with_code]
         try {
              credential = PhoneAuthProvider.getCredential(verificationIds, codes);
-            StartRegistration(credential);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-      //  signInWithPhoneAuthCredential(credential);
+        signInWithPhoneAuthCredential(credential);
     }
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
 
@@ -397,7 +400,7 @@ public class OTPverification extends AppCompatActivity {
                             Intent VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
                             startActivity(VerifiedIntent);
                             finish();
-
+                            StartRegistration(credential);
                             // [START_EXCLUDE]
                           //  updateUI(STATE_SIGNIN_SUCCESS, user);
                             // [END_EXCLUDE]
@@ -467,20 +470,8 @@ public class OTPverification extends AppCompatActivity {
     private void StartRegistration(PhoneAuthCredential credential) {
         // OnVerificationStateChangedCallbacks
 
-        final LoadingDialog LD;
-        LD = new LoadingDialog(this);
-        LD.ShowTheDialog("Setting up your account...", "Please wait..", true);
 
-  /*      regBundel.putString("uemail",atv_uemail.getText().toString().trim());
-        regBundel.putString("uphone",PhoneNumberWithCode.trim());
-        regBundel.putString("ucountry",atv_country.getText().toString().trim());
-        regBundel.putString("",atv_languadge.getText().toString().trim());
-        regBundel.putString("udevice",Device_id.trim());
-        regBundel.putString("ugcmtoken",GCMToken);
-        regBundel.putString("uos","Android");
-        regBundel.putString("uosver",Integer.toString(Build.VERSION.SDK_INT));
-        regBundel.putString("ucomp",Build.MANUFACTURER);
-        regBundel.putString("umodel",Build.MODEL);*/
+
 
         Bundle b = intentemail.getExtras();
 
@@ -523,23 +514,16 @@ public class OTPverification extends AppCompatActivity {
                     editor.putBoolean(SharedPrefUtils.SpOtpVerify, true);
                     editor.commit();
 
-                   Intent VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
+                    Intent VerifiedIntent = new Intent(OTPverification.this, IntroActivity.class);
                     startActivity(VerifiedIntent);
-                    signInWithPhoneAuthCredential(credential);
                     finish();
-
-
-                    // Toast.makeText(RegistrationActivity.this, "tok " +  arg0.getData()[0].getToken(), Toast.LENGTH_LONG).show();
-
-                  //  ChangeEmail=true;
-                    LD.DismissTheDialog();
 
 
 
 
                 } else {
                     Log.v("", "Try again later " + arg0.getStatus());
-                    LD.DismissTheDialog();
+
                     Toast.makeText(OTPverification.this, "Try again " + arg0.getStatus(), Toast.LENGTH_LONG).show();
                     btn_change_email.performClick();
 
@@ -549,7 +533,7 @@ public class OTPverification extends AppCompatActivity {
             @Override
             public void failure(RetrofitError error) {
 
-                LD.DismissTheDialog();
+
 
                 Toast.makeText(OTPverification.this, "Failed, try again later. " , Toast.LENGTH_LONG).show();
             }

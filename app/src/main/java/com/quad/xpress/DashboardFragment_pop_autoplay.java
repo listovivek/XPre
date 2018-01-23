@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.quad.xpress.Adapters_horizontal.adapter_autoplay;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Emotion;

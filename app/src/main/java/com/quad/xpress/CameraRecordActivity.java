@@ -488,6 +488,7 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(CameraRecordActivity.this, ContactMainActivity.class);
+                i.putExtra("from","camera");
                 startActivity(i);
                 finish();
             }
@@ -690,10 +691,10 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
         });
 
         //640 × 480
-     /*   mCameraView.setPictureSize(480, 640, true);
-        mCameraView.presetRecordingSize(480, 640);*/
-        mCameraView.setPictureSize(720, 1280, true);
-        mCameraView.presetRecordingSize(720, 1280);
+        mCameraView.setPictureSize(480, 640, true);
+        mCameraView.presetRecordingSize(480, 640);
+      /*  mCameraView.setPictureSize(720, 1280, true);
+        mCameraView.presetRecordingSize(720, 1280);*/
 //      mCameraView.presetRecordingSize(720, 1280);
         mCameraView.setZOrderOnTop(true);
         mCameraView.setZOrderMediaOverlay(true);
@@ -1030,25 +1031,14 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
                 FileNameWithMimeType = AvTitleSpaceRemover + fileMimeType;
 
                 ToSaveURI = CreateVideoFolder(MEDIA_TYPE_VIDEO, FileNameWithMimeType);
-              //  Log.v("Camera ToSaveUri", ToSaveURI);
+
                 Tags = TagResizer(MATTags.getText().toString());
                 ShareAsText = Spinner_ShareAsType.getSelectedItem().toString();
 
-              /*  handler.addContact(Contact.getInstance().ixpressemail.get(i),
-                        Contact.getInstance().ixpressname.get(i),
-                        Contact.getInstance().ixpress_user_pic.get(i)
-                        , contactPosition);*/
 
 
-                if (AVDialog.isShowing()) {
-                   // av_email.setText("");
-                   // av_name.setText("");
-                   // MATTags.setText("");
+                ToEmail = av_email.getText().toString();
 
-                  //  callWeb(ToEmail);
-                    AVDialog.dismiss();
-
-                }
                 try {
                     callWeb(av_email.toString());
                 } catch (Exception e) {
@@ -1057,51 +1047,85 @@ public class CameraRecordActivity extends Activity implements View.OnClickListen
             }
 
             private void callWeb(final String toEmail) {
-                ArrayList<String> emailList = new ArrayList<String>();
-                emailList.add(toEmail);
-                RestClient.get(CameraRecordActivity.this).PostContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(emailList),
+
+                ArrayList<String>postarry = new ArrayList<String>();
+                postarry.clear();
+                String postemi[] = new String[0];
+                try {
+                    postemi = av_email.getText().toString().split(" - ");
+                    postarry.add(postemi[1]);
+                } catch (Exception e) {
+                    postarry.add(av_email.getText().toString().trim());
+                }
+
+
+                RestClient.get(CameraRecordActivity.this).PostPhoneContacts(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new ContactsReq(postarry),
                         new Callback<ContactsResp>() {
                             @Override
                             public void success(ContactsResp contactsResp, Response response) {
 
-                                if(recentPosition == 0) {
-                                    if (contactPosition == -1) {
-                                        for (int i = 0; i < Contact.getInstance().ixpressemail.size(); i++) {
 
-                                            if (Contact.getInstance().ixpressemail.get(i).equalsIgnoreCase(toEmail)) {
+                                if (contactsResp.getCode().equals("200") && contactsResp.getData().length == 1) {
 
-                                                handler.addContact(Contact.getInstance().ixpressemail.get(i),
-                                                        Contact.getInstance().ixpressname.get(i),
-                                                        Contact.getInstance().ixpress_user_pic.get(i)
+                                    for (int i = 0; i < contactsResp.getData().length; i++) {
+
+                                        Toast.makeText(CameraRecordActivity.this, ""+contactsResp.getData().length, Toast.LENGTH_SHORT).show();
+
+                                        if (AVDialog.isShowing()) {
+
+                                        AVDialog.dismiss();
+
+                                        }
+
+
+                                    }
+                                    if(recentPosition == 0) {
+                                        if (contactPosition == -1) {
+                                            for (int i = 0; i < Contact.getInstance().ixpressemail.size(); i++) {
+
+                                                if (Contact.getInstance().ixpressemail.get(i).equalsIgnoreCase(toEmail)) {
+
+                                                    handler.addContact(Contact.getInstance().ixpressemail.get(i),
+                                                            Contact.getInstance().ixpressname.get(i),
+                                                            Contact.getInstance().ixpress_user_pic.get(i)
+                                                            , contactPosition);
+                                                }
+                                            }
+
+                                        } else {
+                                            if (contactsResp.getData().length != 0) {
+                                                for (int i = 0; i < contactsResp.getData().length; i++) {
+                                                    String emailID = contactsResp.getData()[i].getEmail_id();
+                                                    String name = contactsResp.getData()[i].getUser_name();
+                                                    String pic_url = contactsResp.getData()[i].getProfile_image();
+
+                                                    if (emailID != null && name != null && pic_url != null) {
+                                                        DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
+                                                        handler.addContact(emailID, name, pic_url, contactPosition);
+                                                    }
+                                                }
+                                            } else {
+
+                                                DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
+                                                handler.addContact(mTempEmail,
+                                                        mTempName,
+                                                        Contact.getInstance().ixpress_user_pic.get(contactPosition)
                                                         , contactPosition);
                                             }
                                         }
-
-                                    } else {
-                                        if (contactsResp.getData().length != 0) {
-                                            for (int i = 0; i < contactsResp.getData().length; i++) {
-                                                String emailID = contactsResp.getData()[i].getEmail_id();
-                                                String name = contactsResp.getData()[i].getUser_name();
-                                                String pic_url = contactsResp.getData()[i].getProfile_image();
-
-                                                if (emailID != null && name != null && pic_url != null) {
-                                                    DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
-                                                    handler.addContact(emailID, name, pic_url, contactPosition);
-                                                }
-                                            }
-                                        } else {
-
-                                            DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
-                                            handler.addContact(mTempEmail,
-                                                    mTempName,
-                                                    Contact.getInstance().ixpress_user_pic.get(contactPosition)
-                                                    , contactPosition);
-                                        }
                                     }
-                                }else{
-                                   /* DatabaseHandler handler = new DatabaseHandler(CameraRecordActivity.this);
-                                    handler.deleteContact(contactPosition);*/
+
+
                                 }
+                                else {
+
+
+                                    Toast.makeText(CameraRecordActivity.this, "User may not be iXprez user, use E-mail to send a xpression", Toast.LENGTH_LONG).show();
+
+                                }
+
+
+
                             }
 
                             @Override

@@ -171,5 +171,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"  />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_guide_progress"
+        android:text="Please wait for initial setup ..."
+        android:textColor="@color/orange"
+        android:layout_below="@+id/progressBar_guide"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/default_title_indicator_text_size"/>
+
 
 </RelativeLayout>

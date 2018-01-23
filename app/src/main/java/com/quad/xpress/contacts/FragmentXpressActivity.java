@@ -28,7 +28,7 @@ import java.util.TreeMap;
 public class FragmentXpressActivity extends Fragment implements
          View.OnClickListener, ContactRecycleAdapter.onRecyclerListener {
 
-
+    String fromscr = "new";
     private RecyclerView recyclerView_ixpress;
     SearchView searchView;
     View v;
@@ -38,13 +38,18 @@ public class FragmentXpressActivity extends Fragment implements
     ImageButton audio_Button, video_Button;
     String tempEmail, tempName;
     SwipeRefreshLayout Swr;
-
+    Dialog SendDiscardDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 
-
+        Intent in = getActivity().getIntent();
+        try {
+            fromscr = in.getStringExtra("from");
+        } catch (Exception e) {
+            fromscr = "new";
+        }
 
 
         v = inflater.inflate(R.layout.fragment_ix_contacts, container, false);
@@ -73,6 +78,8 @@ public class FragmentXpressActivity extends Fragment implements
 
 
         Contact contactData = new Contact();
+        FullContactsDBhandler fDB = new FullContactsDBhandler(getActivity());
+        List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
 
 
         contactData.getInstance().ixpressemail.clear();
@@ -80,21 +87,7 @@ public class FragmentXpressActivity extends Fragment implements
         contactData.getInstance().ixpress_user_pic.clear();
         contactData.getInstance().is_ixpress_user.clear();
 
-        FullContactsDBhandler fDB = new FullContactsDBhandler(getActivity());
-        List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
 
-        if(Dbcontacts.size() <= 0 || Contact.getInstance().ixpressemail.size() > Dbcontacts.size()){
-
-            contactData.getInstance().ixpressemail.clear();
-            contactData.getInstance().ixpressname.clear();
-            contactData.getInstance().ixpress_user_pic.clear();
-            contactData.getInstance().is_ixpress_user.clear();
-
-                contactData = Contact.getInstance();
-            //Toast.makeText(getActivity(), ""+Contact.getInstance().ixpressemail.size(), Toast.LENGTH_SHORT).show();
-
-
-        }
 
         for (FullContactDBOBJ cn : Dbcontacts) {
 
@@ -112,12 +105,26 @@ public class FragmentXpressActivity extends Fragment implements
         TreeMap<String,String> map = new TreeMap<>();
 
         for (FullContactDBOBJ cn : Dbcontacts) {
-            if(cn.get_ixprezuser().equalsIgnoreCase("false")){
+            if(cn.get_diplayed().equalsIgnoreCase("yes")){
+
                 map.put(cn.getName(),cn.getPhoneNumber());
+
             }
 
 
         }
+
+   /*     List<FullContactDBOBJ> Dbcontactsx = fDB.getAllContactsToDisplay();
+        for (FullContactDBOBJ cn : Dbcontactsx) {
+
+                map.put(cn.getName(),cn.getPhoneNumber());
+
+
+            Toast.makeText(getActivity(), ""+cn.get_diplayed()+cn.getPhoneNumber(), Toast.LENGTH_SHORT).show();
+
+
+        }*/
+
 
         contactData.getInstance().ixpressemail.addAll(map.values());
         contactData.getInstance().ixpressname.addAll(map.keySet());
@@ -167,18 +174,46 @@ public class FragmentXpressActivity extends Fragment implements
         itemPosition = recyclerView_ixpress.getChildLayoutPosition(itemView);
 
         if(itemPosition != -1){
-           alert();
+
+
+            alert();
             tempEmail = mData.get(itemPosition);
             tempName = mDataName.get(itemPosition);
             recentPosition = 0;
-          //  Toast.makeText(ContactMainActivity.mContactMainActivity, ""+itemPosition, Toast.LENGTH_LONG).show();
+
+
+            try {
+                if(fromscr.equalsIgnoreCase("camera")){
+                    SendDiscardDialog.dismiss();
+                    Intent i = new Intent(getActivity(), CameraRecordActivity.class);
+                    i.putExtra("positionEmailID", itemPosition);
+                    i.putExtra("ixpresspositionEmailID", recentPosition);
+                    i.putExtra("tempEmail", tempEmail);
+                    i.putExtra("tempName", tempName);
+                    startActivity(i);
+                }
+                else if(fromscr.equalsIgnoreCase("audio"))
+                {
+                    SendDiscardDialog.dismiss();
+                    Intent i = new Intent(getActivity(), AudioRecordActivity.class);
+                    i.putExtra("positionEmailID", itemPosition);
+                    i.putExtra("ixpresspositionEmailID", recentPosition);
+                    i.putExtra("tempEmail", tempEmail);
+                    i.putExtra("tempName", tempName);
+                    startActivity(i);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         }else{
         }
     }
 
     public void alert() {
 
-        Dialog SendDiscardDialog = new Dialog(getActivity(),
+         SendDiscardDialog = new Dialog(getActivity(),
                 R.style.Theme_Transparent);
         SendDiscardDialog.setContentView(R.layout.send_discard_dialog);
         SendDiscardDialog.show();

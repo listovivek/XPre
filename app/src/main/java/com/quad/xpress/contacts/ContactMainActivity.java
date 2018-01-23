@@ -37,6 +37,8 @@ public class ContactMainActivity extends AppCompatActivity   {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contacts_list);
+
+
         sharedpreferences = getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
         editor = sharedpreferences.edit();
 

@@ -51,7 +51,7 @@ import com.quad.xpress.utills.helpers.LoadingDialog;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.PermissionStrings;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;

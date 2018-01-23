@@ -5,71 +5,78 @@ package com.quad.xpress.models.TrendingSearch;
  */
 
 public class TsRecords {
-    private String tags;
-
-    private String created_date;
 
     private String fileuploadFilename;
 
-    private String thumbnailPath;
-
     private String likeCount;
 
-    private String isUserLiked;
+    private String thumbnailPath;
+
+    private String both;
 
     private String fileuploadPath;
 
-    private String privacy;
+    private String tokenizedUrl;
 
-    private String viewed;
-
-    private String isuerfollowing;
-
-    private TsEmotions[] emotion;
-
-    private String country;
+    private String date;
 
     private String feedback;
 
     private String title;
 
+    private String _id;
+
+    private String from_email;
+
+    private String createdAt;
+
+    private String action;
+
+    private String del_status;
+
+    private String thumbnailFilename;
+
+    private String tags;
+
+    private String likes_count;
+
+    private String created_date;
+
+    private String emotionCount;
+
+    private String featuredVideo;
+
+    private String status;
+
+    private String isUserLiked;
+
+    private String privacy;
+
+    private String __v;
+
+    private String thumbtokenizedUrl;
+
+    private String viewed;
+
+    private String isuerfollowing;
+
+    private String country;
+
+
+
+    private String updatedAt;
+
     private String is_deleted;
 
     private String thumbnailmimeType;
 
-    private String _id;
-
     private String filemimeType;
-
-    private String from_email;
 
     private String language;
 
     private String view_count;
 
     private String to_email;
-
-    private String thumbnailFilename;
-
-    public String getTags ()
-    {
-        return tags;
-    }
-
-    public void setTags (String tags)
-    {
-        this.tags = tags;
-    }
-
-    public String getCreated_date ()
-    {
-        return created_date;
-    }
-
-    public void setCreated_date (String created_date)
-    {
-        this.created_date = created_date;
-    }
 
     public String getFileuploadFilename ()
     {
@@ -79,16 +86,6 @@ public class TsRecords {
     public void setFileuploadFilename (String fileuploadFilename)
     {
         this.fileuploadFilename = fileuploadFilename;
-    }
-
-    public String getThumbnailPath ()
-    {
-        return thumbnailPath;
-    }
-
-    public void setThumbnailPath (String thumbnailPath)
-    {
-        this.thumbnailPath = thumbnailPath;
     }
 
     public String getLikeCount ()
@@ -101,14 +98,24 @@ public class TsRecords {
         this.likeCount = likeCount;
     }
 
-    public String getIsUserLiked ()
+    public String getThumbnailPath ()
     {
-        return isUserLiked;
+        return thumbnailPath;
     }
 
-    public void setIsUserLiked (String isUserLiked)
+    public void setThumbnailPath (String thumbnailPath)
     {
-        this.isUserLiked = isUserLiked;
+        this.thumbnailPath = thumbnailPath;
+    }
+
+    public String getBoth ()
+    {
+        return both;
+    }
+
+    public void setBoth (String both)
+    {
+        this.both = both;
     }
 
     public String getFileuploadPath ()
@@ -121,54 +128,24 @@ public class TsRecords {
         this.fileuploadPath = fileuploadPath;
     }
 
-    public String getPrivacy ()
+    public String getTokenizedUrl ()
     {
-        return privacy;
+        return tokenizedUrl;
     }
 
-    public void setPrivacy (String privacy)
+    public void setTokenizedUrl (String tokenizedUrl)
     {
-        this.privacy = privacy;
+        this.tokenizedUrl = tokenizedUrl;
     }
 
-    public String getViewed ()
+    public String getDate ()
     {
-        return viewed;
+        return date;
     }
 
-    public void setViewed (String viewed)
+    public void setDate (String date)
     {
-        this.viewed = viewed;
-    }
-
-    public String getIsuerfollowing ()
-    {
-        return isuerfollowing;
-    }
-
-    public void setIsuerfollowing (String isuerfollowing)
-    {
-        this.isuerfollowing = isuerfollowing;
-    }
-
-    public TsEmotions[] getEmotion ()
-    {
-        return emotion;
-    }
-
-    public void setEmotion (TsEmotions[] emotion)
-    {
-        this.emotion = emotion;
-    }
-
-    public String getCountry ()
-    {
-        return country;
-    }
-
-    public void setCountry (String country)
-    {
-        this.country = country;
+        this.date = date;
     }
 
     public String getFeedback ()
@@ -191,6 +168,208 @@ public class TsRecords {
         this.title = title;
     }
 
+    public String get_id ()
+    {
+        return _id;
+    }
+
+    public void set_id (String _id)
+    {
+        this._id = _id;
+    }
+
+    public String getFrom_email ()
+    {
+        return from_email;
+    }
+
+    public void setFrom_email (String from_email)
+    {
+        this.from_email = from_email;
+    }
+
+    public String getCreatedAt ()
+    {
+        return createdAt;
+    }
+
+    public void setCreatedAt (String createdAt)
+    {
+        this.createdAt = createdAt;
+    }
+
+    public String getAction ()
+    {
+        return action;
+    }
+
+    public void setAction (String action)
+    {
+        this.action = action;
+    }
+
+    public String getDel_status ()
+    {
+        return del_status;
+    }
+
+    public void setDel_status (String del_status)
+    {
+        this.del_status = del_status;
+    }
+
+    public String getThumbnailFilename ()
+    {
+        return thumbnailFilename;
+    }
+
+    public void setThumbnailFilename (String thumbnailFilename)
+    {
+        this.thumbnailFilename = thumbnailFilename;
+    }
+
+    public String getTags ()
+    {
+        return tags;
+    }
+
+    public void setTags (String tags)
+    {
+        this.tags = tags;
+    }
+
+    public String getLikes_count ()
+    {
+        return likes_count;
+    }
+
+    public void setLikes_count (String likes_count)
+    {
+        this.likes_count = likes_count;
+    }
+
+    public String getCreated_date ()
+    {
+        return created_date;
+    }
+
+    public void setCreated_date (String created_date)
+    {
+        this.created_date = created_date;
+    }
+
+    public String getEmotionCount ()
+    {
+        return emotionCount;
+    }
+
+    public void setEmotionCount (String emotionCount)
+    {
+        this.emotionCount = emotionCount;
+    }
+
+    public String getFeaturedVideo ()
+    {
+        return featuredVideo;
+    }
+
+    public void setFeaturedVideo (String featuredVideo)
+    {
+        this.featuredVideo = featuredVideo;
+    }
+
+    public String getStatus ()
+    {
+        return status;
+    }
+
+    public void setStatus (String status)
+    {
+        this.status = status;
+    }
+
+    public String getIsUserLiked ()
+    {
+        return isUserLiked;
+    }
+
+    public void setIsUserLiked (String isUserLiked)
+    {
+        this.isUserLiked = isUserLiked;
+    }
+
+    public String getPrivacy ()
+    {
+        return privacy;
+    }
+
+    public void setPrivacy (String privacy)
+    {
+        this.privacy = privacy;
+    }
+
+    public String get__v ()
+    {
+        return __v;
+    }
+
+    public void set__v (String __v)
+    {
+        this.__v = __v;
+    }
+
+    public String getThumbtokenizedUrl ()
+    {
+        return thumbtokenizedUrl;
+    }
+
+    public void setThumbtokenizedUrl (String thumbtokenizedUrl)
+    {
+        this.thumbtokenizedUrl = thumbtokenizedUrl;
+    }
+
+    public String getViewed ()
+    {
+        return viewed;
+    }
+
+    public void setViewed (String viewed)
+    {
+        this.viewed = viewed;
+    }
+
+    public String getIsuerfollowing ()
+    {
+        return isuerfollowing;
+    }
+
+    public void setIsuerfollowing (String isuerfollowing)
+    {
+        this.isuerfollowing = isuerfollowing;
+    }
+
+    public String getCountry ()
+    {
+        return country;
+    }
+
+    public void setCountry (String country)
+    {
+        this.country = country;
+    }
+
+
+
+    public String getUpdatedAt ()
+    {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt (String updatedAt)
+    {
+        this.updatedAt = updatedAt;
+    }
+
     public String getIs_deleted ()
     {
         return is_deleted;
@@ -211,16 +390,6 @@ public class TsRecords {
         this.thumbnailmimeType = thumbnailmimeType;
     }
 
-    public String get_id ()
-    {
-        return _id;
-    }
-
-    public void set_id (String _id)
-    {
-        this._id = _id;
-    }
-
     public String getFilemimeType ()
     {
         return filemimeType;
@@ -229,16 +398,6 @@ public class TsRecords {
     public void setFilemimeType (String filemimeType)
     {
         this.filemimeType = filemimeType;
-    }
-
-    public String getFrom_email ()
-    {
-        return from_email;
-    }
-
-    public void setFrom_email (String from_email)
-    {
-        this.from_email = from_email;
     }
 
     public String getLanguage ()
@@ -271,19 +430,9 @@ public class TsRecords {
         this.to_email = to_email;
     }
 
-    public String getThumbnailFilename ()
-    {
-        return thumbnailFilename;
-    }
-
-    public void setThumbnailFilename (String thumbnailFilename)
-    {
-        this.thumbnailFilename = thumbnailFilename;
-    }
-
     @Override
     public String toString()
     {
-        return "ClassPojo [tags = "+tags+", created_date = "+created_date+", fileuploadFilename = "+fileuploadFilename+", thumbnailPath = "+thumbnailPath+", likeCount = "+likeCount+", isUserLiked = "+isUserLiked+", fileuploadPath = "+fileuploadPath+", privacy = "+privacy+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", emotion = "+emotion+", country = "+country+", feedback = "+feedback+", title = "+title+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", _id = "+_id+", filemimeType = "+filemimeType+", from_email = "+from_email+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+", thumbnailFilename = "+thumbnailFilename+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", likeCount = "+likeCount+", thumbnailPath = "+thumbnailPath+", both = "+both+", fileuploadPath = "+fileuploadPath+", tokenizedUrl = "+tokenizedUrl+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", action = "+action+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", likes_count = "+likes_count+", created_date = "+created_date+", emotionCount = "+emotionCount+", featuredVideo = "+featuredVideo+", status = "+status+", isUserLiked = "+isUserLiked+", privacy = "+privacy+", __v = "+__v+", thumbtokenizedUrl = "+thumbtokenizedUrl+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", language = "+language+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

@@ -27,7 +27,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.receivedFiles.PlayListitems;
 
 import org.apache.commons.lang3.StringUtils;
@@ -315,7 +315,7 @@ public class PrivatePlayListAdapter extends RecyclerSwipeAdapter<PrivatePlayList
             public void onClick(View v) {
 
                 Boolean IsnewContact = false;
-                if(!Contact.getInstance().email_list.contains(list.from_email)){
+                if(!Contact.getInstance().email_list.contains(list.getPhonenumber()) ){
                     IsnewContact = true;
                 }
                 file_id_=list.getFromEmail();

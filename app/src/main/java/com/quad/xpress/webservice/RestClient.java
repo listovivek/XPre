@@ -2,7 +2,7 @@ package com.quad.xpress.webservice;
 
 import android.content.Context;
 
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RestAdapter;

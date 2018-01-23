@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.quad.xpress.AudioRecordActivity;
 import com.quad.xpress.CameraRecordActivity;
 import com.quad.xpress.R;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

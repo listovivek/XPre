@@ -14,13 +14,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.quad.xpress.R;
-import com.quad.xpress.utills.helpers.StaticConfig;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
+import com.quad.xpress.utills.StaticConfig;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,7 +55,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
         public PopupWindow popupWindow = null;
         private OnRecyclerListener recyclerListener = null;
         private TextView Tv_tag1,Tv_tag2,Tv_tag3,Tv_tag4;
-        public ProgressBar pbar;
+
         TextView  Tv_comment_1, Tv_comment_2, Tv_comment_3, Tv_comment_4,Tv_delete;
         LinearLayout ll_button_panel,ll_full_info_panel;
 
@@ -75,7 +74,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
             RvTags_full = (TextView) itemView.findViewById(R.id.RvTags_new);
             RvTime = (TextView) itemView.findViewById(R.id.RvTime);
             RvMoreTag = (TextView) itemView.findViewById(R.id.textView_viewsMoreTags);
-            pbar = (ProgressBar) itemView.findViewById(R.id.progressBar_publiclsit);
+
             popupWindow = new PopupWindow(context);
             Tv_delete = (TextView) itemView.findViewById(R.id.textView_delete);
             Tv_tag1 = (TextView)itemView.findViewById(R.id.textView_tag_1);
@@ -155,7 +154,7 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder,  int position) {
         final PlayListitems_emotion list = rvListitems.get(position);
-        holder.pbar.setVisibility(View.INVISIBLE);
+
         holder.RvVideoTitle.setText(StringUtils.capitalize(list.getTitle().trim()));
         holder.RvSender.setText(list.getFromEmail());
         holder.RvTime.setText(list.getCreatedDate());
@@ -228,23 +227,27 @@ public class MyUploadsAdapter extends RecyclerView.Adapter<MyUploadsAdapter.MyVi
             holder.RvTags.setText(list.getTags());
         }
         try {
+
+            String TBPath;
+            if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
+                TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
+            }
+            else if  (list.getTBPath().contains("https")){
+                TBPath = list.getTBPath();
+            }else {
+                TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
+            }
+
             if (list.getFileMimeType().equals("audio/mp3")) {
 
-                Glide.with(_context).load(R.drawable.ic_mic_placeholder_large).fitCenter()
+                Glide.with(_context).load(TBPath).fitCenter()
                         .into(holder.RvImage);
-
-                holder.Play_icon.setVisibility(View.INVISIBLE);
+                Glide.with(_context).load(R.drawable.ic_mic_placeholder_large).override(165,165)
+                        .into(holder.Play_icon);
+               // holder.Play_icon.setVisibility(View.INVISIBLE);
 
             } else if (list.getFileMimeType().equals("video/mp4")) {
-                String TBPath;
-                if (list.getTBPath().contains(StaticConfig.ROOT_URL_Media)) {
-                    TBPath = StaticConfig.ROOT_URL + list.getTBPath().replace(StaticConfig.ROOT_URL_Media, "");
-                }
-                else if  (list.getTBPath().contains("https")){
-                    TBPath = list.getTBPath();
-                }else {
-                    TBPath = StaticConfig.ROOT_URL + "/" + list.getTBPath();
-                }
+
             //    Log.v("", "TBPath " + TBPath);
                 Glide.with(_context).load(TBPath).centerCrop().into(holder.RvImage);
 

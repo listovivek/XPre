@@ -11,27 +11,29 @@ public class FullContactDBOBJ {
         String _name;
         String _phone_number;
         String _profile_pic;
-        String _ixprezuser;
+        String _ixprezuser,_diplayed;
 
         // Empty constructor
         public FullContactDBOBJ(){
 
         }
         // constructor
-        public FullContactDBOBJ(int id, String name, String _phone_number, String _profile_pic,String _ixprezuser){
+        public FullContactDBOBJ(int id, String name, String _phone_number, String _profile_pic,String _ixprezuser,String _diplayed){
             this._id = id;
             this._name = name;
             this._phone_number = _phone_number;
             this._profile_pic =_profile_pic;
             this._ixprezuser = _ixprezuser;
+            this._diplayed =_diplayed;
         }
 
         // constructor
-        public FullContactDBOBJ(String name, String _phone_number,String _profile_pic,String _ixprezuser){
+        public FullContactDBOBJ(String name, String _phone_number,String _profile_pic,String _ixprezuser,String _diplayed){
             this._name = name;
             this._phone_number = _phone_number;
             this._profile_pic= _profile_pic;
             this._ixprezuser = _ixprezuser;
+            this._diplayed=_diplayed;
         }
 
 
@@ -79,5 +81,13 @@ public class FullContactDBOBJ {
 
     public String get_ixprezuser() {
         return _ixprezuser;
+    }
+
+    public void set_diplayed(String _diplayed) {
+        this._diplayed = _diplayed;
+    }
+
+    public String get_diplayed() {
+        return _diplayed;
     }
 }

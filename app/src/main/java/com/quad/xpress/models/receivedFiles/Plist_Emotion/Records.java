@@ -17,6 +17,8 @@ public class Records
 
     private String fileuploadPath;
 
+    private String tokenizedUrl;
+
     private String date;
 
     private String feedback;
@@ -56,6 +58,8 @@ public class Records
     private String privacy;
 
     private String __v;
+
+    private String thumbtokenizedUrl;
 
     private String viewed;
 
@@ -141,6 +145,16 @@ public class Records
     public void setFileuploadPath (String fileuploadPath)
     {
         this.fileuploadPath = fileuploadPath;
+    }
+
+    public String getTokenizedUrl ()
+    {
+        return tokenizedUrl;
+    }
+
+    public void setTokenizedUrl (String tokenizedUrl)
+    {
+        this.tokenizedUrl = tokenizedUrl;
     }
 
     public String getDate ()
@@ -343,6 +357,16 @@ public class Records
         this.__v = __v;
     }
 
+    public String getThumbtokenizedUrl ()
+    {
+        return thumbtokenizedUrl;
+    }
+
+    public void setThumbtokenizedUrl (String thumbtokenizedUrl)
+    {
+        this.thumbtokenizedUrl = thumbtokenizedUrl;
+    }
+
     public String getViewed ()
     {
         return viewed;
@@ -476,6 +500,6 @@ public class Records
     @Override
     public String toString()
     {
-        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", phone_number = "+phone_number+", likeCount = "+likeCount+", thumbnailPath = "+thumbnailPath+", both = "+both+", fileuploadPath = "+fileuploadPath+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", action = "+action+", from_user = "+from_user+", user_id = "+user_id+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", likes_count = "+likes_count+", created_date = "+created_date+", emotionCount = "+emotionCount+", featuredVideo = "+featuredVideo+", status = "+status+", isUserLiked = "+isUserLiked+", privacy = "+privacy+", __v = "+__v+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", mydp = "+mydp+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
+        return "ClassPojo [fileuploadFilename = "+fileuploadFilename+", phone_number = "+phone_number+", likeCount = "+likeCount+", thumbnailPath = "+thumbnailPath+", both = "+both+", fileuploadPath = "+fileuploadPath+", tokenizedUrl = "+tokenizedUrl+", date = "+date+", feedback = "+feedback+", title = "+title+", _id = "+_id+", from_email = "+from_email+", createdAt = "+createdAt+", action = "+action+", from_user = "+from_user+", user_id = "+user_id+", del_status = "+del_status+", thumbnailFilename = "+thumbnailFilename+", tags = "+tags+", likes_count = "+likes_count+", created_date = "+created_date+", emotionCount = "+emotionCount+", featuredVideo = "+featuredVideo+", status = "+status+", isUserLiked = "+isUserLiked+", privacy = "+privacy+", __v = "+__v+", thumbtokenizedUrl = "+thumbtokenizedUrl+", viewed = "+viewed+", isuerfollowing = "+isuerfollowing+", country = "+country+", emotion = "+emotion+", updatedAt = "+updatedAt+", is_deleted = "+is_deleted+", thumbnailmimeType = "+thumbnailmimeType+", filemimeType = "+filemimeType+", mydp = "+mydp+", language = "+language+", fieldstatus = "+fieldstatus+", view_count = "+view_count+", to_email = "+to_email+"]";
     }
 }

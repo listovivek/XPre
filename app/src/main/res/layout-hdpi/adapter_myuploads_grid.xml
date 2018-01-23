@@ -50,7 +50,7 @@
                        android:layout_centerVertical="true"
                        android:gravity="start"
                        android:textColor="@color/rv_list_title"
-                       android:textSize="18sp" />
+                       android:textSize="14sp" />
 
                    <LinearLayout
                        android:id="@+id/rv_menu_button_ll"
@@ -70,8 +70,8 @@
                            android:layout_height="wrap_content"
                            android:visibility="visible"
                            android:background="@color/white"
-                           android:layout_margin="5sp"
-                           android:padding="5dp"
+                           android:layout_margin="1sp"
+                           android:padding="0dp"
                            android:layout_gravity="center_vertical|right"
                            android:src="@drawable/ic_rv_options" />
                    </LinearLayout>
@@ -96,16 +96,11 @@
                        android:layout_margin="15dp"
                        android:padding="10dp"
                        android:scaleType="fitCenter"
-                       android:background="@drawable/ic_play"
+                       android:src="@drawable/ic_play"
                        android:layout_gravity="center"
                        android:foregroundGravity="top"/>
 
-                   <ProgressBar
-                       style="?android:attr/progressBarStyleSmall"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:id="@+id/progressBar_publiclsit"
-                       android:layout_gravity="center" />
+
                    <LinearLayout
                        android:layout_width="match_parent"
                        android:layout_height="match_parent"
@@ -172,6 +167,7 @@
                            <TextView
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
+                               android:maxLines="1"
                                android:id="@+id/amu_tv_info_date_created_data"
                                android:textColor="@color/white"
                                android:text="Date Created"/>
@@ -182,12 +178,14 @@
                                android:textColor="@color/white"
                                android:alpha=".6"
                                android:layout_marginTop="5dp"
+                               android:visibility="gone"
                                android:text="Privilege"/>
                            <TextView
                                android:layout_width="match_parent"
                                android:layout_height="wrap_content"
                                android:id="@+id/amu_tv_info_privelage_data"
                                android:textColor="@color/white"
+                               android:visibility="gone"
                                android:text="Public"/>
                            <TextView
                                android:layout_width="match_parent"

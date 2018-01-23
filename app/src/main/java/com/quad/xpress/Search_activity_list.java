@@ -33,11 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quad.xpress.OOC.ToastCustom;
-import com.quad.xpress.utills.helpers.NetConnectionDetector;
-import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
-import com.quad.xpress.models.Follow.FollowRep;
-import com.quad.xpress.models.Follow.FollowReq;
 import com.quad.xpress.models.TrendingSearch.TsReq;
 import com.quad.xpress.models.TrendingSearch.Tsresp;
 import com.quad.xpress.models.authToken.AuthTokenReq;
@@ -49,6 +44,9 @@ import com.quad.xpress.models.receivedFiles.Plist_Emotion.PlayListitems_emotion;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.Records;
 import com.quad.xpress.models.receivedFiles.Plist_Emotion.adapter_dashboard;
 import com.quad.xpress.models.receivedFiles.search.SearchFilesReq;
+import com.quad.xpress.utills.helpers.NetConnectionDetector;
+import com.quad.xpress.utills.helpers.SharedPrefUtils;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
@@ -284,12 +282,12 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                             if(tsresp.getCode().equals("200")){
                                 for (int i=0 ; i < tsresp.getData().getRecords().length;i++){
                                     user_name.add(tsresp.getData().getRecords()[i].getFrom_email());
-                                    user_img.add(tsresp.getData().getRecords()[i].getThumbnailPath());
-                                    thumb_url.add(tsresp.getData().getRecords()[i].getThumbnailPath());
+                                    user_img.add(tsresp.getData().getRecords()[i].getThumbtokenizedUrl());
+                                    thumb_url.add(tsresp.getData().getRecords()[i].getThumbtokenizedUrl());
                                     time.add(tsresp.getData().getRecords()[i].getCreated_date());
                                     likes.add(tsresp.getData().getRecords()[i].getLikeCount());
                                     views.add(tsresp.getData().getRecords()[i].getView_count());
-                                    media.add(tsresp.getData().getRecords()[i].getFileuploadPath());
+                                    media.add(tsresp.getData().getRecords()[i].getTokenizedUrl());
                                     reactions.add(tsresp.getData().getRecords()[i].getLikeCount());
                                     title.add(tsresp.getData().getRecords()[i].getTitle());
                                     file_id.add(tsresp.getData().getRecords()[i].get_id());
@@ -622,50 +620,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
 
     }
 
-    @Override
-    public void Subcribed(int position, final String email) {
-       /* sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).FollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
-                new Callback<FollowRep>() {
-                    @Override
-                    public void success(FollowRep followRep, Response response) {
-                        Toast.makeText(getApplicationContext(), "Subscribed to "+email+" Posts.", Toast.LENGTH_SHORT).show();
-                        playlist.clear();
-                        Index = 0;
-                        getSearchData();
-                        adapter.notifyDataSetChanged();
-                    }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-
-                    }
-                });*/
-
-    }
-
-    @Override
-    public void UnSubcribed(int position, final String email) {
-       /* sharedpreferences = getApplicationContext().getSharedPreferences(SharedPrefUtils.MyPREFERENCES, Context.MODE_PRIVATE);
-        editor = sharedpreferences.edit();
-        RestClient.get(getApplicationContext()).UnFollowRequest(sharedpreferences.getString(SharedPrefUtils.SpToken, ""),new FollowReq(email,sharedpreferences.getString(SharedPrefUtils.SpEmail, "")),
-                new Callback<FollowRep>() {
-                    @Override
-                    public void success(FollowRep followRep, Response response) {
-                        Toast.makeText(getApplicationContext(), "Unsubscribed from  "+email+" Posts.", Toast.LENGTH_SHORT).show();
-                        playlist.clear();
-                        Index = 0;
-                        getSearchData();
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-
-                    }
-                });*/
-    }
 
 
 
@@ -778,7 +733,7 @@ public class Search_activity_list extends AppCompatActivity implements adapter_d
                 return;
             }
             playlistItems = new PlayListitems_emotion(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
-                    , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
+                    , iii.getThumbtokenizedUrl(), iii.getFilemimeType(), iii.getTokenizedUrl(), iii.getFileuploadFilename()
                     , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getIsUserLiked(),sb.toString(),iii.getEmotionCount()
                     ,iii.getIsuerfollowing(),iii.getFieldstatus(),iii.getTo_email(),iii.getFrom_user(),iii.getMydp(),iii.getUser_id(),iii.getPhone_number());
             playlist.add(playlistItems);

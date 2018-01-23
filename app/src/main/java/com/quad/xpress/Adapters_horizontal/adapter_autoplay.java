@@ -24,7 +24,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.quad.xpress.Act_user_data;
 import com.quad.xpress.R;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.models.clickResponce.Like_Req;
 import com.quad.xpress.models.clickResponce.Like_Resp;
 import com.quad.xpress.models.clickResponce.Viewed_Req;

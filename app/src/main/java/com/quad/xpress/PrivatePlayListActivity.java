@@ -33,6 +33,8 @@ import android.widget.Toast;
 import com.quad.xpress.OOC.ToastCustom;
 import com.quad.xpress.contacts.Contact;
 import com.quad.xpress.contacts.DatabaseHandler;
+import com.quad.xpress.contacts.FullContactDBOBJ;
+import com.quad.xpress.contacts.FullContactsDBhandler;
 import com.quad.xpress.models.authToken.AuthTokenReq;
 import com.quad.xpress.models.authToken.AuthTokenResp;
 import com.quad.xpress.models.privateAcceptReject.PrivARreq;
@@ -47,12 +49,13 @@ import com.quad.xpress.models.spam.spam_req;
 import com.quad.xpress.models.spam.spamresp;
 import com.quad.xpress.utills.helpers.NetConnectionDetector;
 import com.quad.xpress.utills.helpers.SharedPrefUtils;
-import com.quad.xpress.utills.helpers.StaticConfig;
+import com.quad.xpress.utills.StaticConfig;
 import com.quad.xpress.webservice.RestClient;
 import com.tsengvn.typekit.TypekitContextWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -220,8 +223,8 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
                 return;
             }
             playlistItems = new PlayListitems(iii.getFileuploadFilename(), iii.getTitle(), iii.getCreated_date(), iii.getFrom_email()
-                    , iii.getThumbnailPath(), iii.getFilemimeType(), iii.getFileuploadPath(), iii.getFileuploadFilename()
-                    , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getStatus(),iii.getFeaturedVideo(),
+                    , iii.getThumbtokenizedUrl(), iii.getFilemimeType(), iii.getTokenizedUrl(), iii.getFileuploadFilename()
+                    , iii.get_id(), iii.getTags(),iii.getLikeCount(),iii.getView_count(),iii.getStatus(),iii.getUpName(),
                     iii.getPrivacy(),iii.getPhone_number(),iii.getUser_id());
             playlist.add(playlistItems);
         }
@@ -752,9 +755,63 @@ public class PrivatePlayListActivity extends AppCompatActivity implements Privat
     protected void onResume() {
         super.onResume();
             if( Contact.getInstance().email_list.size()== 0){
+                Contact contactData = new Contact();
+
+
+                contactData.getInstance().ixpressemail.clear();
+                contactData.getInstance().ixpressname.clear();
+                contactData.getInstance().ixpress_user_pic.clear();
+                contactData.getInstance().is_ixpress_user.clear();
+
+                FullContactsDBhandler fDB = new FullContactsDBhandler(getApplicationContext());
+                List<FullContactDBOBJ> Dbcontacts = fDB.getAllContacts();
+
+                if(Dbcontacts.size() <= 0 || Contact.getInstance().ixpressemail.size() > Dbcontacts.size()){
+
+                    contactData.getInstance().ixpressemail.clear();
+                    contactData.getInstance().ixpressname.clear();
+                    contactData.getInstance().ixpress_user_pic.clear();
+                    contactData.getInstance().is_ixpress_user.clear();
+
+                    contactData = Contact.getInstance();
+                    //Toast.makeText(getActivity(), ""+Contact.getInstance().ixpressemail.size(), Toast.LENGTH_SHORT).show();
+
+
+                }
+
+                for (FullContactDBOBJ cn : Dbcontacts) {
+
+                    if(cn.get_ixprezuser().equalsIgnoreCase("true")){
+
+                        contactData.getInstance().ixpressemail.add(cn.getPhoneNumber());
+                        contactData.getInstance().ixpressname.add(cn.getName());
+                        contactData.getInstance().ixpress_user_pic.add(cn.get_profile_pic());
+                        contactData.getInstance().is_ixpress_user.add(true);
+                    }
+
+                }
+
+
+                TreeMap<String,String> map = new TreeMap<>();
+
+                for (FullContactDBOBJ cn : Dbcontacts) {
+                    if(cn.get_ixprezuser().equalsIgnoreCase("false")){
+                        map.put(cn.getName(),cn.getPhoneNumber());
+                    }
+
+
+                }
+
+                contactData.getInstance().ixpressemail.addAll(map.values());
+                contactData.getInstance().ixpressname.addAll(map.keySet());
+
+                for (int i = 0; i < map.size(); i++) {
+                    contactData.getInstance().ixpress_user_pic.add(String.valueOf(R.drawable.ic_user_icon));
+                    contactData.getInstance().is_ixpress_user.add(false);
+                }
 
             }
-     //   Toast.makeText(context, "" +Contact.getInstance().email_list.size(), Toast.LENGTH_SHORT).show();
+
 
         if(isResumed){
 

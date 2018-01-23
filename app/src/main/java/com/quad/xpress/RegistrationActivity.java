@@ -466,8 +466,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     //GCMToken = "xcx";
                       if( !Sorted_Clist.contains(atv_country.getText().toString().trim()) ){
                         atv_country.setError("Please select from list");
+                          return;
                     }else if(!languadgeList.contains(atv_languadge.getText().toString().trim())){
                         atv_languadge.setError("Please select from list");
+                          return;
                     }
 
                     if (GCMToken == null && ! GcmtryAgain) {

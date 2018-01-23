@@ -256,6 +256,7 @@ public class AudioRecordActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(AudioRecordActivity.this, ContactMainActivity.class);
+                i.putExtra("from","audio");
                 startActivity(i);
                 finish();
             }
@@ -504,17 +505,19 @@ public class AudioRecordActivity extends Activity {
                         return;
                     }
 
-                    try {
+                    ToEmail = av_email.getText().toString().trim();
+
+
+                   /* try {
                         String[] spliter =  av_email.getText().toString().split(" - ");
                         ToEmail =spliter[1];
                     } catch (Exception e) {
                         ToEmail = av_email.getText().toString().trim();
-                        if(!FieldsValidator.isEmailAddressOK(av_email,true) ){
-                            return;
-                        }
 
 
-                    }
+
+
+                    }*/
 
                 }
 
